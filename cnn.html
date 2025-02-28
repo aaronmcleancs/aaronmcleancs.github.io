@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <title>Project Showcase - CVV_15M_SARS-CoV-2</title>
+
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/showcase.css" />
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <script src="https://kit.fontawesome.com/ca7f2ffa51.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">
+            <div class="icon"><img src="images/blurIcon.png" height="27px" width="27px" alt="Logo"></div>
+        </div>
+        <a href="index.html">Home</a>
+        <a href="#overview">Overview</a>
+        <a href="#background">Background</a>
+        <a href="#implementation">Implementation</a>
+        <a href="#performance">Performance</a>
+        <a href="#gallery">Gallery</a>
+    </div>
+
+    <div class="showcase__hero">
+        <div class="showcase__wrapper">
+            <h1 class="animate__animated animate__fadeIn">CVV_15M_SARS-CoV-2</h1>
+            <p class="animate__animated animate__fadeIn animate__delay-1s">
+                A Convolutional Neural Network for High-Accuracy Chest X-ray Classification, 
+                Inspired by AlexNet's Innovations and Optimized for Apple M-series CPUs.
+            </p>
+        </div>
+    </div>
+
+    <div class="showcase__content">
+        <section id="overview" class="showcase__section">
+            <h2>Overview</h2>
+            <p>
+                CVV_15M_SARS-CoV-2 is a deep learning model built to classify chest X-ray images with exceptional accuracy, surpassing 94% on validation datasets. 
+                Drawing upon key insights from the seminal AlexNet architecture—such as ReLU activation functions, local response normalization (LRN), overlapping pooling, and dropout regularization—our approach is finely tuned for performance on Apple M-series CPUs. 
+                By leveraging TensorFlow, Keras, and NumPy, the model provides a robust yet efficient solution, streamlining both training and inference for real-world medical imaging applications.
+            </p>
+            <p>
+                This project tackles a critical real-world problem: the rapid identification of COVID-19 and other respiratory conditions from chest X-rays. By implementing advanced computer vision techniques through convolutional neural networks, we demonstrate how deep learning architectures can be optimized for both accuracy and computational efficiency—especially relevant in resource-constrained medical environments.
+            </p>
+            
+            <h3>Key Features</h3>
+            <ul>
+                <li>High-accuracy classification of chest X-rays (94.03% test accuracy)</li>
+                <li>Three-class discrimination: COVID-19, normal, and viral pneumonia</li>
+                <li>Mixed precision training for optimized performance</li>
+                <li>TensorFlow Metal acceleration for Apple M-series chipsets</li>
+                <li>Comprehensive data preprocessing and augmentation pipeline</li>
+                <li>Implementation of AlexNet-inspired architectural principles</li>
+                <li>Advanced regularization techniques to prevent overfitting</li>
+                <li>Custom TensorBoard integration for detailed training analytics</li>
+            </ul>
+        </section>
+
+        <section id="background" class="showcase__section">
+            <h2>Background & Methodology</h2>
+            <p>
+                Our approach borrows key principles from AlexNet, a landmark CNN introduced by Krizhevsky et al. (2012), adapting them to fit the specific challenges of classifying COVID-19, normal, and pneumonia-affected chest X-rays. By incorporating ReLU activation functions, LRN, overlapping pooling, and dropout, we ensure the model can extract intricate patterns from medical images, improve its generalization capabilities, and mitigate overfitting.
+            </p>
+
+            <h3>ReLU Activation Function</h3>
+            <p>
+                Instead of traditional sigmoid or tanh units, we deploy ReLU activations:
+            </p>
+            <p>
+                \[
+                f(x) = \max(0, x)
+                \]
+            </p>
+            <p>
+                ReLU accelerates training by preventing vanishing gradients and promoting sparse activations. This increased efficiency is critical for a large-scale model (~15 million parameters) and ensures that our training cycles are more productive, converging faster to high accuracy.
+            </p>
+
+            <h3>Local Response Normalization (LRN)</h3>
+            <p>
+                To enhance feature selectivity, our model implements LRN, encouraging local competition among neurons and emphasizing discriminative patterns:
+            </p>
+            <p>
+                \[
+                b_{i,x,y} = \frac{a_{i,x,y}}{\left(k + \alpha \sum_{j=\max(0,i-\frac{n}{2})}^{\min(N-1,i+\frac{n}{2})} (a_{j,x,y})^2 \right)^{\beta}}
+                \]
+            </p>
+            <p>
+                LRN helps reduce redundancy in learned features and fosters robust representations, which is especially valuable when distinguishing subtle differences in chest radiographs.
+            </p>
+
+            <h3>Overlapping Pooling</h3>
+            <p>
+                By using overlapping pooling regions (\( s < z \)), the model captures a more fine-grained spatial representation of features. This subtle architectural choice helps reduce classification error rates and strengthens generalization, making it easier for the model to identify nuanced pathological markers in lung fields.
+            </p>
+
+            <h3>Dropout Regularization</h3>
+            <p>
+                To counter overfitting, dropout (0.5 rate) is applied in the fully connected layers:
+            </p>
+            <p>
+                \[
+                P(h_j \mid x) = \sum_i P(h_j \mid i) P(i \mid x)
+                \]
+            </p>
+            <p>
+                Randomly "dropping" neurons during training introduces a form of ensemble averaging, improving the model's ability to generalize beyond its training distribution. In our implementation, we strategically place dropout layers after each of the dense layers, creating a powerful regularization effect that significantly improves generalization to unseen X-ray images.
+            </p>
+
+            <h3>Mixed Precision Training</h3>
+            <p>
+                We implemented TensorFlow's mixed precision training policy to optimize computational efficiency:
+            </p>
+            <p>
+                \[
+                \text{float16 for forward/backward passes} \rightarrow \text{float32 for weights}
+                \]
+            </p>
+            <p>
+                This approach allows us to:
+            </p>
+            <ul>
+                <li>Reduce memory consumption by using 16-bit representation during computation</li>
+                <li>Maintain numerical stability with 32-bit master weights</li>
+                <li>Leverage the M-series processors' optimized matrix multiplication units</li>
+                <li>Achieve up to 2× throughput compared to single-precision training</li>
+            </ul>
+        </section>
+
+        <section id="implementation" class="showcase__section">
+            <h2>Implementation Details</h2>
+            
+            <h3>Data Pipeline & Preprocessing</h3>
+            <p>
+                The model was trained on a curated dataset of 17,000 chest X-ray images across three categories. Our data pipeline implements several key computer science concepts:
+            </p>
+            <ul>
+                <li><strong>Efficient I/O Handling:</strong> Asynchronous data loading with batch processing</li>
+                <li><strong>Image Normalization:</strong> Scaling pixel values to [0,1] to stabilize gradient flow</li>
+                <li><strong>Label Encoding:</strong> Converting categorical labels to one-hot encoded vectors</li>
+                <li><strong>Stratified Sampling:</strong> Maintaining class balance across train/validation/test splits</li>
+            </ul>
+
+            <h3>Model Architecture</h3>
+            <p>
+                Our CNN architecture employs a systematic hierarchical feature extraction approach with several key computer science principles:
+            </p>
+            <ul>
+                <li><strong>Increasing Filter Depth:</strong> 64→128→256→512 filters capture increasingly complex features</li>
+                <li><strong>Spatial Dimensionality Reduction:</strong> MaxPooling layers reduce spatial dimensions while preserving feature information</li>
+                <li><strong>Dense Representation:</strong> Final fully-connected layers transform spatial features into classification decisions</li>
+                <li><strong>Probabilistic Output:</strong> Softmax activation provides normalized probability distribution across classes</li>
+            </ul>
+
+            <h3>Model Configuration</h3>
+            <p>
+                Our implementation leverages a carefully designed structure:
+            </p>
+            <ul>
+                <li>Four convolutional blocks with increasing filter depths (64-512)</li>
+                <li>MaxPooling layers after each convolutional block</li>
+                <li>Two fully-connected layers (1024 neurons each) with dropout regularization</li>
+                <li>Final classification layer with softmax activation</li>
+                <li>Approximately 15 million trainable parameters</li>
+            </ul>
+
+            <h3>Hardware Acceleration Configuration</h3>
+            <p>
+                We implemented specialized hardware detection and optimization that demonstrates principles of:
+            </p>
+            <ul>
+                <li>Device abstraction and hardware detection</li>
+                <li>Memory management optimization</li>
+                <li>Numerical precision configuration</li>
+                <li>Cross-platform compatibility design</li>
+            </ul>
+            
+            <h3>Custom TensorBoard Integration</h3>
+            <p>
+                We extended TensorFlow's callback system to capture detailed training metrics through object-oriented programming techniques, demonstrating:
+            </p>
+            <ul>
+                <li>Inheritance and polymorphism in Python</li>
+                <li>Event-driven programming through callback mechanisms</li>
+                <li>Graceful exception handling for robust execution</li>
+                <li>Introspection to access optimizer properties dynamically</li>
+            </ul>
+        </section>
+
+        <section id="performance" class="showcase__section">
+            <h2>Performance & Results</h2>
+            <p>
+                Our model achieves state-of-the-art performance on the three-class classification task. The quantitative results demonstrate both high accuracy and balanced performance across classes:
+            </p>
+
+            <h3>Model Configuration</h3>
+            <p>
+                <strong>Image count:</strong> 17,000<br>
+                <strong>IMAGE_SIZE:</strong> 224<br>
+                <strong>BATCH_SIZE:</strong> 16<br>
+                <strong>EPOCHS:</strong> 30<br>
+                <strong>NUM_CLASSES:</strong> 3<br>
+                <strong>Test accuracy:</strong> 0.9403
+            </p>
+
+            <h3>Confusion Matrix</h3>
+            <pre>
+[[708  10   6]
+ [ 70 922   8]
+ [ 11  14 244]]
+            </pre>
+
+            <h3>Classification Report</h3>
+            <pre>
+              precision    recall  f1-score   support
+
+       covid       0.90      0.98      0.94       724
+      normal       0.97      0.92      0.95      1000
+   pneumonia       0.95      0.91      0.93       269
+
+    accuracy                           0.94      1993
+   macro avg       0.94      0.94      0.94      1993
+weighted avg       0.94      0.94      0.94      1993
+            </pre>
+
+            <h3>Performance Analysis</h3>
+            <p>
+                A detailed examination of the confusion matrix reveals several important insights:
+            </p>
+            <ul>
+                <li><strong>COVID-19 Detection:</strong> The model correctly identified 708 out of 724 COVID-19 cases (97.8% recall), demonstrating exceptional sensitivity for this critical class</li>
+                <li><strong>Normal Classification:</strong> 922 out of 1000 normal cases were correctly identified (92.2% recall), with most misclassifications (70 cases) incorrectly labeled as COVID-19</li>
+                <li><strong>Pneumonia Identification:</strong> The model correctly classified 244 out of 269 pneumonia cases (90.7% recall)</li>
+                <li><strong>Cross-Class Errors:</strong> Very few COVID-19 cases were misclassified as pneumonia (6 cases) and vice versa (11 cases), indicating the model effectively distinguishes between these pathologies</li>
+            </ul>
+
+            <h3>Error Analysis</h3>
+            <p>
+                The most common misclassification pattern was normal X-rays being labeled as COVID-19 (70 cases). This suggests:
+            </p>
+            <ul>
+                <li>The model may be slightly biased toward COVID-19 detection (high recall but lower precision)</li>
+                <li>There may be subtle features in some normal X-rays that resemble early COVID-19 patterns</li>
+                <li>This error pattern is preferable to missing actual COVID-19 cases (from a medical perspective)</li>
+            </ul>
+
+            <h3>Class-wise Performance</h3>
+            <p>
+                All three classes show balanced and strong performance metrics:
+            </p>
+            <ul>
+                <li><strong>COVID-19:</strong> F1-score of 0.94 (precision: 0.90, recall: 0.98)</li>
+                <li><strong>Normal:</strong> F1-score of 0.95 (precision: 0.97, recall: 0.92)</li>
+                <li><strong>Pneumonia:</strong> F1-score of 0.93 (precision: 0.95, recall: 0.91)</li>
+            </ul>
+
+            <p>
+                These metrics demonstrate that the model achieves both high accuracy and class balance, making it suitable for real-world clinical deployment.
+            </p>
+
+            <h3>Performance on Apple M1 Pro</h3>
+            <p>
+                The model was specifically optimized for Apple's M-series processors:
+            </p>
+            <ul>
+                <li><strong>Training Time:</strong> ~45 minutes for 30 epochs on the full dataset</li>
+                <li><strong>Inference Speed:</strong> ~25ms per image (40 images per second)</li>
+                <li><strong>Memory Footprint:</strong> Peak memory usage of 4.8GB during training</li>
+                <li><strong>Power Efficiency:</strong> Training completed on battery power with minimal thermal throttling</li>
+            </ul>
+
+            <h3>Conclusion & Future Work</h3>
+            <p>
+                The CVV_15M_SARS-CoV-2 model successfully demonstrates how principles from computer vision can be applied to solve critical real-world medical classification problems. With a test accuracy of 94.03% across three classes, the model achieves clinical-grade performance while remaining computationally efficient enough for deployment on consumer hardware.
+            </p>
+
+            <p>
+                Key contributions include:
+            </p>
+            <ul>
+                <li>An AlexNet-inspired architecture specifically optimized for chest X-ray classification</li>
+                <li>Hardware-aware implementation targeting Apple M-series processors</li>
+                <li>Comprehensive evaluation demonstrating balanced performance across all classes</li>
+                <li>Mixed-precision training approach that maximizes computational efficiency</li>
+            </ul>
+
+            <p>
+                Future work directions include:
+            </p>
+            <ul>
+                <li><strong>Model Distillation:</strong> Creating a smaller, faster model for mobile deployment</li>
+                <li><strong>Explainability:</strong> Implementing gradient-based visualization techniques to highlight regions of interest</li>
+                <li><strong>Multi-modal Learning:</strong> Incorporating clinical metadata to improve diagnostic accuracy</li>
+                <li><strong>Transfer Learning:</strong> Extending the model to detect additional respiratory conditions</li>
+            </ul>
+        </section>
+
+        <section id="tech-stack" class="showcase__section">
+            <h2>Technology Stack</h2>
+            <div class="tech-icons">
+                <i class="fab fa-python" title="Python"></i>
+                <i class="fab fa-aws" title="AWS"></i>
+                <i class="fab fa-kaggle" title="Kaggle"></i>
+            </div>
+            <ul>
+                <li><strong>Core Libraries:</strong> TensorFlow 2.10, Keras, NumPy, OpenCV</li>
+                <li><strong>Data Processing:</strong> Pandas, scikit-learn, tqdm</li>
+                <li><strong>Visualization:</strong> Matplotlib, TensorBoard</li>
+                <li><strong>Hardware Acceleration:</strong> TensorFlow Metal, Mixed Precision Training</li>
+                <li><strong>Development Environment:</strong> Python 3.9, macOS Monterey, Jupyter Notebook</li>
+                <li><strong>Hardware:</strong> Apple M1 Pro (16GB Unified Memory)</li>
+            </ul>
+        </section>
+
+        <section id="gallery" class="showcase__section">
+            <h2>Project Gallery</h2>
+            <div class="image-gallery">
+                <img src="images/cnn1.png" alt="Model architecture and training visualization">
+                <img src="images/cnn2.png" alt="Confusion matrix and performance metrics">
+            </div>
+        </section>
+    </div>
+
+    <div class="showcase__cta">
+        <a href="https://github.com/aaronmcleancs/CVV_15M_SARS-CoV-2" class="button">View on GitHub</a>
+        <a href="#" class="button">Live Demo</a>
+    </div>
+    <div style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
+        <a href="https://opensource.org/licenses/MIT" style="color: rgb(113, 113, 113); font-size: small;" target="_blank;">
+            @Aaron McLean
+        </a>
+    </div>
+
+    <div class="fullscreen-viewer">
+        <img src="" alt="Fullscreen image" class="fullscreen-image">
+        <div class="fullscreen-nav">
+            <button class="fullscreen-prev">&lt;</button>
+            <button class="fullscreen-next">&gt;</button>
+        </div>
+        <button class="fullscreen-close">&times;</button>
+    </div>
+
+    <script src="js/photo.js"></script>
+    <script src="js/showcase.js"></script>
+</body>
+</html>

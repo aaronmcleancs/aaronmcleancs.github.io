@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Showcase - ParticleBox</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/showcase.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <script src="https://kit.fontawesome.com/ca7f2ffa51.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">
+            <div class="icon"><img src="images/blurIcon.png" height="27px" width="27px" alt="Logo"></div>
+        </div>
+        <a href="index.html">Home</a>
+        <a href="#overview">Overview</a>
+        <a href="#background">Background</a>
+        <a href="#implementation">Implementation</a>
+        <a href="#performance">Performance</a>
+        <a href="#gallery">Gallery</a>
+    </div>
+
+    <div class="showcase__hero">
+        <div class="showcase__wrapper">
+            <h1 class="animate__animated animate__fadeIn">ParticleBox</h1>
+            <p class="animate__animated animate__fadeIn animate__delay-1s">A highly optimized, real-time particle simulation engine.</p>
+        </div>
+    </div>
+
+    <div class="showcase__content">
+        <section id="overview" class="showcase__section">
+            <h2>Overview</h2>
+            <p>ParticleBox is a C++-based, SDL2-accelerated particle simulator designed for real-time physics visualization. It simulates large swarms of particles interacting via forces such as gravity, repulsion, and boundary collisions, providing an interactive and visually engaging experience.</p>
+            
+            <p>To handle high particle counts efficiently, ParticleBox combines:</p>
+            <ul>
+                <li><strong>Spatial Partitioning:</strong> Grid-based spatial hashing to reduce collision checks from \( \mathcal{O}(n^2) \) to approximately \( \mathcal{O}(n) \).</li>
+                <li><strong>Multithreading:</strong> Parallel computation of particle updates, fully utilizing multi-core processors.</li>
+                <li><strong>Efficient Data Structures:</strong> Memory pre-allocation and careful data layout to improve cache locality and reduce overhead.</li>
+            </ul>
+            
+            <h3>Key Techniques</h3>
+            <ul>
+                <li><strong>Multi-Core Parallelism:</strong> Leveraging <code>std::async</code> and multiple threads to update particle subsets in parallel.</li>
+                <li><strong>Spatial Hashing & Grid Partitioning:</strong> Assigning particles to grid cells, ensuring only local neighbors are considered for collisions.</li>
+                <li><strong>Reduced Pairwise Comparisons:</strong> Disabling certain checks or limiting neighbor ranges to cut down computational overhead.</li>
+                <li><strong>Efficient Collision Response:</strong> Direct vector arithmetic and precomputed normals for quick, stable resolution of overlaps.</li>
+                <li><strong>Dynamic Toggle Features:</strong> Runtime-configurable options for gravity, grid partitioning, and multithreading for optimal performance.</li>
+            </ul>
+        </section>
+    
+        <section id="background" class="showcase__section">
+            <h2>Background</h2>
+            
+            <h3>Mathematical Foundation</h3>
+            <p>ParticleBox implements a physically-based simulation system grounded in classical mechanics. The core mathematical concepts include:</p>
+            
+            <h4>Collision Detection Mathematics</h4>
+            <p>For colliding particles, the distance \(d\) between particles is computed as:</p>
+            <p>
+                \[
+                d = \sqrt{(p2.x - p1.x)^2 + (p2.y - p1.y)^2}
+                \]
+            </p>
+            <p>A collision occurs when \(d < (r1 + r2)\), where \(r1\) and \(r2\) are the radii of the particles.</p>
+            
+            <h4>Force Calculation</h4>
+            <p>The repulsion force magnitude \(F_r\) between overlapping particles is given by:</p>
+            <p>
+                \[
+                F_r = k_{rep} \cdot \delta
+                \]
+            </p>
+            <p>Where \(\delta\) is the overlap distance \((r1 + r2) - d\), and \(k_{rep}\) is the repulsion strength constant.</p>
+            
+            <h4>Integration Method</h4>
+            <p>The simulation uses semi-implicit Euler integration, updating velocity first, then position:</p>
+            <p>
+                \[
+                \mathbf{v}_{t+\Delta t} = \mathbf{v}_t + \mathbf{a}_t \cdot \Delta t
+                \]
+                \[
+                \mathbf{p}_{t+\Delta t} = \mathbf{p}_t + \mathbf{v}_{t+\Delta t} \cdot \Delta t
+                \]
+            </p>
+            <p>This method provides better stability than explicit Euler integration while remaining computationally efficient, making it ideal for real-time applications where physical accuracy must be balanced with performance.</p>
+            
+            <h3>Theoretical Context</h3>
+            <p>The simulation extends fundamental principles in computational physics:</p>
+            <ul>
+                <li><strong>Particle-Based Physics:</strong> Models complex systems as collections of simple elements with localized interactions.</li>
+                <li><strong>Multi-Body Problem:</strong> Addresses the classical challenge of efficiently computing interactions between large numbers of objects.</li>
+                <li><strong>Locality Principle:</strong> Leverages the fact that physical interactions often have limited ranges, allowing for spatial optimization.</li>
+            </ul>
+        </section>
+        
+        <section id="implementation" class="showcase__section">
+            <h2>Implementation</h2>
+            
+            <h3>Particle System Architecture</h3>
+            <p>At the core of the simulation are individual particles with properties determining their behavior in the system:</p>
+            <ul>
+                <li><strong>Position and Velocity:</strong> 2D vectors representing the particle's current location and movement.</li>
+                <li><strong>Mass and Inverse Mass:</strong> Pre-calculated for efficient force calculations.</li>
+                <li><strong>Radius:</strong> Defines the particle's size and collision boundary.</li>
+                <li><strong>Visual Properties:</strong> Color and rendering parameters for visualization.</li>
+            </ul>
+            
+            <p>The particle update cycle implements basic Newtonian physics where acceleration is derived from force and mass, then applied to velocity and position using semi-implicit Euler integration:</p>
+            
+            <p>This simplified code snippet demonstrates the core update logic:</p>
+            <pre><code>// Simplified particle update:
+acceleration = force * invMass;
+velocity += acceleration * deltaTime; 
+position += velocity * deltaTime;</code></pre>
+            
+            <h3>Velocity-Based Rendering</h3>
+            <p>Particles use velocity-based coloring to provide visual feedback about the system's dynamics. The color interpolates from blue (slow) to orange (fast) based on the particle's speed, providing immediate insight into the energy distribution within the system.</p>
+            
+            <h3>Grid-Based Collision Detection</h3>
+            <p>The physics engine uses spatial partitioning to efficiently find potential collisions. This approach divides the simulation space into a grid of cells, assigning each particle to a cell based on its position. During collision detection, only particles in adjacent cells need to be considered, dramatically reducing the number of comparisons from O(n²) to approximately O(n).</p>
+            
+            <h3>Collision Response</h3>
+            <p>When collisions are detected, the engine calculates appropriate repulsion forces based on the overlap distance and direction. This simplified impulse-based model provides convincing physical behavior while remaining computationally efficient.</p>
+            
+            <h3>Boundary Handling</h3>
+            <p>The simulation ensures particles remain within the visible area using elastic boundary collisions with a slight energy loss. This prevents particles from escaping while adding realistic damping effects.</p>
+            
+            <h3>Dynamic Particle Generation</h3>
+            <p>The simulation allows for generating new particles at runtime, enabling interactive manipulation such as adding particles at the cursor location. Thread-safe random number generation ensures consistent behavior in multithreaded environments.</p>
+        </section>
+        
+        <section id="performance" class="showcase__section">
+            <h2>Performance Optimization</h2>
+            
+            <h3>Multithreading Implementation</h3>
+            <p>ParticleBox divides the workload across multiple threads, each handling a subset of particles. The implementation:</p>
+            <ul>
+                <li>Automatically detects available CPU cores using <code>std::thread::hardware_concurrency()</code></li>
+                <li>Divides particles into balanced chunks of work</li>
+                <li>Uses <code>std::async</code> to distribute computation across cores</li>
+                <li>Synchronizes results using futures</li>
+            </ul>
+            <p>This approach nearly linearly scales the simulation speed with the number of available CPU cores.</p>
+            
+            <h3>Memory Management & Data Locality</h3>
+            <p>Several techniques are employed to optimize memory usage:</p>
+            <ul>
+                <li><strong>Pre-allocation:</strong> Reserving vector capacity reduces reallocation costs during runtime.</li>
+                <li><strong>Thread-Local Random Number Generation:</strong> Prevents contention between threads generating random particles.</li>
+                <li><strong>Precalculated Inverse Mass:</strong> Storing inverse mass eliminates division operations in the inner loops.</li>
+                <li><strong>Contiguous Memory:</strong> Using std::vector for particle storage improves cache utilization.</li>
+            </ul>
+            
+            <h3>Configurable Optimizations</h3>
+            <p>The simulation provides runtime-toggleable optimizations:</p>
+            <ul>
+                <li><strong>Multithreading:</strong> Can be disabled for debugging or on single-core systems.</li>
+                <li><strong>Grid Partitioning:</strong> Can be toggled to measure performance impact.</li>
+                <li><strong>Reduced Pairwise Comparisons:</strong> Options to limit collision checks for performance.</li>
+            </ul>
+            <p>These toggles allow for performance tuning based on the specific hardware capabilities and simulation requirements.</p>
+            
+            <h3>Performance Monitoring</h3>
+            <p>The simulation tracks its own performance to help identify bottlenecks, calculating real-time frame rates and providing visual feedback. This monitoring helps evaluate the effectiveness of different optimization strategies.</p>
+            
+            <h3>Frame Rate Control</h3>
+            <p>To ensure consistent simulation behavior across different hardware, ParticleBox implements frame rate limiting. This approach prevents the simulation from running too fast on high-performance systems while maintaining smooth animation.</p>
+        </section>
+    
+        <section id="gallery" class="showcase__section">
+            <h2>Gallery</h2>
+            <div class="image-gallery">
+                <img src="images/p1.gif" alt="Particle simulation animation showing dynamic movement and collisions">
+                <img src="images/p2.png" alt="Particle simulation screenshot displaying spatial distribution patterns">
+            </div>
+        </section>
+    </div>
+
+    <div class="showcase__cta">
+        <a href="https://github.com/aaronmcleancs/ParticleBox" class="button">View on GitHub</a>
+        <a href="#" class="button">Live Demo</a>
+    </div>
+    <div style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
+        <a href="https://opensource.org/licenses/MIT" style="color: rgb(113, 113, 113); font-size: small;" target="_blank;">
+            © Aaron McLean
+        </a>
+    </div>
+    <div class="fullscreen-viewer">
+        <img src="" alt="Fullscreen image" class="fullscreen-image">
+        <div class="fullscreen-nav">
+            <button class="fullscreen-prev">&lt;</button>
+            <button class="fullscreen-next">&gt;</button>
+        </div>
+        <button class="fullscreen-close">&times;</button>
+    </div>
+
+    <script src="js/photo.js"></script>
+</body>
+</html>

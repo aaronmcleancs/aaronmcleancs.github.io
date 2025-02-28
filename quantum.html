@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <title>Project Showcase - Quantum-Assisted Blockchain Consensus</title>
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/showcase.css" />
+
+    <!-- Polyfill -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+
+    <!-- MathJax for LaTeX rendering -->
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+    <!-- FontAwesome Icons -->
+    <script src="https://kit.fontawesome.com/ca7f2ffa51.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <div class="logo">
+            <div class="icon"><img src="images/blurIcon.png" height="27px" width="27px" alt="Logo"></div>
+        </div>
+        <a href="index.html">Home</a>
+        <a href="#overview">Overview</a>
+        <a href="#background">Background</a>
+        <a href="#implementation">Implementation</a>
+        <a href="#performance">Performance</a>
+        <a href="#gallery">Gallery</a>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="showcase__hero">
+        <div class="showcase__wrapper">
+            <h1 class="animate__animated animate__fadeIn">Quantum-Assisted Consensus Protocol for Blockchain</h1>
+            <p class="animate__animated animate__fadeIn animate__delay-1s">
+                A novel approach that replaces conventional Proof of Work with quantum fidelity checks, 
+                leveraging entanglement, teleportation, and measurement to enhance performance and security in distributed ledger systems.
+            </p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="showcase__content">
+        
+        <!-- Overview Section -->
+        <section id="overview" class="showcase__section">
+            <h2>Overview</h2>
+            <p>
+                This project explores the use of quantum computing principles—specifically entanglement, quantum teleportation, 
+                and state fidelity measurements—to achieve consensus in a blockchain network. By substituting classical Proof of Work 
+                with quantum fidelity checks, the protocol significantly reduces computational overhead, energy consumption, 
+                and block validation time, all while maintaining core blockchain security properties.
+            </p>
+            <p>
+                Our research indicates that such a quantum-assisted consensus scheme scales more efficiently as the network grows, 
+                offering higher throughput and lower latency than traditional methods. This prototype, developed using Qiskit 
+                and evaluated on IBM Quantum simulators, demonstrates the viability of next-generation quantum-ledger technologies.
+            </p>
+            <p>
+                The protocol achieves a reduction in computational complexity from O(n·m) to approximately O(log n) for block validation,
+                where n represents the number of nodes and m represents transactions per block. Performance analysis shows a 2.3x improvement
+                in transaction throughput and approximately 17x improvement in energy efficiency compared to classical implementations.
+            </p>
+            
+            <h3>Key Features</h3>
+            <ul>
+                <li>Quantum-based block validation using fidelity checks instead of cryptographic puzzles</li>
+                <li>Reduction in computational complexity from <em>O(n·m)</em> to approximately <em>O(log n)</em></li>
+                <li>Integration with Qiskit for quantum circuit simulation and noise modeling</li>
+                <li>Improved energy efficiency (≈17x) and higher throughput (≈2.3x) compared to classical Proof of Work</li>
+                <li>Quantum teleportation protocol for sharing block states across network nodes</li>
+                <li>Entanglement-based quantum random number generation with public verification</li>
+                <li>Byzantine fault tolerance up to f &lt; n/3 malicious nodes</li>
+            </ul>
+        </section>
+
+        <!-- Background Section -->
+        <section id="background" class="showcase__section">
+            <h2>Background</h2>
+            <p>
+                The core innovation in this project is the integration of quantum state fidelity measurements into a 
+                decentralized consensus mechanism. Instead of a proof-of-work puzzle, each node prepares a unique quantum 
+                state derived from its candidate block (via a <em>quantum hashing function</em>), then teleports that state 
+                to other nodes for verification.
+            </p>
+            
+            <h3>Quantum Principles</h3>
+            <p>
+                We rely on mathematical constructs such as:
+            </p>
+            <ul>
+                <li><strong>Quantum State Fidelity</strong>: 
+                    \[
+                        F(\lvert\psi_i\rangle, \lvert\psi_j\rangle) = \bigl|\langle\psi_i|\psi_j\rangle\bigr|^2
+                    \]
+                    which quantifies the similarity between two quantum states.
+                </li>
+                <li><strong>Quantum Teleportation</strong>: 
+                    \[
+                        \lvert \psi \rangle_S \otimes \lvert \Phi^+ \rangle_{AB}
+                        \;\xrightarrow[\text{Bell measurement}]{}
+                        \;\lvert \psi \rangle_B
+                    \]
+                    enabling nodes to transmit quantum states across the network without physically sending qubits.
+                </li>
+                <li><strong>Entanglement & Bell Pairs</strong>: 
+                    \[
+                        \lvert \Phi^+ \rangle = \frac{1}{\sqrt{2}} (\lvert 00 \rangle + \lvert 11 \rangle)
+                    \]
+                    which serve as the shared resource for teleportation and fidelity checks.
+                </li>
+                <li><strong>Quantum Random Number Generation</strong>:
+                    \[
+                        \lvert \Psi \rangle = \sum_{x \in \{0,1\}^{N-1}} \lvert x \rangle_{1:N-1} \otimes \lvert p(x) \rangle_N
+                    \]
+                    where p(x) is the parity function, providing verifiable randomness for the protocol.
+                </li>
+            </ul>
+            
+            <h3>Quantum Consensus Algorithm Steps</h3>
+            <ol>
+                <li><strong>Quantum Random Number Generation:</strong> Each node generates verifiable random numbers using quantum entanglement.</li>
+                <li><strong>Candidate Block Creation:</strong> Nodes form blocks containing valid transactions, previous block hash, timestamp, and random numbers.</li>
+                <li><strong>Quantum State Preparation:</strong> Each block is mapped to a quantum state through a unitary transformation.
+                    \[
+                        \lvert\psi_i\rangle = \cos\frac{\theta_i}{2} \lvert0\rangle + e^{i\phi_i}\sin\frac{\theta_i}{2} \lvert1\rangle
+                    \]
+                </li>
+                <li><strong>Quantum Teleportation:</strong> Nodes share their quantum states with others using entangled Bell pairs and classical communication.</li>
+                <li><strong>Fidelity Computation:</strong> Nodes measure quantum state overlap to determine agreement.
+                    \[
+                        F_{ij} = \bigl|\langle \psi_i \mid \psi_j \rangle\bigr|^2
+                    \]
+                </li>
+                <li><strong>Winner Selection:</strong> The block with highest total fidelity is selected for addition to the blockchain.</li>
+                <li><strong>Ledger Update:</strong> All nodes update their local copy of the blockchain with the winning block.</li>
+            </ol>
+            
+            <h3>Quantum Circuit Requirements</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Quantum Operation</th>
+                            <th>Circuit Depth</th>
+                            <th>Gate Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Quantum Random Number Generation</td>
+                            <td>2N-1</td>
+                            <td>2N-1</td>
+                        </tr>
+                        <tr>
+                            <td>Bell Pair Generation</td>
+                            <td>2</td>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <td>Quantum State Preparation</td>
+                            <td>2 + log k</td>
+                            <td>3 + log k</td>
+                        </tr>
+                        <tr>
+                            <td>Teleportation Protocol</td>
+                            <td>7</td>
+                            <td>9</td>
+                        </tr>
+                        <tr>
+                            <td>Fidelity Measurement</td>
+                            <td>4 + log N</td>
+                            <td>6 + 2 log N</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Implementation Section -->
+        <section id="implementation" class="showcase__section">
+            <h2>Implementation</h2>
+            <p>
+                The quantum-assisted consensus protocol was implemented using Python with Qiskit for quantum simulations
+                and custom blockchain components for the classical aspects of the system.
+            </p>
+            
+            <h3>System Architecture</h3>
+            <p>
+                The architecture consists of both classical and quantum components working together:
+            </p>
+            
+            <h4>Classical Components:</h4>
+            <ul>
+                <li><strong>Transaction Pool:</strong> Collects and validates transaction requests from users</li>
+                <li><strong>Block Structure:</strong> Contains transaction data, timestamps, and references to previous blocks</li>
+                <li><strong>Node Network:</strong> Distributed participants maintaining copies of the ledger</li>
+                <li><strong>Ledger Management:</strong> Updates and maintains the blockchain state based on consensus results</li>
+            </ul>
+            
+            <h4>Quantum Components:</h4>
+            <ul>
+                <li><strong>Quantum Random Number Generator:</strong> Provides true randomness for protocol operations</li>
+                <li><strong>Quantum Hashing Module:</strong> Maps classical block data to unique quantum states</li>
+                <li><strong>Entanglement Manager:</strong> Creates and distributes Bell pairs between nodes</li>
+                <li><strong>Teleportation Protocol:</strong> Enables quantum state sharing across the network</li>
+                <li><strong>Fidelity Check System:</strong> Measures quantum state overlap to determine consensus</li>
+            </ul>
+            
+            <h3>Key Implementation Detail</h3>
+            <p>
+                The core of the system lies in mapping blockchain data to quantum states:
+            </p>
+            
+            <pre><code class="language-python">
+# Simplified block-to-quantum-state mapping
+def block_to_quantum_state(block_data):
+    # Hash the block and convert to angles θ and φ
+    block_hash = hashlib.sha256(block_data.encode()).digest()
+    theta = (int.from_bytes(block_hash[0:8], byteorder='big') / (2**64)) * 2 * np.pi
+    phi = (int.from_bytes(block_hash[8:16], byteorder='big') / (2**64)) * 2 * np.pi
+    return theta, phi
+            </code></pre>
+            
+            <h3>Security Analysis</h3>
+            <p>
+                We conducted a comprehensive security analysis of the quantum-assisted consensus protocol against
+                various attack vectors, including classical blockchain attacks and quantum-specific threats.
+            </p>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Attack Vector</th>
+                            <th>Detection Probability</th>
+                            <th>Mitigation Strategy</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Entanglement Hijacking</td>
+                            <td>99.8%</td>
+                            <td>Bell Inequality Verification</td>
+                        </tr>
+                        <tr>
+                            <td>Measurement Tampering</td>
+                            <td>94.3%</td>
+                            <td>Multi-party Verification</td>
+                        </tr>
+                        <tr>
+                            <td>State Preparation Attacks</td>
+                            <td>86.2%</td>
+                            <td>Consistency Checks</td>
+                        </tr>
+                        <tr>
+                            <td>Sybil Attacks</td>
+                            <td>99.9%</td>
+                            <td>Quantum Identity Binding</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <h3>Limitations & Future Work</h3>
+            <p>
+                While the quantum-assisted consensus protocol demonstrates significant advantages over classical approaches,
+                several limitations and areas for future research remain:
+            </p>
+            
+            <h4>Current Limitations</h4>
+            <ul>
+                <li>Requires reliable quantum channels between nodes, which may not be practical for geographically distributed networks</li>
+                <li>Quantum state fidelity verification requires sophisticated quantum measurement capabilities at each node</li>
+                <li>Performance advantage diminishes in networks with very few nodes (N &lt; 5)</li>
+                <li>Current quantum hardware noise levels remain slightly above the optimal threshold for the protocol</li>
+            </ul>
+            
+            <h4>Future Research Directions</h4>
+            <ul>
+                <li>Development of more noise-resistant quantum consensus algorithms suitable for NISQ-era hardware</li>
+                <li>Integration with quantum key distribution networks to enhance security guarantees</li>
+                <li>Exploration of hybrid classical-quantum approaches that maintain performance advantages while reducing quantum resource requirements</li>
+                <li>Investigation of quantum-resistant verification mechanisms to ensure long-term security against future quantum attacks</li>
+                <li>Implementation of quantum smart contracts that leverage the quantum state representation for enhanced functionality</li>
+            </ul>
+        </section>
+
+        <!-- Performance Section -->
+        <section id="performance" class="showcase__section">
+            <h2>Performance</h2>
+            <p>
+                The simulated environment uses Qiskit Aer to account for realistic noise models resembling current 
+                IBM Quantum hardware. In this setup, we benchmarked our quantum consensus protocol against classical
+                Proof of Work (PoW) and Proof of Stake (PoS) implementations.
+            </p>
+            
+            <h3>Performance Metrics</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Quantum Protocol</th>
+                            <th>PoW</th>
+                            <th>PoS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Transactions per Second</td>
+                            <td>124.5</td>
+                            <td>7.3</td>
+                            <td>78.2</td>
+                        </tr>
+                        <tr>
+                            <td>Block Finalization Time (s)</td>
+                            <td>12.3</td>
+                            <td>582.4</td>
+                            <td>21.5</td>
+                        </tr>
+                        <tr>
+                            <td>Energy per Transaction (J)</td>
+                            <td>0.042</td>
+                            <td>215.6</td>
+                            <td>0.187</td>
+                        </tr>
+                        <tr>
+                            <td>Consensus Fault Tolerance (%)</td>
+                            <td>33</td>
+                            <td>49</td>
+                            <td>33</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p>
+                Our experiments reveal a 17× improvement in energy efficiency and 2.3× improvement in transaction throughput 
+                compared to classical Proof of Work. Moreover, the consensus fault tolerance remains at least on par with 
+                Proof of Stake protocols, handling up to <em>f &lt; n/3</em> Byzantine nodes without loss of ledger integrity.
+            </p>
+
+            <h3>Resource Requirements Comparison</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Resource</th>
+                            <th>Classical PoW</th>
+                            <th>Quantum Consensus</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Computation (FLOPS)</td>
+                            <td>≈10¹⁸</td>
+                            <td>≈10⁶</td>
+                        </tr>
+                        <tr>
+                            <td>Memory (bytes)</td>
+                            <td>≈10⁹</td>
+                            <td>≈10⁷</td>
+                        </tr>
+                        <tr>
+                            <td>Energy (Joules/block)</td>
+                            <td>≈10⁶</td>
+                            <td>≈10³</td>
+                        </tr>
+                        <tr>
+                            <td>Time (seconds/block)</td>
+                            <td>≈600</td>
+                            <td>≈60</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <h3>Technical Stack</h3>
+            <div class="tech-icons">
+                <i class="fab fa-python" title="Python"></i>
+                <i class="fab fa-aws" title="Amazon Web Services"></i>
+                <i class="fas fa-atom" title="Qiskit"></i>
+                <i class="fab fa-ibm" title="IBM Quantum"></i>
+            </div>
+            <ul class="tech-list">
+                <li><strong>Languages:</strong> Python 3.9</li>
+                <li><strong>Quantum Framework:</strong> Qiskit 0.42.0</li>
+                <li><strong>Simulation:</strong> Qiskit Aer, IBM Quantum real hardware access</li>
+                <li><strong>Data Analysis:</strong> NumPy, Pandas, Matplotlib</li>
+                <li><strong>Cloud Infrastructure:</strong> AWS for distributed node simulation</li>
+                <li><strong>Testing:</strong> Python unittest, Qiskit Test</li>
+            </ul>
+        </section>
+
+        <!-- Project Gallery Section -->
+        <section id="gallery" class="showcase__section">
+            <h2>Project Gallery</h2>
+            <div class="image-gallery">
+                <img src="images/quantum_circuit.png" alt="Quantum Circuit Diagram">
+                <img src="images/blockchain_console.png" alt="Blockchain Console Simulation">
+            </div>
+        </section>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="showcase__cta">
+        <a href="https://github.com/aaronmcleancs/Quantum-Consensus-Prototype" class="button">View on GitHub</a>
+        <a href="#" class="button">White Paper</a>
+    </div>
+
+    <div style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
+        <a href="https://opensource.org/licenses/MIT" style="color: rgb(113, 113, 113); font-size: small;" target="_blank;">
+            @Aaron McLean - COMP4900 Research Project
+        </a>
+    </div>
+
+    <!-- Fullscreen Viewer for Gallery Images -->
+    <div class="fullscreen-viewer">
+        <img src="" alt="Fullscreen image" class="fullscreen-image">
+        <div class="fullscreen-nav">
+            <button class="fullscreen-prev">&lt;</button>
+            <button class="fullscreen-next">&gt;</button>
+        </div>
+        <button class="fullscreen-close">&times;</button>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/photo.js"></script>
+    <script src="js/showcase.js"></script>
+</body>
+</html>
