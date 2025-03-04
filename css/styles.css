@@ -61,7 +61,7 @@ body {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  height: 53px;
+  height: 47px;
   backdrop-filter: blur(9px);
   z-index: 9999999;
   transition: height var(--transition-medium), background-color var(--transition-medium);
