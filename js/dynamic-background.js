@@ -114,6 +114,9 @@ document.addEventListener('DOMContentLoaded', function() {
   const waveFrequency = 0.05;
   const waveOffset = 5;
   
+  const scrollTranslationFactor = -0.5;
+  let currentScrollOffset = 0;
+  let targetScrollOffset = 0;
   
   const transitionSpeed = 0.05; 
   
@@ -121,7 +124,6 @@ document.addEventListener('DOMContentLoaded', function() {
   let mouseX = 0;
   let mouseY = 0;
   let mouseActive = false;
-  
   
   let targetMouseX = 0;
   let targetMouseY = 0;
@@ -135,17 +137,13 @@ document.addEventListener('DOMContentLoaded', function() {
     targetMouseY = e.clientY - rect.top;
     mouseActive = true;
     
-    
     clearTimeout(mouseTimeout);
     mouseInfluenceTarget = 1;
     
     mouseTimeout = setTimeout(() => {
-      
-      
       mouseInfluenceTarget = 0;
     }, 1000); 
   });
-  
   
   heroSection.addEventListener('mouseleave', function() {
     mouseInfluenceTarget = 0;
@@ -154,30 +152,49 @@ document.addEventListener('DOMContentLoaded', function() {
   let mouseTimeout;
   let mouseInfluenceTarget = 0;
   
+  // Track scroll for translation effect
+  function updateScrollOffset() {
+    targetScrollOffset = window.scrollY * scrollTranslationFactor;
+  }
+  
+  window.addEventListener('scroll', updateScrollOffset, { passive: true });
+  updateScrollOffset(); // Initialize
+  
   function drawGrid() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
+    // Smooth scroll translation
+    currentScrollOffset += (targetScrollOffset - currentScrollOffset) * transitionSpeed;
     
+    // Mouse tracking
     currentMouseX += (targetMouseX - currentMouseX) * transitionSpeed;
     currentMouseY += (targetMouseY - currentMouseY) * transitionSpeed;
     mouseInfluence += (mouseInfluenceTarget - mouseInfluence) * transitionSpeed;
     
+    // Calculate grid bounds with extra margin for smooth transitions
+    const margin = spacing * 2;
+    const startY = Math.floor((currentScrollOffset - margin) / spacing) * spacing;
+    const endY = currentScrollOffset + canvas.height + margin;
+    
     const cols = Math.ceil(canvas.width / spacing) + 1;
-    const rows = Math.ceil(canvas.height / spacing) + 1;
+    const rowStart = Math.floor(startY / spacing);
+    const rowEnd = Math.ceil(endY / spacing);
     
     for (let i = 0; i < cols; i++) {
-      for (let j = 0; j < rows; j++) {
+      for (let j = rowStart; j <= rowEnd; j++) {
         const x = i * spacing;
-        const y = j * spacing;
+        const y = j * spacing - currentScrollOffset; // Apply scroll translation
         
+        // Skip dots that are way outside the visible area
+        if (y < -margin || y > canvas.height + margin) continue;
         
+        // Wave animation
         let offsetX = Math.sin(time + j * waveFrequency) * waveAmplitude;
         let offsetY = Math.cos(time + i * waveFrequency) * waveAmplitude;
         
-        
         let dotRadius = baseDotRadius;
         
-        
+        // Mouse interaction
         if (mouseInfluence > 0.01) { 
           const distX = x - currentMouseX;
           const distY = y - currentMouseY;
@@ -185,15 +202,11 @@ document.addEventListener('DOMContentLoaded', function() {
           const maxDist = 1000;
           
           if (dist < maxDist) {
-            
             const factor = 1 - dist / maxDist;
             const influence = factor * 15 * mouseInfluence;
             
-            
             offsetX += (distX / dist) * influence;
             offsetY += (distY / dist) * influence;
-            
-            
             
             const sizeFactor = factor * factor * mouseInfluence;
             dotRadius = baseDotRadius + (maxDotRadius - baseDotRadius) * sizeFactor;
@@ -203,6 +216,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const dotX = x + offsetX;
         const dotY = y + offsetY;
         
+        // Only draw dots within the visible area (with some margin)
         if (dotX >= -spacing && dotX <= canvas.width + spacing &&
             dotY >= -spacing && dotY <= canvas.height + spacing) {
           
