@@ -139,6 +139,14 @@ document.addEventListener('DOMContentLoaded', function () {
   let currentMouseY = 0;
   let mouseInfluence = 0;
 
+  // Pulsing brightness system
+  const pulses = [];
+  const maxPulses = 3;
+  const pulseSpawnInterval = 2000; // ms
+  const pulseSpeed = 80; // pixels per second
+  const pulseMaxRadius = 300;
+  const pulseBrightness = 0.6;
+
   heroSection.addEventListener('mousemove', function (e) {
     const rect = heroSection.getBoundingClientRect();
     targetMouseX = e.clientX - rect.left;
@@ -168,6 +176,26 @@ document.addEventListener('DOMContentLoaded', function () {
   window.addEventListener('scroll', updateScrollOffset, { passive: true });
   updateScrollOffset(); // Initialize
 
+  // Spawn pulses at random dots
+  function spawnPulse() {
+    if (pulses.length >= maxPulses) return;
+
+    const cols = Math.ceil(canvas.width / spacing) + 1;
+    const rows = Math.ceil(canvas.height / spacing) + 1;
+
+    const randomCol = Math.floor(Math.random() * cols);
+    const randomRow = Math.floor(Math.random() * rows);
+
+    pulses.push({
+      x: randomCol * spacing,
+      y: randomRow * spacing,
+      radius: 0,
+      startTime: Date.now()
+    });
+  }
+
+  setInterval(spawnPulse, pulseSpawnInterval);
+
   function drawGrid() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -178,6 +206,18 @@ document.addEventListener('DOMContentLoaded', function () {
     currentMouseX += (targetMouseX - currentMouseX) * transitionSpeed;
     currentMouseY += (targetMouseY - currentMouseY) * transitionSpeed;
     mouseInfluence += (mouseInfluenceTarget - mouseInfluence) * transitionSpeed;
+
+    // Update pulses
+    const now = Date.now();
+    for (let p = pulses.length - 1; p >= 0; p--) {
+      const pulse = pulses[p];
+      const elapsed = (now - pulse.startTime) / 1000;
+      pulse.radius = elapsed * pulseSpeed;
+
+      if (pulse.radius > pulseMaxRadius) {
+        pulses.splice(p, 1);
+      }
+    }
 
     // Calculate grid bounds with extra margin for smooth transitions
     const margin = spacing * 2;
@@ -196,11 +236,28 @@ document.addEventListener('DOMContentLoaded', function () {
         // Skip dots that are way outside the visible area
         if (y < -margin || y > canvas.height + margin) continue;
 
-        // Wave animation
-        let offsetX = Math.sin(time + j * waveFrequency) * waveAmplitude;
-        let offsetY = Math.cos(time + i * waveFrequency) * waveAmplitude;
+        // Improved wave animation with multi-layered sine/cosine
+        let offsetX = Math.sin(time + j * waveFrequency) * waveAmplitude +
+          Math.sin(time * 0.7 + i * waveFrequency * 0.5) * (waveAmplitude * 0.3);
+        let offsetY = Math.cos(time + i * waveFrequency) * waveAmplitude +
+          Math.cos(time * 0.5 + j * waveFrequency * 0.7) * (waveAmplitude * 0.3);
 
         let dotRadius = baseDotRadius;
+        let brightnessBoost = 0;
+
+        // Calculate pulsing brightness from all active pulses
+        for (const pulse of pulses) {
+          const distX = x - pulse.x;
+          const distY = y - pulse.y;
+          const dist = Math.sqrt(distX * distX + distY * distY);
+
+          if (Math.abs(dist - pulse.radius) < 80) {
+            const waveFalloff = 1 - Math.abs(dist - pulse.radius) / 80;
+            const pulseAge = pulse.radius / pulseMaxRadius;
+            const pulseFade = 1 - pulseAge;
+            brightnessBoost = Math.max(brightnessBoost, waveFalloff * pulseFade * pulseBrightness);
+          }
+        }
 
         // Mouse interaction
         if (mouseInfluence > 0.01) {
@@ -229,7 +286,9 @@ document.addEventListener('DOMContentLoaded', function () {
           dotY >= -spacing && dotY <= canvas.height + spacing) {
 
           const waveHeight = Math.sqrt(offsetX * offsetX + offsetY * offsetY);
-          const opacity = 0.5 + (waveHeight / (waveAmplitude * 2)) * 0.5;
+          let opacity = 0.5 + (waveHeight / (waveAmplitude * 2)) * 0.5;
+          opacity += brightnessBoost;
+          opacity = Math.min(opacity, 1.0);
 
           ctx.beginPath();
           ctx.arc(dotX, dotY, dotRadius, 0, Math.PI * 2);

@@ -1,10 +1,10 @@
 const actions = [
-  { word: "Architecting", icon: "fas fa-network-wired" },
-  { word: "Optimizing", icon: "fas fa-brain" },
   { word: "Engineering", icon: "fas fa-microchip" },
-  { word: "Accelerating", icon: "fas fa-atom" },
-  { word: "Securing", icon: "fas fa-shield-alt" },
-  { word: "Developing", icon: "fas fa-layer-group" },
+  { word: "Optimizing", icon: "fas fa-bolt" },
+  { word: "Developing", icon: "fas fa-code" },
+  { word: "Testing", icon: "fas fa-vial" },
+  { word: "Architecting", icon: "fas fa-network-wired" },
+  { word: "Training", icon: "fas fa-brain" },
 ];
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -22,12 +22,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
 var typed = new Typed('.auto-type', {
   strings: [
-    "Distributed Systems",
+    "Embedded Control Systems",
     "Neural Networks",
-    "Embedded Controls",
-    "Physics Simulations",
-    "Cloud Infrastructure",
-    "Full-Stack Applications",
+    "Testing Automation",
+    "Distributed Systems",
+    "Vehicle Electrification",
+    "Quantum Algorithms",
   ],
   typeSpeed: 70,
   backSpeed: 45,
