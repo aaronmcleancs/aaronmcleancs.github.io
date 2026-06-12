@@ -25,13 +25,18 @@
   --transition-slow: 0.5s ease;
   --logo-scroll-duration: 60s;
 
+  /* Corner radius scale — 4px-based, monotonic */
+  --radius-xs: 4px;
   --radius-sm: 8px;
   --radius-md: 12px;
-  --radius-lg: 15px;
-  --radius-xl: 25px;
-  --radius-2xl: 20px;
-  --radius-3xl: 40px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --radius-3xl: 32px;
+  --radius-full: 9999px;
 
+  /* Spacing scale */
+  --space-2xs: 0.125rem;
   --space-xs: 0.25rem;
   --space-sm: 0.5rem;
   --space-md: 1rem;
@@ -39,16 +44,24 @@
   --space-xl: 3rem;
   --space-2xl: 4rem;
 
+  /* Type scale — 16px base (12/14/16/18/20/24/30/36/48/60) */
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
   --font-size-md: 1rem;
   --font-size-lg: 1.125rem;
-  --font-size-xl: 1.5rem;
-  --font-size-2xl: 2rem;
-  --font-size-3xl: 2.5rem;
-  --font-size-4xl: 2.5rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
   --font-size-5xl: 3rem;
-  --font-size-6xl: 4.5rem;
+  --font-size-6xl: 3.75rem;
+
+  /* Fluid display sizes — shared hero/heading standards across all pages */
+  --font-size-display: clamp(2.25rem, 1.5rem + 4vw, 4.5rem);
+  --font-size-title: clamp(2rem, 1.4rem + 3vw, 3rem);
+  --font-size-heading: clamp(1.5rem, 1.2rem + 1.6vw, 2.25rem);
+  --font-size-subheading: clamp(1.25rem, 1.1rem + 0.8vw, 1.5rem);
+  --font-size-lead: clamp(1rem, 0.9rem + 0.6vw, 1.25rem);
 }
 
 body {
@@ -106,7 +119,7 @@ html {
   color: var(--text-secondary);
   text-decoration: none;
   font-weight: 500;
-  font-size: 0.95rem;
+  font-size: var(--font-size-sm);
   transition: color 0.2s ease;
   position: relative;
   letter-spacing: -0.01em;
@@ -195,7 +208,7 @@ html {
   top: 50%;
   transform: translateY(-50%);
   color: var(--text-secondary);
-  font-size: 0.9rem;
+  font-size: var(--font-size-sm);
   pointer-events: none;
   z-index: 2;
 }
@@ -211,7 +224,7 @@ html {
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-md);
   color: var(--text-primary);
-  font-size: 0.9rem;
+  font-size: var(--font-size-sm);
   transition: all var(--transition-fast);
 }
 
@@ -235,7 +248,7 @@ html {
   background: none;
   border: none;
   color: var(--text-secondary);
-  font-size: 1.4rem;
+  font-size: var(--font-size-xl);
   cursor: pointer;
   padding: 4px 8px;
   line-height: 1;
@@ -299,13 +312,13 @@ html {
 
 .search-result-title {
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: var(--font-size-sm);
   margin-bottom: 4px;
   color: var(--text-primary);
 }
 
 .search-result-snippet {
-  font-size: 0.85rem;
+  font-size: var(--font-size-sm);
   color: var(--text-secondary);
   line-height: 1.4;
   display: -webkit-box;
@@ -319,7 +332,7 @@ html {
   background: var(--primary);
   color: white;
   padding: 1px 3px;
-  border-radius: 2px;
+  border-radius: var(--radius-xs);
   font-weight: 500;
 }
 
@@ -343,7 +356,7 @@ html {
   padding: var(--space-md);
   text-align: center;
   color: var(--text-secondary);
-  font-size: 0.9rem;
+  font-size: var(--font-size-sm);
 }
 
 @media screen and (max-width: 900px) {
@@ -364,7 +377,7 @@ html {
 .mobile-search-trigger {
   display: none;
   color: var(--text-secondary);
-  font-size: 1.2rem;
+  font-size: var(--font-size-lg);
   cursor: pointer;
   padding: 8px;
   transition: color 0.2s ease;
@@ -381,7 +394,7 @@ html {
   top: 20px;
   right: 20px;
   color: var(--text-secondary);
-  font-size: 1.5rem;
+  font-size: var(--font-size-2xl);
   background: none;
   border: none;
   cursor: pointer;
@@ -420,7 +433,7 @@ html {
     width: 100%;
     max-width: 400px;
     height: 50px;
-    font-size: 1.1rem;
+    font-size: var(--font-size-lg);
     background: rgba(255, 255, 255, 0.05);
     border-color: rgba(255, 255, 255, 0.2);
   }
@@ -431,7 +444,7 @@ html {
     left: calc(50% - 180px);
     /* Approximate centering adjustment */
     transform: none;
-    font-size: 1.1rem;
+    font-size: var(--font-size-lg);
   }
 
   /* Fix search icon position in fullscreen */
@@ -487,7 +500,7 @@ html {
 
 .nav-icon {
   display: none;
-  font-size: 13px;
+  font-size: var(--font-size-sm);
 }
 
 @media screen and (max-width: 768px) {
@@ -584,7 +597,7 @@ html {
 }
 
 .column__left h2 {
-  font-size: var(--font-size-3xl);
+  font-size: var(--font-size-4xl);
   background: var(--text-primary);
   color: var(--bg-primary);
   width: fit-content;
@@ -602,7 +615,7 @@ html {
   }
 
   .column__left h2 {
-    font-size: var(--font-size-2xl);
+    font-size: var(--font-size-3xl);
     display: table;
     margin: 0 auto var(--space-xs);
   }
@@ -616,25 +629,13 @@ html {
 }
 
 .column__left h1 {
-  font-size: 4.5rem;
+  font-size: var(--font-size-display);
   margin-bottom: 0;
   background: linear-gradient(135deg, var(--text-primary), var(--primary));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   line-height: 1.1;
-}
-
-@media screen and (max-width: 1300px) {
-  .column__left h1 {
-    font-size: var(--font-size-6xl);
-  }
-}
-
-@media screen and (max-width: 640px) {
-  .column__left h1 {
-    font-size: var(--font-size-4xl);
-  }
 }
 
 .terminal-container {
@@ -760,7 +761,7 @@ html {
   width: 80px;
   height: 4px;
   background-color: #ffffff;
-  border-radius: 2px;
+  border-radius: var(--radius-full);
   animation: pillBounce 3s infinite ease-in-out;
 }
 
@@ -805,7 +806,7 @@ html {
 
   .column__left p,
   .column__left span {
-    font-size: 12px;
+    font-size: var(--font-size-xs);
   }
 }
 
@@ -896,7 +897,7 @@ html {
 
   .action-word,
   .action-icon {
-    font-size: 12px;
+    font-size: var(--font-size-xs);
   }
 }
 
@@ -990,7 +991,7 @@ html {
 }
 
 .column2__left p {
-  font-size: var(--font-size-2xl);
+  font-size: var(--font-size-3xl);
   margin-top: 0;
   color: var(--text-secondary);
 }
@@ -1092,7 +1093,7 @@ html {
 
 .white-card p:nth-child(2) {
   color: rgba(255, 255, 255, 0.95);
-  font-size: var(--font-size-xl);
+  font-size: var(--font-size-2xl);
   font-weight: 600;
   position: relative;
   width: calc(100% - 28px);
@@ -1124,7 +1125,7 @@ html {
   position: absolute;
   top: 20px;
   right: 20px;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   /* Increased for better cascading with card radius */
   transition: transform 0.3s ease, filter 0.3s ease;
   z-index: 2;
@@ -1260,11 +1261,11 @@ html {
   }
 
   .column2__left h2 {
-    font-size: var(--font-size-xl);
+    font-size: var(--font-size-2xl);
   }
 
   .column2__left h1 {
-    font-size: var(--font-size-3xl);
+    font-size: var(--font-size-4xl);
     padding: var(--space-xs) var(--space-sm);
     margin-top: var(--space-md);
   }
@@ -1330,7 +1331,7 @@ html {
   }
 
   .column2__left h1 {
-    font-size: var(--font-size-2xl);
+    font-size: var(--font-size-3xl);
     padding: var(--space-2xs) var(--space-xs);
   }
 
@@ -1455,7 +1456,7 @@ html {
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   position: absolute;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   color: var(--white);
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
   transition: transform 0.3s ease, height 0.3s ease, box-shadow var(--transition-medium), background var(--transition-medium);
@@ -1495,7 +1496,7 @@ html {
 
 .timeline-content h3 {
   margin-top: 0;
-  font-size: 1.7rem;
+  font-size: var(--font-size-xl);
   color: var(--accentColor);
   margin-bottom: var(--space-sm);
   position: relative;
@@ -1507,7 +1508,7 @@ html {
 }
 
 .timeline-content p {
-  font-size: 1.2rem;
+  font-size: var(--font-size-md);
   color: var(--text-secondary);
   line-height: 1.6;
   opacity: 0;
@@ -1526,7 +1527,7 @@ html {
   height: 40px;
   width: 40px;
   margin-bottom: 10px;
-  border-radius: 5px;
+  border-radius: var(--radius-sm);
   object-fit: cover;
   transition: transform var(--transition-medium);
   transform-origin: center center;
@@ -1588,11 +1589,11 @@ html {
   }
 
   .timeline-content h3 {
-    font-size: 1.2rem;
+    font-size: var(--font-size-lg);
   }
 
   .timeline-content p {
-    font-size: 1rem;
+    font-size: var(--font-size-md);
   }
 
   .timeline-content {
@@ -1603,7 +1604,7 @@ html {
 
 
 .timeline-date {
-  font-size: 0.85rem;
+  font-size: var(--font-size-xs);
   color: #6b7280;
   font-weight: 500;
   margin-top: -5px;
@@ -1622,7 +1623,7 @@ html {
 }
 
 .social-menu ul li .fab {
-  font-size: 32px;
+  font-size: var(--font-size-3xl);
   line-height: 50px;
   transition: 0.3s;
   color: #ffffff;
@@ -1674,7 +1675,7 @@ html {
   }
 
   .social-menu ul li .fab {
-    font-size: 24px;
+    font-size: var(--font-size-2xl);
     line-height: 35px;
   }
 }
@@ -1685,9 +1686,9 @@ html {
   -webkit-backdrop-filter: blur(10px);
   padding: 7px 14px;
   text-decoration: none;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   font-weight: 400;
-  font-size: 13px;
+  font-size: var(--font-size-sm);
   color: #e0e0e0;
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -1709,9 +1710,9 @@ html {
   -webkit-backdrop-filter: blur(10px);
   padding: 7px 14px;
   text-decoration: none;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   font-weight: 400;
-  font-size: 13px;
+  font-size: var(--font-size-sm);
   color: #ffffff;
   border: 2px dotted rgba(65, 65, 65, 0.8);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
@@ -1765,7 +1766,7 @@ html {
 
 .white-card p:nth-child(2) {
   color: #ffffff;
-  font-size: 25px;
+  font-size: var(--font-size-2xl);
   font-weight: 650;
 }
 
@@ -2050,12 +2051,12 @@ html {
 }
 
 .footer__logo h3 {
-  font-size: 1.2rem;
+  font-size: var(--font-size-lg);
   font-weight: 500;
 }
 
 .footer__copyright p {
-  font-size: 0.8rem;
+  font-size: var(--font-size-xs);
   color: #777777;
 }
 
@@ -2144,13 +2145,13 @@ html {
 .timeline-content h3 {
   margin: 0 0 4px 0;
   /* Remove top margin, small bottom margin */
-  font-size: 1.3rem;
+  font-size: var(--font-size-xl);
   /* Increased title size */
 }
 
 .timeline-date {
   margin: 0;
-  font-size: 0.8rem;
+  font-size: var(--font-size-xs);
   opacity: 0.7;
 }
 
@@ -2159,7 +2160,7 @@ html {
   flex-shrink: 0;
   width: 40px;
   height: 40px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   /* Increased radius for smoother look */
 }
 
@@ -2193,10 +2194,10 @@ html {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   color: #ffffff;
-  font-size: 0.7rem;
+  font-size: var(--font-size-xs);
   font-weight: 600;
   padding: 4px 10px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   white-space: nowrap;
@@ -2214,7 +2215,7 @@ html {
 
 /* Description Text */
 .timeline-content p {
-  font-size: 0.95rem;
+  font-size: var(--font-size-md);
   line-height: 1.5;
   margin: 0;
 }
