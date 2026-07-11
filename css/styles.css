@@ -2292,7 +2292,8 @@ html {
   height: 100%;
   z-index: 0;
   pointer-events: none;
-  filter: blur(8px);
+  filter: blur(5px);
+  will-change: filter;
 }
 
 .footer-new::before {
@@ -2318,10 +2319,13 @@ html {
 }
 
 .footer__column h4 {
-  color: var(--text-primary);
-  font-size: var(--font-size-lg);
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
   margin-bottom: var(--space-md);
   font-weight: 600;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
 }
 
 .footer__links {

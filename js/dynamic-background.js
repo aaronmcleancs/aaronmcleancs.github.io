@@ -104,23 +104,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const ctx = canvas.getContext('2d');
 
+  let resizeTimer;
   function resizeCanvas() {
     canvas.width = heroSection.offsetWidth;
     canvas.height = heroSection.offsetHeight;
   }
 
   resizeCanvas();
-  window.addEventListener('resize', resizeCanvas);
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(resizeCanvas, 150);
+  });
 
   const spacing = 45;
   const baseDotRadius = 1.5;
   const maxDotRadius = 2.6;
-  const dotColor = 'rgb(71, 71, 71)';
 
   const waveSpeed = 0.005;
   const waveAmplitude = 15;
   const waveFrequency = 0.05;
-  const waveOffset = 5;
 
   const scrollTranslationFactor = -0.5;
   let currentScrollOffset = 0;
@@ -128,16 +130,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const transitionSpeed = 0.05;
 
+  // Frame budget: cap at ~30fps, time step scaled to keep motion speed identical
+  const frameInterval = 1000 / 30;
+  const timeStep = waveSpeed * 2; // was waveSpeed per ~60fps frame
+  let lastFrame = 0;
+
   let time = 0;
-  let mouseX = 0;
-  let mouseY = 0;
-  let mouseActive = false;
 
   let targetMouseX = 0;
   let targetMouseY = 0;
   let currentMouseX = 0;
   let currentMouseY = 0;
   let mouseInfluence = 0;
+  let mouseInfluenceTarget = 0;
+  let mouseTimeout;
 
   // Pulsing brightness system
   const pulses = [];
@@ -147,11 +153,43 @@ document.addEventListener('DOMContentLoaded', function () {
   const pulseMaxRadius = 300;
   const pulseBrightness = 0.6;
 
+  // Animation gating: only run while on-screen and tab visible
+  let inView = false;
+  let rafId = null;
+
+  function startLoop() {
+    if (rafId === null && inView && !document.hidden) {
+      lastFrame = 0;
+      rafId = requestAnimationFrame(drawGrid);
+    }
+  }
+
+  function stopLoop() {
+    if (rafId !== null) {
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
+  }
+
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(function (entries) {
+      inView = entries[0].isIntersecting;
+      if (inView) startLoop(); else stopLoop();
+    }, { rootMargin: '100px' });
+    io.observe(heroSection);
+  } else {
+    inView = true;
+    startLoop();
+  }
+
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) stopLoop(); else startLoop();
+  });
+
   heroSection.addEventListener('mousemove', function (e) {
     const rect = heroSection.getBoundingClientRect();
     targetMouseX = e.clientX - rect.left;
     targetMouseY = e.clientY - rect.top;
-    mouseActive = true;
 
     clearTimeout(mouseTimeout);
     mouseInfluenceTarget = 1;
@@ -165,30 +203,24 @@ document.addEventListener('DOMContentLoaded', function () {
     mouseInfluenceTarget = 0;
   });
 
-  let mouseTimeout;
-  let mouseInfluenceTarget = 0;
-
   // Track scroll for translation effect
   function updateScrollOffset() {
     targetScrollOffset = window.scrollY * scrollTranslationFactor;
   }
 
   window.addEventListener('scroll', updateScrollOffset, { passive: true });
-  updateScrollOffset(); // Initialize
+  updateScrollOffset();
 
-  // Spawn pulses at random dots
+  // Spawn pulses at random dots (skipped entirely while paused)
   function spawnPulse() {
-    if (pulses.length >= maxPulses) return;
+    if (rafId === null || pulses.length >= maxPulses) return;
 
     const cols = Math.ceil(canvas.width / spacing) + 1;
     const rows = Math.ceil(canvas.height / spacing) + 1;
 
-    const randomCol = Math.floor(Math.random() * cols);
-    const randomRow = Math.floor(Math.random() * rows);
-
     pulses.push({
-      x: randomCol * spacing,
-      y: randomRow * spacing,
+      x: Math.floor(Math.random() * cols) * spacing,
+      y: Math.floor(Math.random() * rows) * spacing,
       radius: 0,
       startTime: Date.now()
     });
@@ -196,7 +228,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
   setInterval(spawnPulse, pulseSpawnInterval);
 
-  function drawGrid() {
+  // Batched rendering: dots are grouped by quantized (radius, opacity) so each
+  // group is drawn with a single beginPath/fill instead of one per dot.
+  const buckets = new Map();
+
+  function drawGrid(timestamp) {
+    rafId = requestAnimationFrame(drawGrid);
+
+    if (timestamp - lastFrame < frameInterval) return;
+    lastFrame = timestamp;
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Smooth scroll translation
@@ -211,15 +252,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const now = Date.now();
     for (let p = pulses.length - 1; p >= 0; p--) {
       const pulse = pulses[p];
-      const elapsed = (now - pulse.startTime) / 1000;
-      pulse.radius = elapsed * pulseSpeed;
-
-      if (pulse.radius > pulseMaxRadius) {
-        pulses.splice(p, 1);
-      }
+      pulse.radius = ((now - pulse.startTime) / 1000) * pulseSpeed;
+      if (pulse.radius > pulseMaxRadius) pulses.splice(p, 1);
     }
 
-    // Calculate grid bounds with extra margin for smooth transitions
     const margin = spacing * 2;
     const startY = Math.floor((currentScrollOffset - margin) / spacing) * spacing;
     const endY = currentScrollOffset + canvas.height + margin;
@@ -228,12 +264,15 @@ document.addEventListener('DOMContentLoaded', function () {
     const rowStart = Math.floor(startY / spacing);
     const rowEnd = Math.ceil(endY / spacing);
 
-    for (let i = 0; i < cols; i++) {
-      for (let j = rowStart; j <= rowEnd; j++) {
-        const x = i * spacing;
-        const y = j * spacing - currentScrollOffset; // Apply scroll translation
+    const mouseOn = mouseInfluence > 0.01;
+    const pulseCount = pulses.length;
 
-        // Skip dots that are way outside the visible area
+    buckets.clear();
+
+    for (let i = 0; i < cols; i++) {
+      const x = i * spacing;
+      for (let j = rowStart; j <= rowEnd; j++) {
+        const y = j * spacing - currentScrollOffset;
         if (y < -margin || y > canvas.height + margin) continue;
 
         // Improved wave animation with multi-layered sine/cosine
@@ -245,29 +284,31 @@ document.addEventListener('DOMContentLoaded', function () {
         let dotRadius = baseDotRadius;
         let brightnessBoost = 0;
 
-        // Calculate pulsing brightness from all active pulses
-        for (const pulse of pulses) {
+        // Pulsing brightness from all active pulses
+        for (let p = 0; p < pulseCount; p++) {
+          const pulse = pulses[p];
           const distX = x - pulse.x;
           const distY = y - pulse.y;
           const dist = Math.sqrt(distX * distX + distY * distY);
+          const band = Math.abs(dist - pulse.radius);
 
-          if (Math.abs(dist - pulse.radius) < 80) {
-            const waveFalloff = 1 - Math.abs(dist - pulse.radius) / 80;
-            const pulseAge = pulse.radius / pulseMaxRadius;
-            const pulseFade = 1 - pulseAge;
-            brightnessBoost = Math.max(brightnessBoost, waveFalloff * pulseFade * pulseBrightness);
+          if (band < 80) {
+            const waveFalloff = 1 - band / 80;
+            const pulseFade = 1 - pulse.radius / pulseMaxRadius;
+            const boost = waveFalloff * pulseFade * pulseBrightness;
+            if (boost > brightnessBoost) brightnessBoost = boost;
           }
         }
 
         // Mouse interaction
-        if (mouseInfluence > 0.01) {
+        if (mouseOn) {
           const distX = x - currentMouseX;
           const distY = y - currentMouseY;
-          const dist = Math.sqrt(distX * distX + distY * distY);
-          const maxDist = 1000;
+          const distSq = distX * distX + distY * distY;
 
-          if (dist < maxDist) {
-            const factor = 1 - dist / maxDist;
+          if (distSq < 1000000) { // 1000px radius, squared compare avoids sqrt when out of range
+            const dist = Math.sqrt(distSq);
+            const factor = 1 - dist / 1000;
             const influence = factor * 15 * mouseInfluence;
 
             offsetX += (distX / dist) * influence;
@@ -281,29 +322,41 @@ document.addEventListener('DOMContentLoaded', function () {
         const dotX = x + offsetX;
         const dotY = y + offsetY;
 
-        // Only draw dots within the visible area (with some margin)
         if (dotX >= -spacing && dotX <= canvas.width + spacing &&
           dotY >= -spacing && dotY <= canvas.height + spacing) {
 
           const waveHeight = Math.sqrt(offsetX * offsetX + offsetY * offsetY);
           let opacity = 0.5 + (waveHeight / (waveAmplitude * 2)) * 0.5;
           opacity += brightnessBoost;
-          opacity = Math.min(opacity, 1.0);
+          if (opacity > 1) opacity = 1;
 
-          ctx.beginPath();
-          ctx.arc(dotX, dotY, dotRadius, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(32, 32, 32, ${opacity})`;
-          ctx.fill();
+          // Quantize to bucket keys (opacity: 1/32 steps, radius: 0.1px steps)
+          const key = ((opacity * 32) | 0) * 64 + ((dotRadius * 10) | 0);
+          let bucket = buckets.get(key);
+          if (!bucket) {
+            bucket = { opacity: ((opacity * 32) | 0) / 32, radius: ((dotRadius * 10) | 0) / 10, pts: [] };
+            buckets.set(key, bucket);
+          }
+          bucket.pts.push(dotX, dotY);
         }
       }
     }
 
-    time += waveSpeed;
+    // One path + fill per bucket
+    buckets.forEach(function (bucket) {
+      ctx.beginPath();
+      const pts = bucket.pts;
+      const r = bucket.radius;
+      for (let k = 0; k < pts.length; k += 2) {
+        ctx.moveTo(pts[k] + r, pts[k + 1]);
+        ctx.arc(pts[k], pts[k + 1], r, 0, Math.PI * 2);
+      }
+      ctx.fillStyle = 'rgba(32, 32, 32, ' + bucket.opacity + ')';
+      ctx.fill();
+    });
 
-    requestAnimationFrame(drawGrid);
+    time += timeStep;
   }
-
-  drawGrid();
 });
 
 document.addEventListener('DOMContentLoaded', function () {

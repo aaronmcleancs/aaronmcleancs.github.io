@@ -8,48 +8,85 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const ctx = canvas.getContext('2d');
 
+    let resizeTimer;
     function resizeCanvas() {
         canvas.width = footerSection.offsetWidth;
         canvas.height = footerSection.offsetHeight;
     }
 
     resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('resize', function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(resizeCanvas, 150);
+    });
 
-    // "Super zoomed in" settings
-    const spacing = 80;
-    const baseDotRadius = 2.5;
-
-    // Brighter gray for dots
+    // Matched to the expertise-section grid: same spacing, same layered wave motion,
+    // just dimmer dots (and blurred via CSS) so it reads as a quieter echo of it.
+    const spacing = 45;
+    const baseDotRadius = 1.5;
     const dotBaseColor = '120, 120, 120';
 
-    // Slower animation
     const waveSpeed = 0.005;
-    const waveAmplitude = 20;
-    const waveFrequency = 0.02;
+    const waveAmplitude = 15;
+    const waveFrequency = 0.05;
+
+    // Frame budget: ~30fps cap, time step scaled to keep motion speed identical
+    const frameInterval = 1000 / 30;
+    const timeStep = waveSpeed * 2;
+    let lastFrame = 0;
 
     let time = 0;
 
-    // Pulsing brightness system
+    // Pulsing brightness system (same mechanic as above, slower cadence)
     const pulses = [];
     const maxPulses = 2;
-    const pulseSpawnInterval = 3000; // Slower for footer
+    const pulseSpawnInterval = 3000;
     const pulseSpeed = 60;
     const pulseMaxRadius = 400;
     const pulseBrightness = 0.5;
 
+    // Animation gating: only run while on-screen and tab visible
+    let inView = false;
+    let rafId = null;
+
+    function startLoop() {
+        if (rafId === null && inView && !document.hidden) {
+            lastFrame = 0;
+            rafId = requestAnimationFrame(drawGrid);
+        }
+    }
+
+    function stopLoop() {
+        if (rafId !== null) {
+            cancelAnimationFrame(rafId);
+            rafId = null;
+        }
+    }
+
+    if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(function (entries) {
+            inView = entries[0].isIntersecting;
+            if (inView) startLoop(); else stopLoop();
+        }, { rootMargin: '100px' });
+        io.observe(footerSection);
+    } else {
+        inView = true;
+        startLoop();
+    }
+
+    document.addEventListener('visibilitychange', function () {
+        if (document.hidden) stopLoop(); else startLoop();
+    });
+
     function spawnPulse() {
-        if (pulses.length >= maxPulses) return;
+        if (rafId === null || pulses.length >= maxPulses) return;
 
         const cols = Math.ceil(canvas.width / spacing) + 1;
         const rows = Math.ceil(canvas.height / spacing) + 1;
 
-        const randomCol = Math.floor(Math.random() * cols);
-        const randomRow = Math.floor(Math.random() * rows);
-
         pulses.push({
-            x: randomCol * spacing,
-            y: randomRow * spacing,
+            x: Math.floor(Math.random() * cols) * spacing,
+            y: Math.floor(Math.random() * rows) * spacing,
             radius: 0,
             startTime: Date.now()
         });
@@ -57,74 +94,91 @@ document.addEventListener('DOMContentLoaded', function () {
 
     setInterval(spawnPulse, pulseSpawnInterval);
 
-    function drawGrid() {
+    // Batched rendering: dots grouped by quantized opacity, one path/fill per group
+    const buckets = new Map();
+
+    function drawGrid(timestamp) {
+        rafId = requestAnimationFrame(drawGrid);
+
+        if (timestamp - lastFrame < frameInterval) return;
+        lastFrame = timestamp;
+
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         // Update pulses
         const now = Date.now();
         for (let p = pulses.length - 1; p >= 0; p--) {
             const pulse = pulses[p];
-            const elapsed = (now - pulse.startTime) / 1000;
-            pulse.radius = elapsed * pulseSpeed;
-
-            if (pulse.radius > pulseMaxRadius) {
-                pulses.splice(p, 1);
-            }
+            pulse.radius = ((now - pulse.startTime) / 1000) * pulseSpeed;
+            if (pulse.radius > pulseMaxRadius) pulses.splice(p, 1);
         }
 
         const margin = spacing * 2;
         const cols = Math.ceil(canvas.width / spacing) + 1;
         const rows = Math.ceil(canvas.height / spacing) + 1;
+        const pulseCount = pulses.length;
+
+        buckets.clear();
 
         for (let i = 0; i < cols; i++) {
+            const x = i * spacing;
             for (let j = 0; j < rows; j++) {
-                const x = i * spacing;
                 const y = j * spacing;
 
-                // Improved wave animation with multi-layered sine/cosine
-                let offsetX = Math.sin(time + j * waveFrequency) * waveAmplitude +
-                    Math.sin(time * 0.6 + i * waveFrequency * 0.4) * (waveAmplitude * 0.4);
-                let offsetY = Math.cos(time + i * waveFrequency) * waveAmplitude +
-                    Math.cos(time * 0.4 + j * waveFrequency * 0.6) * (waveAmplitude * 0.4);
+                // Same multi-layered sine/cosine wave as the expertise-section grid
+                const offsetX = Math.sin(time + j * waveFrequency) * waveAmplitude +
+                    Math.sin(time * 0.7 + i * waveFrequency * 0.5) * (waveAmplitude * 0.3);
+                const offsetY = Math.cos(time + i * waveFrequency) * waveAmplitude +
+                    Math.cos(time * 0.5 + j * waveFrequency * 0.7) * (waveAmplitude * 0.3);
 
                 const dotX = x + offsetX;
                 const dotY = y + offsetY;
 
-                let brightnessBoost = 0;
+                if (dotX < -margin || dotX > canvas.width + margin ||
+                    dotY < -margin || dotY > canvas.height + margin) continue;
 
-                // Calculate pulsing brightness
-                for (const pulse of pulses) {
+                let brightnessBoost = 0;
+                for (let p = 0; p < pulseCount; p++) {
+                    const pulse = pulses[p];
                     const distX = dotX - pulse.x;
                     const distY = dotY - pulse.y;
                     const dist = Math.sqrt(distX * distX + distY * distY);
+                    const band = Math.abs(dist - pulse.radius);
 
-                    if (Math.abs(dist - pulse.radius) < 100) {
-                        const waveFalloff = 1 - Math.abs(dist - pulse.radius) / 100;
-                        const pulseAge = pulse.radius / pulseMaxRadius;
-                        const pulseFade = 1 - pulseAge;
-                        brightnessBoost = Math.max(brightnessBoost, waveFalloff * pulseFade * pulseBrightness);
+                    if (band < 100) {
+                        const waveFalloff = 1 - band / 100;
+                        const pulseFade = 1 - pulse.radius / pulseMaxRadius;
+                        const boost = waveFalloff * pulseFade * pulseBrightness;
+                        if (boost > brightnessBoost) brightnessBoost = boost;
                     }
                 }
 
-                if (dotX >= -margin && dotX <= canvas.width + margin &&
-                    dotY >= -margin && dotY <= canvas.height + margin) {
+                const waveHeight = Math.sqrt(offsetX * offsetX + offsetY * offsetY);
+                let opacity = 0.3 + (waveHeight / (waveAmplitude * 2)) * 0.4;
+                opacity += brightnessBoost;
+                if (opacity > 1) opacity = 1;
 
-                    const waveHeight = Math.sqrt(offsetX * offsetX + offsetY * offsetY);
-                    let opacity = 0.3 + (waveHeight / (waveAmplitude * 2)) * 0.4;
-                    opacity += brightnessBoost;
-                    opacity = Math.min(opacity, 1.0);
-
-                    ctx.beginPath();
-                    ctx.arc(dotX, dotY, baseDotRadius, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(${dotBaseColor}, ${opacity})`;
-                    ctx.fill();
+                const key = (opacity * 32) | 0;
+                let bucket = buckets.get(key);
+                if (!bucket) {
+                    bucket = { opacity: key / 32, pts: [] };
+                    buckets.set(key, bucket);
                 }
+                bucket.pts.push(dotX, dotY);
             }
         }
 
-        time += waveSpeed;
-        requestAnimationFrame(drawGrid);
-    }
+        buckets.forEach(function (bucket) {
+            ctx.beginPath();
+            const pts = bucket.pts;
+            for (let k = 0; k < pts.length; k += 2) {
+                ctx.moveTo(pts[k] + baseDotRadius, pts[k + 1]);
+                ctx.arc(pts[k], pts[k + 1], baseDotRadius, 0, Math.PI * 2);
+            }
+            ctx.fillStyle = 'rgba(' + dotBaseColor + ', ' + bucket.opacity + ')';
+            ctx.fill();
+        });
 
-    drawGrid();
+        time += timeStep;
+    }
 });
