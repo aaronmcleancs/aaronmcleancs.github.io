@@ -62,3 +62,29 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 });
+// Open Source nav dropdown: click toggle for touch devices, close on outside click / Escape
+document.addEventListener('DOMContentLoaded', function () {
+  var dropdown = document.querySelector('.nav-dropdown');
+  if (!dropdown) return;
+  var toggle = dropdown.querySelector('.nav-dropdown-toggle');
+
+  toggle.addEventListener('click', function (e) {
+    e.stopPropagation();
+    var open = dropdown.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+
+  document.addEventListener('click', function (e) {
+    if (dropdown.classList.contains('open') && !dropdown.contains(e.target)) {
+      dropdown.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && dropdown.classList.contains('open')) {
+      dropdown.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+});
