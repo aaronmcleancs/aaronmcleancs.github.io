@@ -27,10 +27,23 @@
     return (baseScale + scrollPercent * multiplier) - offset * (1 - scrollPercent);
   }
 
+  // Subtle idle drift: slow horizontal sway composed with the scroll zoom
+  const driftAmplitude = 35; // px each direction
+  const driftPeriod = 12000; // ms per full cycle
+  let driftX = 0;
+
   function updateVisuals() {
     const scale = (currentScale * zoomFactor) / 100;
-    heroBackground.style.transform = `scale(${scale})`;
+    heroBackground.style.transform = `translateX(${driftX.toFixed(2)}px) scale(${scale})`;
   }
+
+  function driftLoop(timestamp) {
+    driftX = Math.sin((timestamp * 2 * Math.PI) / driftPeriod) * driftAmplitude;
+    updateVisuals();
+    requestAnimationFrame(driftLoop);
+  }
+
+  requestAnimationFrame(driftLoop);
 
   function smoothUpdate() {
     const targetScale = calculateTargetScale(window.scrollY);

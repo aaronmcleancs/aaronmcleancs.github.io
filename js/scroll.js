@@ -88,3 +88,40 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 });
+
+// Mobile hamburger menu
+document.addEventListener('DOMContentLoaded', function () {
+  var hamburger = document.querySelector('.nav-hamburger');
+  var menu = document.querySelector('.mobile-menu');
+  if (!hamburger || !menu) return;
+  var icon = hamburger.querySelector('i');
+
+  function setOpen(open) {
+    menu.classList.toggle('open', open);
+    hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (icon) {
+      icon.classList.toggle('fa-bars', !open);
+      icon.classList.toggle('fa-xmark', open);
+    }
+  }
+
+  hamburger.addEventListener('click', function (e) {
+    e.stopPropagation();
+    setOpen(!menu.classList.contains('open'));
+  });
+
+  // Close when a link is tapped, when tapping outside, or on Escape
+  menu.addEventListener('click', function (e) {
+    if (e.target.closest('a')) setOpen(false);
+  });
+
+  document.addEventListener('click', function (e) {
+    if (menu.classList.contains('open') && !menu.contains(e.target) && e.target !== hamburger) {
+      setOpen(false);
+    }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && menu.classList.contains('open')) setOpen(false);
+  });
+});

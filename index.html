@@ -64,6 +64,19 @@
       <a href="/images/CV.pdf" class="download-btn" target="_blank" rel="noopener noreferrer" aria-label="View Resume">
         <i class="fas fa-file-pdf"></i> CV
       </a>
+      <button type="button" class="nav-hamburger" aria-label="Menu" aria-expanded="false">
+        <i class="fas fa-bars" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="mobile-menu">
+      <a href="#home"><i class="fas fa-home" aria-hidden="true"></i> Home</a>
+      <a href="#projects"><i class="fas fa-gears" aria-hidden="true"></i> Expertise</a>
+      <a href="#experience"><i class="fas fa-code-branch" aria-hidden="true"></i> Experience</a>
+      <div class="mobile-menu-label"><i class="fab fa-github" aria-hidden="true"></i> Open Source</div>
+      <a class="mobile-menu-sub" href="/particle.html">ParticleBox</a>
+      <a class="mobile-menu-sub" href="/quantum.html">Quantum Blockchain Sim</a>
+      <a class="mobile-menu-sub" href="/cnn.html">Anomaly Detection</a>
+      <a class="mobile-menu-sub" href="/ios.html">Fitness Tracker</a>
     </div>
   </div>
   <div class="hero__section" id="home">
@@ -126,60 +139,61 @@
         <div id="card3" class="card-props white-card animate__animated">
           <div class="card-content">
             <img src="icon/3.svg" alt="Vehicle networks icon" style="width: 30px; height: 30px;" />
-            <p>Vehicle Networks &amp; Telematics</p>
+            <p>Vehicle Networks &amp; Diagnostics</p>
             <div class="skills-container">
               <span class="skill-tag">CAN / J1939</span>
+              <span class="skill-tag">CANopen</span>
               <span class="skill-tag">DBC</span>
               <span class="skill-tag">CANalyzer</span>
-              <span class="skill-tag">Embedded Linux</span>
-              <span class="skill-tag">WireGuard</span>
             </div>
-            <p>Integration of multi-controller vehicle networks and connected fleet infrastructure. CAN communication
-              design, diagnostics, and ECU firmware, supported by field-deployed Linux telematics with secure remote
-              access.</p>
+            <p>Integration and diagnostics of multi-controller vehicle networks. CAN communication design, ECU
+              firmware and flashing, and network-level fault diagnosis across drive, charging, and implement
+              systems.</p>
             <div class="image-gallery card-gallery">
               <img src="images/proj-junction-box.jpg" alt="Hydraulic and network junction enclosure on drilling equipment">
-              <img src="images/proj-owa-logger.jpg" alt="OWA5x telematics data logger installed in a control enclosure">
-              <img src="images/proj-field-rig.jpg" alt="Instrumented drill rig deployed in the field">
+              <img src="images/proj-altdrive-bench.jpg" alt="Commissioning an AltDrive powertrain test stand">
+              <img src="images/proj-field-commissioning.jpg" alt="Field diagnostics laptop connected inside a machine's hydraulic bay">
             </div>
           </div>
         </div>
         <div id="card2" class="card-props white-card animate__animated">
           <div class="card-content">
-            <img src="icon/2.svg" alt="Software engineering icon" style="width: 30px; height: 30px;" />
-            <p>Software Engineering &amp; HPC</p>
+            <img src="icon/2.svg" alt="Telematics icon" style="width: 30px; height: 30px;" />
+            <p>Telematics &amp; Remote Fleets</p>
             <div class="skills-container">
-              <span class="skill-tag">C++</span>
-              <span class="skill-tag">Multithreading</span>
-              <span class="skill-tag">Python</span>
-              <span class="skill-tag">TensorFlow</span>
-              <span class="skill-tag">Node.js</span>
+              <span class="skill-tag">Embedded Linux</span>
+              <span class="skill-tag">WireGuard</span>
+              <span class="skill-tag">Grafana</span>
+              <span class="skill-tag">Modbus</span>
             </div>
-            <p>Performance-focused software development across the stack. Real-time simulation engines, applied
-              machine learning, full-stack applications, and published research in quantum-assisted consensus
-              protocols.</p>
+            <p>Telemetry infrastructure for connected equipment fleets. Linux-based data loggers with secure VPN
+              access, high-frequency CAN and Modbus aggregation, and cloud dashboards for remote monitoring and
+              diagnostics.</p>
             <div class="image-gallery card-gallery">
-              <img src="images/proj-novamera-dev.jpg" alt="PLCnext structured text, version control, and CAD in a development session">
-              <img src="images/proj-esp32.jpg" alt="ESP32 embedded prototyping on a breadboard">
+              <img src="images/proj-owa-logger.jpg" alt="OWA5x telematics data logger installed in a control enclosure">
+              <img src="images/proj-grafana-dashboard.jpg" alt="Grafana dashboard visualizing fleet telemetry">
+              <img src="images/proj-field-rig.jpg" alt="Instrumented drill rig deployed in the field">
             </div>
           </div>
         </div>
         <div id="card1" class="card-props white-card animate__animated">
           <div class="card-content">
-            <img src="icon/1.svg" alt="Simulation and tooling icon" style="width: 30px; height: 30px;" />
-            <p>Simulation, Test &amp; Tooling</p>
+            <img src="icon/1.svg" alt="Software engineering icon" style="width: 30px; height: 30px;" />
+            <p>Software Engineering &amp; Simulation</p>
             <div class="skills-container">
+              <span class="skill-tag">C++</span>
               <span class="skill-tag">Python</span>
-              <span class="skill-tag">CANalyzer</span>
-              <span class="skill-tag">CODESYS Visualization</span>
+              <span class="skill-tag">Multithreading</span>
+              <span class="skill-tag">TensorFlow</span>
+              <span class="skill-tag">Node.js</span>
             </div>
-            <p>Simulation and validation infrastructure that de-risks control systems before deployment.
-              Control-strategy modeling, repeatable test and commissioning procedures, and automated engineering data
-              pipelines.</p>
+            <p>Performance-focused software development across the stack. Real-time simulation engines, applied
+              machine learning, full-stack applications, and validation tooling that de-risks control systems before
+              deployment.</p>
             <div class="image-gallery card-gallery">
+              <img src="images/proj-novamera-dev.jpg" alt="PLCnext structured text, version control, and CAD in a development session">
+              <img src="images/proj-esp32.jpg" alt="ESP32 embedded prototyping on a breadboard">
               <img src="images/proj-bench-harness.jpg" alt="Bench testing a control harness and valve bank">
-              <img src="images/proj-altdrive-bench.jpg" alt="Commissioning an AltDrive powertrain test stand with EPEC tooling">
-              <img src="images/proj-field-commissioning.jpg" alt="Field diagnostics laptop connected inside a machine's hydraulic bay">
             </div>
           </div>
         </div>
