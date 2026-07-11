@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
-  const galleryContainer = document.querySelector('.image-gallery');
-  if (!galleryContainer) return;
-  const galleryImages = Array.from(galleryContainer.querySelectorAll('img'));
+  const galleries = Array.from(document.querySelectorAll('.image-gallery'));
+  if (!galleries.length) return;
   const viewer = document.querySelector('.fullscreen-viewer');
   if (!viewer) return;
   const fullscreenImage = viewer.querySelector('.fullscreen-image');
@@ -9,12 +8,15 @@ document.addEventListener('DOMContentLoaded', function() {
   const nextButton = viewer.querySelector('.fullscreen-next');
   const closeButton = viewer.querySelector('.fullscreen-close');
   if (!fullscreenImage || !prevButton || !nextButton || !closeButton) return;
-  
+
+  // Navigation is scoped to the gallery the clicked image belongs to
+  let activeImages = [];
   let currentIndex = 0;
 
-  function openViewer(index) {
+  function openViewer(images, index) {
+    activeImages = images;
     currentIndex = index;
-    fullscreenImage.src = galleryImages[currentIndex].src;
+    fullscreenImage.src = activeImages[currentIndex].src;
     viewer.classList.add('active');
     const progressTracker = document.querySelector('.progress-tracker');
     if (progressTracker) {
@@ -32,39 +34,44 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function showPrev() {
-    currentIndex = (currentIndex - 1 + galleryImages.length) % galleryImages.length;
-    fullscreenImage.src = galleryImages[currentIndex].src;
+    if (!activeImages.length) return;
+    currentIndex = (currentIndex - 1 + activeImages.length) % activeImages.length;
+    fullscreenImage.src = activeImages[currentIndex].src;
   }
 
   function showNext() {
-    currentIndex = (currentIndex + 1) % galleryImages.length;
-    fullscreenImage.src = galleryImages[currentIndex].src;
+    if (!activeImages.length) return;
+    currentIndex = (currentIndex + 1) % activeImages.length;
+    fullscreenImage.src = activeImages[currentIndex].src;
   }
 
-  galleryImages.forEach((img, index) => {
-    img.addEventListener('click', function() {
-      openViewer(index);
+  galleries.forEach(function (gallery) {
+    const images = Array.from(gallery.querySelectorAll('img'));
+    images.forEach(function (img, index) {
+      img.addEventListener('click', function () {
+        openViewer(images, index);
+      });
     });
   });
 
   prevButton.addEventListener('click', showPrev);
   nextButton.addEventListener('click', showNext);
   closeButton.addEventListener('click', closeViewer);
-    document.addEventListener('keydown', function (e) {
-      if (!viewer.classList.contains('active')) return;
-  
-      switch (e.key) {
-        case 'ArrowLeft':
-          showPrev();
-          break;
-        case 'ArrowRight':
-          showNext();
-          break;
-        case 'Escape':
-          closeViewer();
-          break;
-      }
-    });
+  document.addEventListener('keydown', function (e) {
+    if (!viewer.classList.contains('active')) return;
+
+    switch (e.key) {
+      case 'ArrowLeft':
+        showPrev();
+        break;
+      case 'ArrowRight':
+        showNext();
+        break;
+      case 'Escape':
+        closeViewer();
+        break;
+    }
+  });
 
   viewer.addEventListener('click', function(e) {
     if (e.target === viewer) {

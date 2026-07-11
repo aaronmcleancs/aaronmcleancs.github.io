@@ -116,6 +116,11 @@
             <p>Design and development of control systems for heavy-duty mobile equipment. Drilling automation,
               closed-loop actuator control, and safety-critical logic engineered for reliable operation in demanding
               production environments.</p>
+            <div class="image-gallery card-gallery">
+              <img src="images/proj-drill-head.jpg" alt="Drill rotary head and casing on a Borterra rig">
+              <img src="images/proj-raisepro-shop.jpg" alt="RaisePro-48T drill during shop commissioning">
+              <img src="images/proj-rig-sunset.jpg" alt="Drilling rig operating at dusk">
+            </div>
           </div>
         </div>
         <div id="card3" class="card-props white-card animate__animated">
@@ -132,6 +137,11 @@
             <p>Integration of multi-controller vehicle networks and connected fleet infrastructure. CAN communication
               design, diagnostics, and ECU firmware, supported by field-deployed Linux telematics with secure remote
               access.</p>
+            <div class="image-gallery card-gallery">
+              <img src="images/proj-junction-box.jpg" alt="Hydraulic and network junction enclosure on drilling equipment">
+              <img src="images/proj-owa-logger.jpg" alt="OWA5x telematics data logger installed in a control enclosure">
+              <img src="images/proj-field-rig.jpg" alt="Instrumented drill rig deployed in the field">
+            </div>
           </div>
         </div>
         <div id="card2" class="card-props white-card animate__animated">
@@ -148,6 +158,10 @@
             <p>Performance-focused software development across the stack. Real-time simulation engines, applied
               machine learning, full-stack applications, and published research in quantum-assisted consensus
               protocols.</p>
+            <div class="image-gallery card-gallery">
+              <img src="images/proj-novamera-dev.jpg" alt="PLCnext structured text, version control, and CAD in a development session">
+              <img src="images/proj-esp32.jpg" alt="ESP32 embedded prototyping on a breadboard">
+            </div>
           </div>
         </div>
         <div id="card1" class="card-props white-card animate__animated">
@@ -162,6 +176,11 @@
             <p>Simulation and validation infrastructure that de-risks control systems before deployment.
               Control-strategy modeling, repeatable test and commissioning procedures, and automated engineering data
               pipelines.</p>
+            <div class="image-gallery card-gallery">
+              <img src="images/proj-bench-harness.jpg" alt="Bench testing a control harness and valve bank">
+              <img src="images/proj-altdrive-bench.jpg" alt="Commissioning an AltDrive powertrain test stand with EPEC tooling">
+              <img src="images/proj-field-commissioning.jpg" alt="Field diagnostics laptop connected inside a machine's hydraulic bay">
+            </div>
           </div>
         </div>
       </div>
@@ -390,11 +409,25 @@
     </div>
   </footer>
 
+  <div class="fullscreen-viewer">
+    <img src="" alt="Fullscreen image" class="fullscreen-image">
+    <div class="fullscreen-nav">
+      <button class="fullscreen-prev">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <button class="fullscreen-next">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+    <button class="fullscreen-close">&times;</button>
+  </div>
+
   <script>
     var yearEl = document.getElementById('current-year');
     if (yearEl) yearEl.textContent = new Date().getFullYear();
   </script>
 
+  <script src="js/photo.js"></script>
   <script src="js/timeline-interactions.js"></script>
   <script src="js/dynamic-background.js"></script>
   <script src="js/search.js"></script>
