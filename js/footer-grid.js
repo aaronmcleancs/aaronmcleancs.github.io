@@ -30,10 +30,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const waveAmplitude = 15;
     const waveFrequency = 0.05;
 
-    // Frame budget: ~30fps cap, time step scaled to keep motion speed identical
-    const frameInterval = 1000 / 30;
-    const timeStep = waveSpeed * 2;
-    let lastFrame = 0;
 
     let time = 0;
 
@@ -51,7 +47,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function startLoop() {
         if (rafId === null && inView && !document.hidden) {
-            lastFrame = 0;
             rafId = requestAnimationFrame(drawGrid);
         }
     }
@@ -97,11 +92,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // Batched rendering: dots grouped by quantized opacity, one path/fill per group
     const buckets = new Map();
 
-    function drawGrid(timestamp) {
+    function drawGrid() {
         rafId = requestAnimationFrame(drawGrid);
 
-        if (timestamp - lastFrame < frameInterval) return;
-        lastFrame = timestamp;
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -179,6 +172,6 @@ document.addEventListener('DOMContentLoaded', function () {
             ctx.fill();
         });
 
-        time += timeStep;
+        time += waveSpeed;
     }
 });

@@ -75,26 +75,6 @@
 })();
 
 document.addEventListener('DOMContentLoaded', function () {
-  const container = document.querySelector('.terminal-container');
-  const textWrapper = document.querySelector('.text-wrapper');
-
-  container.addEventListener('mousemove', function (e) {
-    const rect = container.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-
-    const rotateX = y * 0.13;
-    const rotateY = x * -0.05;
-
-    textWrapper.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(0)`;
-  });
-
-  container.addEventListener('mouseleave', function () {
-    textWrapper.style.transform = 'rotateX(0) rotateY(0) translateZ(0)';
-  });
-});
-
-document.addEventListener('DOMContentLoaded', function () {
   const heroSection = document.querySelector('.hero2__section');
   if (!heroSection) return;
 
@@ -130,10 +110,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const transitionSpeed = 0.05;
 
-  // Frame budget: cap at ~30fps, time step scaled to keep motion speed identical
-  const frameInterval = 1000 / 30;
-  const timeStep = waveSpeed * 2; // was waveSpeed per ~60fps frame
-  let lastFrame = 0;
 
   let time = 0;
 
@@ -159,7 +135,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function startLoop() {
     if (rafId === null && inView && !document.hidden) {
-      lastFrame = 0;
       rafId = requestAnimationFrame(drawGrid);
     }
   }
@@ -232,11 +207,9 @@ document.addEventListener('DOMContentLoaded', function () {
   // group is drawn with a single beginPath/fill instead of one per dot.
   const buckets = new Map();
 
-  function drawGrid(timestamp) {
+  function drawGrid() {
     rafId = requestAnimationFrame(drawGrid);
 
-    if (timestamp - lastFrame < frameInterval) return;
-    lastFrame = timestamp;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -355,7 +328,7 @@ document.addEventListener('DOMContentLoaded', function () {
       ctx.fill();
     });
 
-    time += timeStep;
+    time += waveSpeed;
   }
 });
 
