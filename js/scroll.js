@@ -20,7 +20,8 @@ $(document).ready(function() {
         const targetCard = entry.target;
         const cardId = targetCard.id;
         if (entry.isIntersecting && !animatedCards.has(cardId)) {
-          const index = cardSelectors.indexOf('#' + cardId);
+          // stagger by DOM order so the cascade matches visual order in any layout
+          const index = Array.prototype.indexOf.call(targetCard.parentElement.children, targetCard);
           requestAnimationFrame(() => {
             setTimeout(() => {
               $(targetCard).addClass('animate__fadeInUp visible').removeClass('animate__fadeOutDown');

@@ -240,18 +240,24 @@
             </ul>
         </section>
     </div>
-    <div class="fullscreen-viewer">
-        <img src="" alt="Fullscreen image" class="fullscreen-image">
-        <div class="fullscreen-nav">
-            <button class="fullscreen-prev">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-            <button class="fullscreen-next">
-                <i class="fas fa-chevron-right"></i>
-            </button>
-        </div>
-        <button class="fullscreen-close">×</button>
-    </div>
+    <div class="fullscreen-viewer" role="dialog" aria-modal="true" aria-label="Image viewer">
+  <div class="fullscreen-topbar">
+    <span class="fullscreen-counter"></span>
+    <button class="fullscreen-close" aria-label="Close viewer">&times;</button>
+  </div>
+  <figure class="fullscreen-stage">
+    <img src="" alt="" class="fullscreen-image">
+    <figcaption class="fullscreen-caption"></figcaption>
+  </figure>
+  <div class="fullscreen-nav">
+    <button class="fullscreen-prev" aria-label="Previous image">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+    <button class="fullscreen-next" aria-label="Next image">
+      <i class="fas fa-chevron-right"></i>
+    </button>
+  </div>
+</div>
 
     <script src="js/photo.js"></script>
     <script src="js/showcase.js"></script>

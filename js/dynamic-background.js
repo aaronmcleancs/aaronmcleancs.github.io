@@ -253,6 +253,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Mouse interaction
+        let mouseGlow = 0;
         if (mouseInfluence > 0.01) {
           const distX = x - currentMouseX;
           const distY = y - currentMouseY;
@@ -268,6 +269,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const sizeFactor = factor * factor * mouseInfluence;
             dotRadius = baseDotRadius + (maxDotRadius - baseDotRadius) * sizeFactor;
+            mouseGlow = sizeFactor;
           }
         }
 
@@ -283,9 +285,12 @@ document.addEventListener('DOMContentLoaded', function () {
           opacity += brightnessBoost;
           opacity = Math.min(opacity, 1.0);
 
+          // dots near the cursor brighten ~30% of the way toward white
+          const channel = Math.round(32 + 67 * mouseGlow);
+
           ctx.beginPath();
           ctx.arc(dotX, dotY, dotRadius, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(32, 32, 32, ${opacity})`;
+          ctx.fillStyle = `rgba(${channel}, ${channel}, ${channel}, ${opacity})`;
           ctx.fill();
         }
       }

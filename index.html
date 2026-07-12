@@ -92,8 +92,7 @@
             <p>
               <span class="action-container">
                 <span class="action-wrapper">
-                  <i class="action-icon fas fa-microchip"></i>
-                  <span class="action-word" style="color: var(--text-muted);">Embedded Software and Control Systems
+                                    <span class="action-word" style="color: var(--text-muted);">Embedded Software and Control Systems
                     Engineer</span>
                 </span>
               </span>
@@ -128,9 +127,9 @@
             </div>
             <p>Design and implementation of control systems for heavy-duty mobile equipment. Automated drilling and rod-handling sequences, closed-loop actuator and powertrain control, and safety interlocks and fault handling for reliable operation in demanding production environments.</p>
             <div class="image-gallery card-gallery">
-              <img src="images/proj-drill-head.jpg" alt="Drill rotary head and casing on a Borterra rig">
-              <img src="images/proj-raisepro-shop.jpg" alt="RaisePro-48T drill during shop commissioning">
-              <img src="images/proj-rig-sunset.jpg" alt="Drilling rig operating at dusk">
+              <img src="images/proj-drill-head.jpg" alt="Surgical drilling operations during automated steering development">
+              <img src="images/proj-raisepro-shop.jpg" alt="RaisePro-48T raise drill — automation sequence development">
+              <img src="images/proj-rig-sunset.jpg" alt="Automated steering trials on a surgical drilling rig">
             </div>
           </div>
         </div>
@@ -148,9 +147,9 @@
               control, and fault diagnosis and handling. Experience with J1939, CANopen, Profinet, ModBus, OPC UA, and other industrial communication
               protocols.</p>
             <div class="image-gallery card-gallery">
-              <img src="images/proj-junction-box.jpg" alt="Hydraulic and network junction enclosure on drilling equipment">
-              <img src="images/proj-altdrive-bench.jpg" alt="Commissioning an AltDrive powertrain test stand">
-              <img src="images/proj-field-commissioning.jpg" alt="Field diagnostics laptop connected inside a machine's hydraulic bay">
+              <img src="images/proj-junction-box.jpg" alt="Fibre-optic gyro module in the steerable drilling tip">
+              <img src="images/proj-altdrive-bench.jpg" alt="Testing electric drive kit modules">
+              <img src="images/proj-field-commissioning.jpg" alt="Hydraulic bay of an Ontario Power Generation machine">
             </div>
           </div>
         </div>
@@ -168,8 +167,8 @@
               access, high-frequency CAN and Modbus aggregation, and client dashboards for remote monitoring and
               diagnostics.</p>
             <div class="image-gallery card-gallery">
-              <img src="images/proj-owa-logger.jpg" alt="OWA5x telematics data logger installed in a control enclosure">
-              <img src="images/proj-grafana-dashboard.jpg" alt="Grafana dashboard visualizing fleet telemetry">
+              <img src="images/proj-owa-logger.jpg" alt="Telematics unit installed in a control enclosure">
+              <img src="images/proj-grafana-dashboard.jpg" alt="Fleet telemetry dashboard">
               <img src="images/proj-field-rig.jpg" alt="Instrumented drill rig deployed in the field">
             </div>
           </div>
@@ -188,7 +187,7 @@
             <p>Performance-focused software development. Real-time simulation engines, applied
               machine learning, full-stack applications, and validation tooling.</p>
             <div class="image-gallery card-gallery">
-              <img src="images/proj-novamera-dev.jpg" alt="PLCnext structured text, version control, and CAD in a development session">
+              <img src="images/proj-novamera-dev.jpg" alt="Capsule design phase for surgical drilling development">
               <img src="images/proj-esp32.jpg" alt="ESP32 embedded prototyping on a breadboard">
               <img src="images/proj-bench-harness.jpg" alt="Bench testing a control harness and valve bank">
             </div>
@@ -420,18 +419,24 @@
     </div>
   </footer>
 
-  <div class="fullscreen-viewer">
-    <img src="" alt="Fullscreen image" class="fullscreen-image">
-    <div class="fullscreen-nav">
-      <button class="fullscreen-prev">
-        <i class="fas fa-chevron-left"></i>
-      </button>
-      <button class="fullscreen-next">
-        <i class="fas fa-chevron-right"></i>
-      </button>
-    </div>
-    <button class="fullscreen-close">&times;</button>
+  <div class="fullscreen-viewer" role="dialog" aria-modal="true" aria-label="Image viewer">
+  <div class="fullscreen-topbar">
+    <span class="fullscreen-counter"></span>
+    <button class="fullscreen-close" aria-label="Close viewer">&times;</button>
   </div>
+  <figure class="fullscreen-stage">
+    <img src="" alt="" class="fullscreen-image">
+    <figcaption class="fullscreen-caption"></figcaption>
+  </figure>
+  <div class="fullscreen-nav">
+    <button class="fullscreen-prev" aria-label="Previous image">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+    <button class="fullscreen-next" aria-label="Next image">
+      <i class="fas fa-chevron-right"></i>
+    </button>
+  </div>
+</div>
 
   <script>
     var yearEl = document.getElementById('current-year');
