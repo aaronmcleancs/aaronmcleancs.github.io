@@ -1146,7 +1146,6 @@ html {
   transition: all 0.3s cubic-bezier(0.2, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
-  padding-right: 70px;
 }
 
 .white-card:before {
@@ -2650,6 +2649,8 @@ html {
 
 .white-card .card-content > p:nth-child(2) {
   margin: 0 0 var(--space-sm);
+  /* keep the title clear of the corner icon; everything below spans full width */
+  padding-right: 64px;
 }
 
 .white-card .card-content > .skills-container {
