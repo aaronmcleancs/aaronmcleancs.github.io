@@ -50,7 +50,7 @@
                     <div class="project-card__header-left">
                         <h1 class="project-title">ParticleBox</h1>
                         <div class="project-meta">
-                            <span class="project-language">C++17 | SDL2 | OpenMP | Apple SIMD</span>
+                            <span class="project-language">C++17 | SDL2 | Custom Thread Pool | SoA</span>
                             <span class="project-license">MIT License</span>
                         </div>
                     </div>
@@ -72,9 +72,10 @@
                     </div>
                 </div>
                 <div class="project-card__body">
-                    <p class="project-description">A high-performance C++ particle simulator leveraging multithreading
-                        (OpenMP & GCD), spatial partitioning (grid), SIMD (Apple Accelerate & auto-vectorization), and
-                        optimized memory patterns for real-time physics simulation.</p>
+                    <p class="project-description">A real-time C++17 particle simulator built around a
+                        structure-of-arrays data layout, a counting-sort spatial hash, race-free parallel collision
+                        resolution on a persistent thread pool, and batched GPU rendering through a single draw call
+                        per frame.</p>
                 </div>
                 <div class="project-updated">
                     <span>Updated <span class="updated-date">March 2025</span></span>
@@ -93,21 +94,29 @@
         <section id="overview" class="showcase__section">
             <h2>Overview</h2>
             <p>
-                ParticleBox is a high-performance C++ physics simulator capable of rendering thousands of interacting
-                particles in real-time. It leverages modern C++17 features, SIMD acceleration (Apple Accelerate), and
-                multithreading (OpenMP/GCD) to maximize throughput on multi-core systems.
+                ParticleBox simulates thousands of interacting particles at 60 fps. Each rendered frame runs four
+                physics sub-steps, and each sub-step is a six-phase pipeline: field accelerations, velocity
+                integration with damping, position integration, a serial spatial-hash rebuild, a parallel collision
+                pass, and a final phase that applies positional corrections and world bounds. Every parallel phase
+                runs as a <code>parallelFor</code> over particle ranges on a persistent worker pool.
             </p>
 
-            <h3>Key Optimization Techniques</h3>
+            <h3>Architecture at a Glance</h3>
             <ul>
-                <li><strong>Spatial Partitioning:</strong> Grid-based subdivision reduces collision complexity from
-                    \(O(n^2)\) to near \(O(n)\) using efficient bitwise indexing.</li>
-                <li><strong>Parallel Processing:</strong> Dynamic workload distribution via OpenMP and Grand Central
-                    Dispatch (GCD) ensures optimal core utilization.</li>
-                <li><strong>SIMD Acceleration:</strong> Vectorized math operations using Apple's Accelerate framework
-                    and compiler auto-vectorization for massive throughput.</li>
-                <li><strong>Memory Optimization:</strong> Contiguous memory layouts and pre-allocation strategies
-                    minimize cache misses and runtime overhead.</li>
+                <li><strong>Structure-of-Arrays store:</strong> positions, velocities, accelerations, radii, masses,
+                    and even color channels live in separate contiguous <code>float</code>/<code>uint8</code> arrays,
+                    so the hot loops stream cache lines and auto-vectorize cleanly.</li>
+                <li><strong>Counting-sort spatial hash:</strong> the uniform grid is rebuilt from scratch every
+                    sub-step in \(O(n)\) — tally, prefix-sum, scatter — with power-of-two cells so the cell index is
+                    a bit shift instead of a division.</li>
+                <li><strong>Race-free parallel collisions:</strong> a one-sided Jacobi scheme where every thread
+                    writes only to the particle indices it owns, eliminating locks and atomics from the inner
+                    loop entirely.</li>
+                <li><strong>Batched rendering:</strong> all particles are drawn with one
+                    <code>SDL_RenderGeometry</code> call per frame — replacing per-particle draw calls removed a
+                    hard performance ceiling around a few thousand particles.</li>
+                <li><strong>Five material types:</strong> default, liquid, sand, gas, and kinematic stone, each with
+                    type-specific damping, cohesion, friction, and buoyancy behavior.</li>
             </ul>
         </section>
 
@@ -122,96 +131,113 @@
         <section id="background" class="showcase__section">
             <h2>Background & Physics</h2>
 
-            <h3>Collision Detection</h3>
+            <h3>Sub-Stepped Integration</h3>
             <p>
-                To maintain performance, we calculate squared distances to avoid expensive square root operations in the
-                inner loop:
+                State updates use semi-implicit Euler, with each frame's \(\Delta t\) divided across four sub-steps
+                for stability at high densities and under large impulses:
             </p>
             <p>
                 \[
-                d^2 = (p2.x - p1.x)^2 + (p2.y - p1.y)^2
+                \mathbf{v}_{t+\Delta t} = \mathbf{v}_t + (\mathbf{F}_t / m) \cdot \Delta t
+                \]
+                \[
+                \mathbf{p}_{t+\Delta t} = \mathbf{p}_t + \mathbf{v}_{t+\Delta t} \cdot \Delta t
                 \]
             </p>
+
+            <h3>Broadphase Test</h3>
             <p>
-                A collision occurs when \(d^2 < (r1 + r2)^2\). For force calculations requiring normalized vectors, we
-                    employ the Fast Inverse Square Root algorithm. </p>
+                Candidate pairs come from the 3&times;3 cell neighborhood around each particle — the cell size is
+                constrained to at least twice the maximum particle radius, which guarantees no contact can span
+                further. The narrow test compares squared distances to keep square roots out of the reject path:
+            </p>
+            <p>
+                \[
+                d^2 = (p_2.x - p_1.x)^2 + (p_2.y - p_1.y)^2 < (r_1 + r_2)^2
+                \]
+            </p>
 
-                    <h3>Force Calculation</h3>
-                    <p>
-                        Repulsion forces are applied proportional to the overlap depth \(\delta\):
-                    </p>
-                    <p>
-                        \[
-                        \mathbf{F}_r = -\hat{\mathbf{n}} \cdot \text{repulsionStrength} \cdot \delta
-                        \]
-                    </p>
-
-                    <h3>Integration</h3>
-                    <p>
-                        State updates are handled via Semi-Implicit Euler integration for stability and speed:
-                    </p>
-                    <p>
-                        \[
-                        \mathbf{v}_{t+\Delta t} = \mathbf{v}_t + (\mathbf{F}_t / m) \cdot \Delta t
-                        \]
-                        \[
-                        \mathbf{p}_{t+\Delta t} = \mathbf{p}_t + \mathbf{v}_{t+\Delta t} \cdot \Delta t
-                        \]
-                    </p>
+            <h3>Collision Response</h3>
+            <p>
+                Contacts are resolved position-based-dynamics style: overlapping particles are projected out of
+                penetration with a mass-weighted split (a lighter particle, i.e. larger inverse mass, absorbs more of
+                the correction), followed by an impulse exchange along the contact normal with restitution
+                \(e = 0.4\) and a Coulomb-style friction term \(\mu = 0.1\) on the tangent. World boundaries
+                reflect velocity with restitution \(0.85\). Kinematic stone particles carry zero inverse mass and
+                are skipped by integration entirely.
+            </p>
         </section>
 
         <section id="implementation" class="showcase__section">
             <h2>Implementation Details</h2>
 
-            <h3>System Architecture</h3>
+            <h3>Spatial Hash: Counting Sort, Not Buckets</h3>
             <p>
-                The codebase is structured for modularity and performance:
-            </p>
-            <ul>
-                <li><strong>Simulation Core:</strong> Manages particle lifecycle, state, and the main update loop.</li>
-                <li><strong>Physics Engine:</strong> Handles force accumulation, collision resolution, and boundary
-                    constraints.</li>
-                <li><strong>Rendering:</strong> Decoupled rendering pipeline using SDL2 for efficient visualization.
-                </li>
-            </ul>
-
-            <h3>Spatial Partitioning</h3>
-            <p>
-                The grid system uses a flat-array structure to optimize neighbor lookups. Particles are mapped to cells
-                using bitwise spatial hashing, allowing for constant-time access to potential collision candidates.
+                Rather than per-cell <code>std::vector</code> buckets (allocation churn, pointer chasing), the grid is
+                rebuilt each sub-step as a counting sort over a single flat index buffer: tally per-cell occupancy,
+                prefix-sum the counts into start offsets, then scatter particle indices into their cell-local slots.
+                Each cell stores a <code>(start, count)</code> pair, so a collision query walks its neighbors as
+                contiguous ranges of one shared buffer. With 8 px cells the cell index reduces to
+                <code>x &gt;&gt; 3</code>.
             </p>
 
-            <h3>Multithreading Strategy</h3>
+            <h3>Persistent Thread Pool</h3>
             <p>
-                The engine implements a platform-agnostic threading model:
+                The original design spawned <code>std::async</code> tasks every frame, paying 50&ndash;300 &micro;s of
+                scheduling overhead per frame before any physics ran. The rewrite keeps a worker pool alive for the
+                program's lifetime, sized to hardware concurrency. <code>parallelFor</code> splits the particle range
+                into chunks that workers claim from an atomic cursor — cheap work stealing, so spatially dense regions
+                (which cost more per particle in the collision pass) don't starve idle cores. Chunk size targets four
+                chunks per worker, and workloads too small to amortize synchronization run inline on the calling
+                thread.
             </p>
-            <ul>
-                <li><strong>Apple Silicon:</strong> Native GCD implementation for low-overhead task scheduling.</li>
-                <li><strong>Cross-Platform:</strong> OpenMP and <code>std::async</code> fallbacks for Windows/Linux
-                    environments.</li>
-            </ul>
 
-            <h3>SIMD & Memory</h3>
+            <h3>Race-Free Parallel Collisions</h3>
             <p>
-                Vector operations are accelerated using <code>simd_float2</code> on macOS, while
-                <code>std::vector</code> pre-allocation prevents runtime resizing. Data is stored in an Array of Structs
-                (AoS) pattern, optimized for the specific access patterns of the simulation loop.
+                The collision pass is one-sided: when a thread processes particle <em>i</em> against neighbor
+                <em>j</em>, it accumulates corrections only into <em>i</em>'s slots; <em>j</em> reciprocates when its
+                own range is processed. No locks, no atomics, no false sharing in the inner loop. Positional
+                corrections are staged in the acceleration arrays — free real estate at that point in the sub-step,
+                since forces have already been folded into velocities — and applied in a separate phase, making the
+                scheme Jacobi-style: all corrections are computed against the same snapshot before any are applied.
+            </p>
+
+            <h3>Batched Rendering</h3>
+            <p>
+                The renderer assembles every particle into a <code>thread_local</code> vertex buffer (12-vertex fans)
+                and submits the whole frame as one <code>SDL_RenderGeometry</code> call. The previous
+                per-particle <code>SDL_RenderCopy</code> approach capped the simulation at a few thousand particles
+                regardless of how fast the physics ran.
+            </p>
+
+            <h3>Vectorization Strategy</h3>
+            <p>
+                Rather than hand-written intrinsics, the engine leans on the SoA layout plus compiler
+                auto-vectorization: <code>-O3 -ffast-math -funroll-loops -ftree-vectorize</code>, with
+                <code>-mcpu=apple-m1</code> on Apple Silicon and <code>-march=native</code> elsewhere. Contiguous
+                same-type arrays give the compiler straight-line, aliasing-friendly loops it can actually vectorize.
             </p>
         </section>
 
         <section id="performance" class="showcase__section">
             <h2>Performance Analysis</h2>
             <p>
-                Profiling with Instruments and VTune guided the optimization process, resulting in:
+                The repo ships a headless benchmark suite (<code>make test</code>) that runs 240 fixed-timestep frames
+                per scenario for reproducible wall-clock comparisons, isolating each optimization:
             </p>
             <ul>
-                <li><strong>Algorithmic Efficiency:</strong> Spatial partitioning eliminated the primary \(O(n^2)\)
-                    bottleneck.</li>
-                <li><strong>Compute Density:</strong> SIMD vectorization significantly increased floating-point
-                    throughput.</li>
-                <li><strong>Scalability:</strong> The multithreaded architecture scales linearly with available cores,
-                    maintaining high frame rates even under heavy load.</li>
+                <li><strong>Single-thread vs. multi-thread</strong> at 500 and 2,000 particles measures pool
+                    scaling — and shows where synchronization overhead outweighs parallelism at small counts.</li>
+                <li><strong>Grid vs. no-grid</strong> at 2,000 particles isolates the broadphase win: the spatial hash
+                    replaces the \(O(n^2)\) all-pairs check with a near-\(O(n)\) neighborhood walk.</li>
+                <li><strong>Scaling runs</strong> at 5,000 and 10,000 particles confirm the multithreaded, grid-backed
+                    configuration holds real-time budgets as counts grow.</li>
             </ul>
+            <p>
+                Profiling with Instruments and VTune drove the priorities: the broadphase eliminated the algorithmic
+                bottleneck, the persistent pool removed per-frame scheduling cost, and batching collapsed rendering
+                from thousands of draw calls to one.
+            </p>
         </section>
 
         <section id="tech-stack" class="showcase__section">
@@ -222,21 +248,22 @@
             </div>
             <ul>
                 <li><strong>Core Language:</strong> C++17</li>
-                <li><strong>Graphics/Windowing API:</strong> SDL2, SDL2_ttf</li>
-                <li><strong>Build System:</strong> Make (Makefile) with platform detection and optimization flags
-                    (<code>-O3</code>, <code>-march=native</code>, <code>-mcpu=apple-m1</code>,
-                    <code>-ftree-vectorize</code>, <code>-fopenmp</code>).
-                </li>
-                <li><strong>Parallelism:</strong> OpenMP, C++11 Threads (<code>std::async</code>,
-                    <code>std::future</code>), Apple Grand Central Dispatch (GCD)
-                </li>
-                <li><strong>SIMD:</strong> Apple Accelerate Framework (<code>simd/simd.h</code>), Compiler
-                    Auto-Vectorization (via flags)</li>
-                <li><strong>Key Optimization Techniques:</strong> Spatial Partitioning (Grid), Multithreading, SIMD,
-                    Memory Pre-allocation, Fast Math Algorithms, Texture Caching.</li>
-                <li><strong>Profiling Tools:</strong> Valgrind, Intel VTune, Apple Instruments</li>
-                <li><strong>Development Environment:</strong> Visual Studio Code, CLion (User specified)</li>
-                <li><strong>Platform Support:</strong> Windows, macOS (with Apple Silicon optimizations), Linux.</li>
+                <li><strong>Graphics/Windowing:</strong> SDL2, SDL2_ttf (batched <code>SDL_RenderGeometry</code>
+                    rendering)</li>
+                <li><strong>Parallelism:</strong> Custom persistent thread pool over <code>std::thread</code> with
+                    atomic chunk-stealing <code>parallelFor</code>; condition-variable synchronization (no spin
+                    waits)</li>
+                <li><strong>Data Layout:</strong> Structure-of-Arrays particle store with O(1) swap-removal and
+                    pre-allocated capacity (16,384 particles)</li>
+                <li><strong>Broadphase:</strong> Uniform-grid spatial hash, counting-sort rebuild per sub-step,
+                    power-of-two cells (shift-based indexing)</li>
+                <li><strong>Build System:</strong> Cross-platform Makefile (macOS / Linux / MinGW) with automatic
+                    dependency generation and platform-detected flags
+                    (<code>-O3</code>, <code>-ffast-math</code>, <code>-ftree-vectorize</code>,
+                    <code>-mcpu=apple-m1</code> / <code>-march=native</code>)</li>
+                <li><strong>Testing:</strong> Headless benchmark suite (<code>make test</code>) with reproducible
+                    fixed-timestep scenarios</li>
+                <li><strong>Profiling Tools:</strong> Apple Instruments, Intel VTune, Valgrind</li>
             </ul>
         </section>
     </div>
@@ -265,7 +292,8 @@
     <script src="js/track.js"></script>
     <script src="js/search.js"></script>
     <script>
-        document.getElementById('current-year').textContent = new Date().getFullYear();
+        var yearEl = document.getElementById('current-year');
+        if (yearEl) yearEl.textContent = new Date().getFullYear();
         if (!document.querySelector('.stars-count').textContent.includes('Loading')) {
         }
     </script>

@@ -373,15 +373,20 @@
       </div>
     </div>
   </div>
-  <div class="contact__section">
+  <div class="contact__section" id="contact">
     <div class="contact__wrapper">
-      <h2>Contact</h2>
-      <form id="contact-form" action="https://formspree.io/f/mvgzealp" method="POST">
-        <input type="text" name="name" placeholder="Name" required>
-        <input type="email" name="email" placeholder="Email" required>
-        <textarea name="message" placeholder="Message" required></textarea>
-        <button type="submit">Send</button>
-      </form>
+      <div class="contact__panel">
+        <h2>Contact</h2>
+        <form id="contact-form" action="https://formspree.io/f/mvgzealp" method="POST">
+          <input type="text" name="name" placeholder="Name" autocomplete="name" required>
+          <input type="email" name="email" placeholder="Email" autocomplete="email" required>
+          <textarea name="message" placeholder="Message" required></textarea>
+          <button type="submit" class="contact-send">
+            <span class="send-label">Send</span>
+            <i class="fas fa-arrow-right" aria-hidden="true"></i>
+          </button>
+        </form>
+      </div>
     </div>
   </div>
   <footer class="footer-new">
@@ -444,6 +449,7 @@
   </script>
 
   <script src="js/photo.js"></script>
+  <script src="js/contact.js"></script>
   <script src="js/timeline-interactions.js"></script>
   <script src="js/dynamic-background.js"></script>
   <script src="js/search.js"></script>
