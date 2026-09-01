@@ -1,0 +1,10 @@
+name = "portfolio-analytics"
+main = "worker.js"
+compatibility_date = "2026-07-01"
+
+# After `wrangler d1 create portfolio-analytics`, paste the
+# database_id it prints below. The id is not a secret.
+[[d1_databases]]
+binding = "DB"
+database_name = "portfolio-analytics"
+database_id = "PASTE-DATABASE-ID-HERE"

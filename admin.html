@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Telemetry — aaronmclean.xyz</title>
+  <link rel="icon" type="image/png" href="icon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+
+    :root {
+      --primary: #7192e3;
+      --primary-dark: #5a78c7;
+      --text-primary: #ffffff;
+      --text-secondary: #a9a9a9;
+      --text-muted: #9c9c9c;
+      --bg-primary: #000000;
+      --bg-card: #191919;
+      --border-color: rgba(67, 67, 67, 0.7);
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --mono: 'JetBrains Mono', ui-monospace, monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---------- login ---------- */
+    #login-view {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      padding: 1rem;
+    }
+    .login-card {
+      width: 100%; max-width: 380px;
+      background: linear-gradient(180deg, rgba(25,25,28,.9), rgba(15,15,17,.85));
+      backdrop-filter: blur(16px) saturate(1.25);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius-lg);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.09), 0 20px 60px rgba(0,0,0,.6);
+      padding: 2.25rem 2rem;
+    }
+    .login-card h1 { font-size: 1.25rem; font-weight: 600; margin-bottom: .25rem; }
+    .login-card p { color: var(--text-muted); font-size: .85rem; margin-bottom: 1.5rem; }
+    .login-card input {
+      width: 100%; padding: .7rem .9rem; font-size: .95rem;
+      background: rgba(0,0,0,.5); color: var(--text-primary);
+      border: 1px solid var(--border-color); border-radius: var(--radius-md);
+      outline: none; transition: border-color .2s ease;
+      font-family: var(--mono);
+    }
+    .login-card input:focus { border-color: var(--primary); }
+    .login-card button {
+      width: 100%; margin-top: 1rem; padding: .7rem;
+      font-size: .95rem; font-weight: 600; cursor: pointer;
+      background: var(--primary); color: #0a0a0c; border: none;
+      border-radius: var(--radius-md); transition: background .2s ease;
+    }
+    .login-card button:hover { background: var(--primary-dark); }
+    .login-card button:disabled { opacity: .5; cursor: wait; }
+    #login-error { color: #e37171; font-size: .85rem; margin-top: .75rem; min-height: 1.2em; }
+
+    /* ---------- dashboard ---------- */
+    #dash-view { display: none; max-width: 1100px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    .dash-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: .5rem; }
+    .dash-header h1 { font-size: 1.4rem; font-weight: 600; }
+    .dash-header h1 span { color: var(--primary); }
+    .dash-header .actions { display: flex; gap: .75rem; align-items: center; }
+    .btn-ghost {
+      background: transparent; color: var(--text-secondary); cursor: pointer;
+      border: 1px solid var(--border-color); border-radius: var(--radius-md);
+      padding: .35rem .9rem; font-size: .8rem; transition: all .2s ease;
+    }
+    .btn-ghost:hover { color: var(--text-primary); border-color: var(--primary); }
+
+    .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    .tile {
+      background: var(--bg-card); border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg); padding: 1.1rem 1.25rem;
+    }
+    .tile .label { font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); }
+    .tile .value { font-size: 1.8rem; font-weight: 700; font-family: var(--mono); margin-top: .15rem; }
+    .tile .value small { font-size: .9rem; color: var(--text-secondary); font-weight: 400; }
+
+    .card {
+      background: var(--bg-card); border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg); padding: 1.25rem 1.5rem; margin-bottom: 1.5rem;
+    }
+    .card h2 { font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; margin-bottom: 1rem; }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    @media (max-width: 760px) { .two-col { grid-template-columns: 1fr; } }
+
+    .bar-row { display: flex; align-items: center; gap: .75rem; margin-bottom: .55rem; font-size: .85rem; }
+    .bar-row .name { flex: 0 0 42%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-secondary); font-family: var(--mono); font-size: .78rem; }
+    .bar-row .bar { flex: 1; height: 6px; background: rgba(255,255,255,.06); border-radius: 3px; overflow: hidden; }
+    .bar-row .bar i { display: block; height: 100%; background: var(--primary); border-radius: 3px; }
+    .bar-row .count { flex: 0 0 3ch; text-align: right; font-family: var(--mono); font-size: .78rem; }
+
+    table { width: 100%; border-collapse: collapse; font-size: .8rem; }
+    th { text-align: left; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: .06em; font-size: .68rem; padding: .4rem .6rem; border-bottom: 1px solid var(--border-color); }
+    td { padding: .45rem .6rem; border-bottom: 1px solid rgba(67,67,67,.3); color: var(--text-secondary); font-family: var(--mono); font-size: .74rem; white-space: nowrap; }
+    td.loc { color: var(--text-primary); }
+    .table-wrap { overflow-x: auto; }
+
+    #trace-chart { width: 100%; height: 180px; display: block; }
+    .empty { color: var(--text-muted); font-size: .85rem; font-style: italic; }
+    @media (prefers-reduced-motion: no-preference) {
+      .card, .tile { animation: rise .35s ease both; }
+      @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============ login ============ -->
+  <div id="login-view">
+    <div class="login-card">
+      <h1>Telemetry access</h1>
+      <p>Authentication is verified server-side. Nothing in this page or repository grants access.</p>
+      <input id="password" type="password" placeholder="password" autocomplete="current-password" autofocus>
+      <button id="login-btn">Sign in</button>
+      <div id="login-error"></div>
+    </div>
+  </div>
+
+  <!-- ============ dashboard ============ -->
+  <div id="dash-view">
+    <div class="dash-header">
+      <h1>aaronmclean.xyz <span>/ telemetry</span></h1>
+      <div class="actions">
+        <button class="btn-ghost" id="refresh-btn">Refresh</button>
+        <button class="btn-ghost" id="logout-btn">Sign out</button>
+      </div>
+    </div>
+
+    <div class="tiles">
+      <div class="tile"><div class="label">Cumulative views</div><div class="value" id="t-views">–</div></div>
+      <div class="tile"><div class="label">Sessions</div><div class="value" id="t-sessions">–</div></div>
+      <div class="tile"><div class="label">Avg duration</div><div class="value" id="t-duration">–</div></div>
+      <div class="tile"><div class="label">Sessions · 30 d</div><div class="value" id="t-30d">–</div></div>
+    </div>
+
+    <div class="card">
+      <h2>Views — last 30 days</h2>
+      <svg id="trace-chart" preserveAspectRatio="none"></svg>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <h2>Top pages</h2>
+        <div id="top-pages"><div class="empty">No data yet</div></div>
+      </div>
+      <div class="card">
+        <h2>Locations</h2>
+        <div id="locations"><div class="empty">No data yet</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Recent sessions</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Started</th><th>Location</th><th>Duration</th><th>Views</th><th>Referrer</th><th>Client</th></tr></thead>
+          <tbody id="sessions-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Set this to your deployed Worker URL (no trailing slash).
+    // This URL is not a secret — every request that returns data
+    // is authenticated server-side.
+    var ENDPOINT = 'https://YOUR-WORKER.YOUR-SUBDOMAIN.workers.dev';
+
+    var $ = function (id) { return document.getElementById(id); };
+    var token = sessionStorage.getItem('am_admin_token');
+
+    /* ---------- auth flow ---------- */
+    function showLogin(msg) {
+      sessionStorage.removeItem('am_admin_token');
+      token = null;
+      $('dash-view').style.display = 'none';
+      $('login-view').style.display = 'flex';
+      $('login-error').textContent = msg || '';
+    }
+    function showDash() {
+      $('login-view').style.display = 'none';
+      $('dash-view').style.display = 'block';
+      loadStats();
+    }
+
+    $('login-btn').addEventListener('click', doLogin);
+    $('password').addEventListener('keydown', function (e) { if (e.key === 'Enter') doLogin(); });
+
+    function doLogin() {
+      var btn = $('login-btn');
+      btn.disabled = true;
+      $('login-error').textContent = '';
+      fetch(ENDPOINT + '/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: $('password').value })
+      })
+        .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+        .then(function (res) {
+          btn.disabled = false;
+          if (!res.ok) { $('login-error').textContent = res.d.error || 'Sign-in failed'; return; }
+          token = res.d.token;
+          sessionStorage.setItem('am_admin_token', token);
+          $('password').value = '';
+          showDash();
+        })
+        .catch(function () {
+          btn.disabled = false;
+          $('login-error').textContent = 'Could not reach the analytics service';
+        });
+    }
+
+    $('logout-btn').addEventListener('click', function () { showLogin(); });
+    $('refresh-btn').addEventListener('click', loadStats);
+
+    /* ---------- data ---------- */
+    function loadStats() {
+      fetch(ENDPOINT + '/api/stats', { headers: { 'Authorization': 'Bearer ' + token } })
+        .then(function (r) {
+          if (r.status === 401) { showLogin('Session expired — sign in again'); throw new Error('401'); }
+          return r.json();
+        })
+        .then(render)
+        .catch(function () { /* handled above or transient */ });
+    }
+
+    function fmtDuration(s) {
+      s = Math.round(s || 0);
+      if (s < 60) return s + '<small>s</small>';
+      var m = Math.floor(s / 60), r = s % 60;
+      if (m < 60) return m + '<small>m</small> ' + r + '<small>s</small>';
+      return Math.floor(m / 60) + '<small>h</small> ' + (m % 60) + '<small>m</small>';
+    }
+    function fmtDate(unix) {
+      var d = new Date(unix * 1000);
+      return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) + ' ' +
+             d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+    }
+    function esc(s) {
+      return String(s || '').replace(/[&<>"]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+      });
+    }
+    function clientSummary(ua) {
+      ua = ua || '';
+      var os = /iPhone|iPad/.test(ua) ? 'iOS' : /Android/.test(ua) ? 'Android'
+             : /Mac OS X/.test(ua) ? 'macOS' : /Windows/.test(ua) ? 'Windows'
+             : /Linux/.test(ua) ? 'Linux' : '?';
+      var br = /Edg\//.test(ua) ? 'Edge' : /Firefox\//.test(ua) ? 'Firefox'
+             : /Chrome\//.test(ua) ? 'Chrome' : /Safari\//.test(ua) ? 'Safari' : '?';
+      return os + ' · ' + br;
+    }
+
+    function render(d) {
+      $('t-views').textContent = d.totals.total_views.toLocaleString();
+      $('t-sessions').textContent = d.totals.total_sessions.toLocaleString();
+      $('t-duration').innerHTML = fmtDuration(d.totals.avg_duration);
+      $('t-30d').textContent = d.totals.sessions_30d.toLocaleString();
+
+      drawTrace(d.byDay);
+      renderBars('top-pages', d.topPages, function (r) { return r.path; }, function (r) { return r.views; });
+      renderBars('locations', d.countries,
+        function (r) { return (r.city ? r.city + ', ' : '') + r.country; },
+        function (r) { return r.sessions; });
+
+      var rows = d.recent.map(function (s) {
+        var loc = [s.city, s.region, s.country].filter(Boolean).join(', ') || '—';
+        return '<tr><td>' + fmtDate(s.started) + '</td>' +
+               '<td class="loc">' + esc(loc) + '</td>' +
+               '<td>' + fmtDuration(s.duration).replace(/<\/?small>/g, '') + '</td>' +
+               '<td>' + s.views + '</td>' +
+               '<td>' + esc((s.referrer || '—').replace(/^https?:\/\//, '').slice(0, 40)) + '</td>' +
+               '<td>' + esc(clientSummary(s.ua)) + '</td></tr>';
+      }).join('');
+      $('sessions-body').innerHTML = rows || '<tr><td colspan="6" class="empty">No sessions recorded yet</td></tr>';
+    }
+
+    function renderBars(id, rows, nameFn, valFn) {
+      if (!rows || !rows.length) { $(id).innerHTML = '<div class="empty">No data yet</div>'; return; }
+      var max = Math.max.apply(null, rows.map(valFn));
+      $(id).innerHTML = rows.map(function (r) {
+        var pct = Math.max(3, Math.round(valFn(r) / max * 100));
+        return '<div class="bar-row"><div class="name" title="' + esc(nameFn(r)) + '">' + esc(nameFn(r)) + '</div>' +
+               '<div class="bar"><i style="width:' + pct + '%"></i></div>' +
+               '<div class="count">' + valFn(r) + '</div></div>';
+      }).join('');
+    }
+
+    /* Stepped signal-trace chart — a nod to the CAN traces elsewhere on the site */
+    function drawTrace(byDay) {
+      var svg = $('trace-chart');
+      var W = 1000, H = 180, PAD = 8;
+      svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+
+      // fill a continuous 30-day series
+      var map = {};
+      (byDay || []).forEach(function (r) { map[r.day] = r.views; });
+      var series = [];
+      for (var i = 29; i >= 0; i--) {
+        var d = new Date(Date.now() - i * 86400000);
+        var key = d.toISOString().slice(0, 10);
+        series.push(map[key] || 0);
+      }
+      var max = Math.max(1, Math.max.apply(null, series));
+      var stepW = (W - PAD * 2) / series.length;
+      var y = function (v) { return H - PAD - (v / max) * (H - PAD * 2); };
+
+      var path = 'M ' + PAD + ' ' + y(series[0]);
+      series.forEach(function (v, idx) {
+        var x0 = PAD + idx * stepW, x1 = x0 + stepW;
+        path += ' L ' + x0.toFixed(1) + ' ' + y(v).toFixed(1) + ' L ' + x1.toFixed(1) + ' ' + y(v).toFixed(1);
+      });
+
+      var area = path + ' L ' + (W - PAD) + ' ' + (H - PAD) + ' L ' + PAD + ' ' + (H - PAD) + ' Z';
+      svg.innerHTML =
+        '<defs><linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">' +
+        '<stop offset="0" stop-color="#7192e3" stop-opacity=".25"/>' +
+        '<stop offset="1" stop-color="#7192e3" stop-opacity="0"/></linearGradient></defs>' +
+        '<path d="' + area + '" fill="url(#fade)"/>' +
+        '<path d="' + path + '" fill="none" stroke="#7192e3" stroke-width="2" ' +
+        'style="filter: drop-shadow(0 0 6px rgba(113,146,227,.55))"/>';
+    }
+
+    /* ---------- boot ---------- */
+    if (ENDPOINT.indexOf('YOUR-WORKER') !== -1) {
+      showLogin('Set ENDPOINT in admin.html to your Worker URL first');
+    } else if (token) {
+      showDash();
+    } else {
+      showLogin();
+    }
+  </script>
+</body>
+</html>
