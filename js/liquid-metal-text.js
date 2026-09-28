@@ -288,6 +288,12 @@ function createTextImage() {
   ctx.textBaseline = 'alphabetic';
   ctx.fillText('Aaron McLean', pad + m.actualBoundingBoxLeft, pad + m.actualBoundingBoxAscent);
 
+  // The container's CSS height only sets the font size; collapse the empty space above and
+  // below the letters so the hero's spacing is measured from the visible ink of the name.
+  const trim = Math.max(0, (containerHeight - boxH) / 2 + pad);
+  container.style.marginTop = -trim + 'px';
+  container.style.marginBottom = -trim + 'px';
+
   window.metalBox = { width: boxW, height: boxH };
   processTextImage(textCanvas);
 }

@@ -461,6 +461,17 @@ document.addEventListener('DOMContentLoaded', function () {
             styledForGlow = false;
           }
           // regular dots stay subdued; the canvas itself is fully opaque so snakes can glow
+          if (snakeGlow > 0) {
+            // slight halo behind snake dots, strongest at the head and fading down the tail;
+            // the dot itself keeps its normal size and brightness
+            const fill = ctx.fillStyle;
+            ctx.fillStyle = `rgb(${accentRGB[0]}, ${accentRGB[1]}, ${accentRGB[2]})`;
+            ctx.globalAlpha = 0.16 * snakeGlow * edgeFade;
+            ctx.beginPath();
+            ctx.arc(dotX, dotY, 6, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = fill;
+          }
           ctx.globalAlpha = opacity * edgeFade * gridDotAlpha;
           ctx.beginPath();
           ctx.arc(dotX, dotY, dotRadius, 0, Math.PI * 2);
