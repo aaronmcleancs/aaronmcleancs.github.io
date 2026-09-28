@@ -1,10 +1,13 @@
+// Tuned for a text-sized canvas: stripe scale and refraction close to the original
+// liquid-metal shader, with a gentle flow speed.
 const params = {
-  refraction: 0.002,
-  edge: 0.000,
-  patternBlur: 0.05,
-  liquid: 0.35,
-  speed: 0.04,
-  patternScale: 0.1,
+  refraction: 0.006,
+  edge: 0.05,
+  patternBlur: 0.006,
+  liquid: 0.08,
+  speed: 0.18,
+  patternScale: 2.0,
+  patternRatio: 2.0,
 };
 const vertexShaderSource = `#version 300 es
 precision mediump float;
@@ -33,6 +36,10 @@ uniform float u_refraction;
 uniform float u_edge;
 uniform float u_patternBlur;
 uniform float u_liquid;
+uniform float u_pattern_ratio;
+uniform float u_clarity;
+uniform vec3 u_color_light;
+uniform vec3 u_color_dark;
 
 
 #define TWO_PI 6.28318530718
@@ -121,7 +128,9 @@ float get_img_frame_alpha(vec2 uv, float img_frame_width) {
 void main() {
   vec2 uv = vUv;
   uv.y = 1. - uv.y;
-  uv.x *= u_ratio;
+  // pattern space is capped near 2:1 (the shader's bulge maths assumes a squarish canvas;
+  // on a 7:1 name it went strongly negative at the ends and aliased into noise)
+  uv.x *= u_pattern_ratio;
 
   float diagonal = uv.x - uv.y;
 
@@ -133,14 +142,16 @@ void main() {
   vec3 color = vec3(0.);
   float opacity = 1.;
 
-  vec3 color1 = vec3(1.0, 1.0, 1.0);
-  vec3 color2 = vec3(0.0, 0.0, 0.0);
+  vec3 color1 = u_color_light;
+  vec3 color2 = u_color_dark;
 
   float edge = img.r;
+  // rim: the outer edge of each stroke, where glass catches light (img.r -> 1 at the outline)
+  float rim = smoothstep(.72, .96, img.r);
 
 
   vec2 grad_uv = uv;
-  grad_uv.x -= u_ratio * 0.5;
+  grad_uv.x -= u_pattern_ratio * 0.5;
   grad_uv.y -= 0.5;
 
   float dist = length(grad_uv + vec2(0., .2 * diagonal));
@@ -217,182 +228,169 @@ void main() {
 
   color = vec3(r, g, b);
 
-  color *= opacity;
+  // Dark glass: the darker the metal, the more see-through it is (u_clarity = 0 is solid),
+  // so shadows let the background through while highlights stay bright.
+  float lum = dot(color, vec3(.299, .587, .114));
+  float alpha = opacity * mix(1. - u_clarity, 1., smoothstep(.05, .85, lum));
+  // a light rim keeps every letter's outline readable even where the glass is clearest
+  color = mix(color, u_color_light, rim * .55);
+  alpha = max(alpha, opacity * rim * .85);
 
-  fragColor = vec4(color, opacity);
+  fragColor = vec4(color * alpha, alpha);
 }`;
 
 
 function init() {
-
   createTextImage();
-
-
   initWebGL();
 }
 
+// Resolution of both canvases relative to CSS pixels.
+const METAL_SCALE = Math.min((window.devicePixelRatio || 1) * 1.5, 3);
 
+// The effect is laid out across the canvas, so the canvas is cropped tightly around the
+// name (plus a small margin) instead of spanning the whole column. Otherwise the letters
+// only ever showed a small slice of the pattern.
 function createTextImage() {
   const textCanvas = document.getElementById('text-canvas');
+  const shaderCanvas = document.getElementById('shader-canvas');
+  if (!textCanvas || !shaderCanvas) return;
 
-  if (!textCanvas) {
-    console.error('Text canvas not found');
-    return;
-  }
+  const container = textCanvas.parentElement;
+  const containerWidth = container.offsetWidth;
+  const containerHeight = container.offsetHeight;
+  const fontSize = Math.min(Math.floor(containerHeight * 0.65), Math.floor(containerWidth / 7));
+  const font = '900 ' + fontSize + 'px "Audiowide", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, sans-serif';
 
-  const ctx = textCanvas.getContext('2d');
+  const ctx = textCanvas.getContext('2d', { willReadFrequently: true });
+  ctx.font = font;
+  const m = ctx.measureText('Aaron McLean');
+  const pad = Math.round(fontSize * 0.1);
+  const boxW = Math.ceil(m.actualBoundingBoxLeft + m.actualBoundingBoxRight) + pad * 2;
+  const boxH = Math.ceil(m.actualBoundingBoxAscent + m.actualBoundingBoxDescent) + pad * 2;
 
-  const containerWidth = textCanvas.parentElement.offsetWidth;
-  const containerHeight = textCanvas.parentElement.offsetHeight;
+  [textCanvas, shaderCanvas].forEach(function (c) {
+    c.style.left = '50%';
+    c.style.top = '50%';
+    c.style.width = boxW + 'px';
+    c.style.height = boxH + 'px';
+    c.style.transform = 'translate(-50%, -50%)';
+  });
 
-  const scale = (window.devicePixelRatio || 1) * 1.5;
-  textCanvas.width = containerWidth * scale;
-  textCanvas.height = containerHeight * scale;
-
-  ctx.scale(scale, scale);
-
+  textCanvas.width = Math.round(boxW * METAL_SCALE);
+  textCanvas.height = Math.round(boxH * METAL_SCALE);
+  ctx.setTransform(METAL_SCALE, 0, 0, METAL_SCALE, 0, 0);
   ctx.fillStyle = 'white';
-  ctx.fillRect(0, 0, containerWidth, containerHeight);
-
-  const fontSize = Math.min(
-    Math.floor(containerHeight * 0.65),
-    Math.floor(containerWidth / 8)
-  );
-
+  ctx.fillRect(0, 0, boxW, boxH);
   ctx.fillStyle = 'black';
-  ctx.font = '900 ' + fontSize + 'px "Audiowide", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
+  ctx.font = font;
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillText('Aaron McLean', pad + m.actualBoundingBoxLeft, pad + m.actualBoundingBoxAscent);
 
-  ctx.fillText('Aaron McLean', containerWidth / 2, containerHeight / 2);
-
+  window.metalBox = { width: boxW, height: boxH };
   processTextImage(textCanvas);
 }
 
+// 1D squared Euclidean distance transform (Felzenszwalb & Huttenlocher), in place.
+function edt1d(f, n, v, z, d) {
+  let k = 0;
+  v[0] = 0;
+  z[0] = -Infinity;
+  z[1] = Infinity;
+  for (let q = 1; q < n; q++) {
+    let s = ((f[q] + q * q) - (f[v[k]] + v[k] * v[k])) / (2 * q - 2 * v[k]);
+    while (s <= z[k]) {
+      k--;
+      s = ((f[q] + q * q) - (f[v[k]] + v[k] * v[k])) / (2 * q - 2 * v[k]);
+    }
+    k++;
+    v[k] = q;
+    z[k] = s;
+    z[k + 1] = Infinity;
+  }
+  k = 0;
+  for (let q = 0; q < n; q++) {
+    while (z[k + 1] < q) k++;
+    d[q] = (q - v[k]) * (q - v[k]) + f[v[k]];
+  }
+}
 
+// Builds the depth texture the shader reads: white outside the letters, and inside them
+// a rounded profile that is brightest at each stroke's edge and darkest along its centre,
+// like a pipe. Uses an exact distance transform (linear time) shaped into the parabolic
+// profile a fully relaxed Poisson solve would give, so every stroke gets full depth
+// instead of only a thin ramp at its edges.
 function processTextImage(canvas) {
-  const ctx = canvas.getContext('2d');
-  const width = canvas.width;
-  const height = canvas.height;
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  const W = canvas.width;
+  const H = canvas.height;
+  const src = ctx.getImageData(0, 0, W, H).data;
+  const INF = 1e20;
 
-
-  const imageData = ctx.getImageData(0, 0, width, height);
-  const data = imageData.data;
-
-
-  const shapeMask = new Array(width * height).fill(false);
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
-      const idx = (y * width + x) * 4;
-
-      if (data[idx] < 240 || data[idx + 1] < 240 || data[idx + 2] < 240) {
-        shapeMask[y * width + x] = true;
-      }
-    }
+  const inside = new Uint8Array(W * H);
+  const grid = new Float64Array(W * H);
+  for (let i = 0, p = 0; i < W * H; i++, p += 4) {
+    const isIn = src[p] < 128;
+    inside[i] = isIn ? 1 : 0;
+    grid[i] = isIn ? INF : 0;
   }
 
-
-  const boundaryMask = new Array(width * height).fill(false);
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
-      const idx = y * width + x;
-      if (!shapeMask[idx]) continue;
-
-      let isBoundary = false;
-      for (let ny = Math.max(0, y - 1); ny <= Math.min(height - 1, y + 1) && !isBoundary; ny++) {
-        for (let nx = Math.max(0, x - 1); nx <= Math.min(width - 1, x + 1) && !isBoundary; nx++) {
-          if (!shapeMask[ny * width + nx]) {
-            isBoundary = true;
-          }
-        }
-      }
-
-      if (isBoundary) {
-        boundaryMask[idx] = true;
-      }
-    }
+  const n = Math.max(W, H);
+  const f = new Float64Array(n);
+  const d = new Float64Array(n);
+  const v = new Int32Array(n);
+  const z = new Float64Array(n + 1);
+  for (let x = 0; x < W; x++) {
+    for (let y = 0; y < H; y++) f[y] = grid[y * W + x];
+    edt1d(f, H, v, z, d);
+    for (let y = 0; y < H; y++) grid[y * W + x] = d[y];
   }
-
-
-  let distField = new Float32Array(width * height).fill(0);
-  const iterations = 100;
-
-
-  let newDist = new Float32Array(width * height).fill(0);
-  const distC = 0.05;
-
-
-  for (let iter = 0; iter < iterations; iter++) {
-    for (let y = 0; y < height; y++) {
-      for (let x = 0; x < width; x++) {
-        const idx = y * width + x;
-
-        if (!shapeMask[idx] || boundaryMask[idx]) {
-          newDist[idx] = 0;
-          continue;
-        }
-
-
-        let sum = 0;
-        let count = 0;
-
-        for (let ny = Math.max(0, y - 1); ny <= Math.min(height - 1, y + 1); ny++) {
-          for (let nx = Math.max(0, x - 1); nx <= Math.min(width - 1, x + 1); nx++) {
-            if ((nx !== x || ny !== y) && shapeMask[ny * width + nx]) {
-              sum += distField[ny * width + nx];
-              count++;
-            }
-          }
-        }
-
-        newDist[idx] = count > 0 ? (distC + sum / count) : distC;
-      }
-    }
-
-
-    const temp = distField;
-    distField = newDist;
-    newDist = temp;
-  }
-
-
   let maxDist = 0;
-  for (let i = 0; i < distField.length; i++) {
-    maxDist = Math.max(maxDist, distField[i]);
-  }
-
-
-  const outImageData = ctx.createImageData(width, height);
-
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
-      const idx = y * width + x;
-      const pixelIdx = idx * 4;
-
-      if (!shapeMask[idx]) {
-        outImageData.data[pixelIdx] = 255;
-        outImageData.data[pixelIdx + 1] = 255;
-        outImageData.data[pixelIdx + 2] = 255;
-        outImageData.data[pixelIdx + 3] = 255;
-      } else {
-
-        const val = distField[idx] / maxDist;
-        const remapped = Math.pow(val, 1.5);
-        const gray = Math.floor(255 * (1 - remapped));
-
-        outImageData.data[pixelIdx] = gray;
-        outImageData.data[pixelIdx + 1] = gray;
-        outImageData.data[pixelIdx + 2] = gray;
-        outImageData.data[pixelIdx + 3] = 255;
-      }
+  for (let y = 0; y < H; y++) {
+    const row = y * W;
+    for (let x = 0; x < W; x++) f[x] = grid[row + x];
+    edt1d(f, W, v, z, d);
+    for (let x = 0; x < W; x++) {
+      const dist = Math.sqrt(d[x]);
+      grid[row + x] = dist;
+      if (inside[row + x] && dist > maxDist) maxDist = dist;
     }
   }
+  if (maxDist === 0) maxDist = 1;
 
+  const out = ctx.createImageData(W, H);
+  const od = out.data;
+  for (let i = 0, p = 0; i < W * H; i++, p += 4) {
+    let gray = 255;
+    if (inside[i]) {
+      const t = Math.min(grid[i] / maxDist, 1);
+      const depth = 1 - (1 - t) * (1 - t);
+      gray = Math.floor(255 * (1 - Math.pow(depth, 1.5)));
+    }
+    od[p] = od[p + 1] = od[p + 2] = gray;
+    od[p + 3] = 255;
+  }
+  ctx.putImageData(out, 0, 0);
+  window.processedTextImage = out;
+}
 
-  ctx.putImageData(outImageData, 0, 0);
-
-
-  window.processedTextImage = outImageData;
+// Metal colours come from css/theme.css (--metal-light / --metal-dark).
+function themeMetalColors() {
+  const cs = getComputedStyle(document.documentElement);
+  function rgb(name, fallback) {
+    const probe = document.createElement('span');
+    probe.style.color = cs.getPropertyValue(name).trim() || fallback;
+    document.body.appendChild(probe);
+    const m = getComputedStyle(probe).color.match(/\d+(\.\d+)?/g) || [];
+    probe.remove();
+    return m.length >= 3 ? [m[0] / 255, m[1] / 255, m[2] / 255] : null;
+  }
+  return {
+    light: rgb('--metal-light', '#ffffff') || [1, 1, 1],
+    dark: rgb('--metal-dark', '#000000') || [0, 0, 0],
+    clarity: parseFloat(cs.getPropertyValue('--metal-clarity')) || 0,
+  };
 }
 
 
@@ -414,13 +412,9 @@ function initWebGL() {
     return;
   }
 
-  const containerWidth = shaderCanvas.parentElement.offsetWidth;
-  const containerHeight = shaderCanvas.parentElement.offsetHeight;
-
-  // Force 150% resolution by multiplying the scale factor
-  const scale = (window.devicePixelRatio || 1) * 1.5;
-  shaderCanvas.width = containerWidth * scale;
-  shaderCanvas.height = containerHeight * scale;
+  const box = window.metalBox;
+  shaderCanvas.width = Math.round(box.width * METAL_SCALE);
+  shaderCanvas.height = Math.round(box.height * METAL_SCALE);
 
   gl.viewport(0, 0, shaderCanvas.width, shaderCanvas.height);
 
@@ -451,7 +445,11 @@ function initWebGL() {
     'u_refraction',
     'u_edge',
     'u_patternBlur',
-    'u_liquid'
+    'u_liquid',
+    'u_pattern_ratio',
+    'u_clarity',
+    'u_color_light',
+    'u_color_dark'
   ];
 
   uniformNames.forEach(name => {
@@ -460,8 +458,13 @@ function initWebGL() {
 
   setupTexture(gl, uniforms);
 
-  gl.uniform1f(uniforms.u_ratio, containerWidth / containerHeight);
-  gl.uniform1f(uniforms.u_img_ratio, containerWidth / containerHeight);
+  gl.uniform1f(uniforms.u_ratio, box.width / box.height);
+  gl.uniform1f(uniforms.u_img_ratio, box.width / box.height);
+  gl.uniform1f(uniforms.u_pattern_ratio, Math.min(box.width / box.height, params.patternRatio));
+  const metal = themeMetalColors();
+  gl.uniform3fv(uniforms.u_color_light, metal.light);
+  gl.uniform3fv(uniforms.u_color_dark, metal.dark);
+  gl.uniform1f(uniforms.u_clarity, metal.clarity);
   gl.uniform1f(uniforms.u_patternScale, params.patternScale);
   gl.uniform1f(uniforms.u_refraction, params.refraction);
   gl.uniform1f(uniforms.u_edge, params.edge);
@@ -478,38 +481,45 @@ function initWebGL() {
 
   function render(currentTime) {
     currentTime *= 0.001;
-    const deltaTime = currentTime - lastTime;
+    // resume without a jump after the loop has been paused off screen
+    const deltaTime = Math.min(currentTime - lastTime, 0.1);
     lastTime = currentTime;
 
     animationTime += deltaTime * params.speed * 1000;
     gl.uniform1f(uniforms.u_time, animationTime);
-
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-
-    requestAnimationFrame(render);
   }
 
-  requestAnimationFrame(render);
+  if (typeof runWhileVisible === 'function') {
+    runWhileVisible(shaderCanvas, render);
+  } else {
+    (function loop(t) { render(t); requestAnimationFrame(loop); })(0);
+  }
 
+  // Rebuild only when the width actually changes (phones fire resize when the URL bar
+  // moves), and upload the new texture so the change is actually drawn.
+  let lastWidth = shaderCanvas.parentElement.offsetWidth;
+  let resizeTimer = null;
   window.addEventListener('resize', function () {
-    setTimeout(() => {
-      if (!shaderCanvas || !shaderCanvas.parentElement) return;
-
-      const newWidth = shaderCanvas.parentElement.offsetWidth;
-      const newHeight = shaderCanvas.parentElement.offsetHeight;
-
-      shaderCanvas.width = newWidth * scale;
-      shaderCanvas.height = newHeight * scale;
-
-      gl.viewport(0, 0, shaderCanvas.width, shaderCanvas.height);
-
-      gl.uniform1f(uniforms.u_ratio, newWidth / newHeight);
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+      const width = shaderCanvas.parentElement.offsetWidth;
+      if (width === lastWidth) return;
+      lastWidth = width;
 
       createTextImage();
-    }, 100);
+      const b = window.metalBox;
+      shaderCanvas.width = Math.round(b.width * METAL_SCALE);
+      shaderCanvas.height = Math.round(b.height * METAL_SCALE);
+      gl.viewport(0, 0, shaderCanvas.width, shaderCanvas.height);
+      gl.uniform1f(uniforms.u_ratio, b.width / b.height);
+      gl.uniform1f(uniforms.u_img_ratio, b.width / b.height);
+      gl.uniform1f(uniforms.u_pattern_ratio, Math.min(b.width / b.height, params.patternRatio));
+      const img = window.processedTextImage;
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, img.width, img.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, img.data);
+    }, 150);
   });
 }
-
 
 function createShaderProgram(gl, vsSource, fsSource) {
 
@@ -598,7 +608,6 @@ function setupTexture(gl, uniforms) {
 
 document.addEventListener('DOMContentLoaded', function () {
   try {
-    console.log('Initializing liquid metal text effect');
     init();
   } catch (e) {
     console.error('Error initializing liquid metal text:', e);

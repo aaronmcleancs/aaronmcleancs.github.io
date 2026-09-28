@@ -1,3 +1,9 @@
+// Reads an "R G B" triplet token from css/theme.css, e.g. --grid-dot-rgb: 32 32 32
+function themeRGB(name, fallback) {
+  var parts = getComputedStyle(document.documentElement).getPropertyValue(name).trim().split(/[\s,]+/).map(Number);
+  return parts.length === 3 && parts.every(function (n) { return !isNaN(n); }) ? parts : fallback;
+}
+
 // Runs `frame` on rAF only while `el` is on screen and the tab is visible.
 function runWhileVisible(el, frame) {
   var inView = true, rafId = null;
@@ -55,7 +61,16 @@ function runWhileVisible(el, frame) {
     const baselineWidth = 1920;
     const multiplier = window.innerWidth > baselineWidth ? 700 * (baselineWidth / window.innerWidth) : 700;
     const offset = baseScale * 0.4;
-    return (baseScale + scrollPercent * multiplier) - offset * (1 - scrollPercent);
+    return ((baseScale + scrollPercent * multiplier) - offset * (1 - scrollPercent)) * desktopBoost();
+  }
+
+  // On standard-aspect desktops and laptops (16:9, 16:10, 3:2...) zoom the waves in a little.
+  // They scale from the top edge, so this sits the bands lower without opening a gap under
+  // the nav. Phones, tablets and ultrawides keep the original framing.
+  function desktopBoost() {
+    const w = window.innerWidth;
+    const aspect = w / Math.max(window.innerHeight, 1);
+    return w >= 1024 && aspect >= 1.3 && aspect <= 1.9 ? 1.2 : 1;
   }
 
   // Subtle idle drift: slow horizontal sway composed with the scroll zoom
@@ -150,9 +165,11 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   const spacing = 45;
-  const baseDotRadius = 1.5;
-  const maxDotRadius = 2.6;
-  const dotColor = 'rgb(71, 71, 71)';
+  const baseDotRadius = 1.8;
+  const maxDotRadius = 2.9;
+  const dotRGB = themeRGB('--grid-dot-rgb', [32, 32, 32]);
+  const glowRGB = themeRGB('--grid-dot-glow-rgb', [99, 99, 99]);
+  const dotFill = 'rgb(' + dotRGB.join(', ') + ')';
 
   const waveSpeed = 0.005;
   const waveAmplitude = 15;
@@ -236,6 +253,83 @@ document.addEventListener('DOMContentLoaded', function () {
     if (gridLoop && gridLoop.active()) spawnPulse();
   }, pulseSpawnInterval);
 
+  // Snakes: quick, infrequent trails that run through the grid in the theme accent. A head
+  // steps cell to cell with occasional random turns; the tail behind it is a random length
+  // and each segment is darker than the one before. When a snake's run ends, the tail
+  // drains away behind the head rather than vanishing.
+  const gridDotAlpha = 0.55;
+  const reduceGridMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const accentRGB = themeRGB('--accent-rgb', [126, 130, 241]);
+  const snakes = [];
+  const maxSnakes = 3;
+  const snakeStepMs = 55;
+  const turnChance = 0.22;
+  const DIRS = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+  let nextSnakeAt = Date.now() + 600 + Math.random() * 1200;
+
+  function spawnSnake(cols, jMin, jMax, now) {
+    if (cols < 6 || jMax - jMin < 4) return;
+    const head = [2 + Math.floor(Math.random() * (cols - 4)), jMin + Math.floor(Math.random() * (jMax - jMin + 1))];
+    snakes.push({
+      cells: [head],
+      dir: DIRS[Math.floor(Math.random() * 4)],
+      length: 5 + Math.floor(Math.random() * 12),
+      // each segment is this fraction of the one ahead of it, reaching ~6% at the tail end
+      decay: 0,
+      stepsLeft: 18 + Math.floor(Math.random() * 30),
+      lastStep: now,
+      jMin: jMin,
+      jMax: jMax,
+      cols: cols
+    });
+  }
+
+  function stepSnake(snake) {
+    if (snake.stepsLeft <= 0) {
+      snake.cells.pop(); // run finished: drain the tail
+      return;
+    }
+    let dir = snake.dir;
+    if (Math.random() < turnChance) {
+      const turns = dir[0] !== 0 ? [[0, 1], [0, -1]] : [[1, 0], [-1, 0]];
+      dir = turns[Math.floor(Math.random() * 2)];
+    }
+    let [hi, hj] = snake.cells[0];
+    let ni = hi + dir[0];
+    let nj = hj + dir[1];
+    // turn back inward at the edges of the grid
+    if (ni < 1 || ni > snake.cols - 2) { dir = [-dir[0], 0]; ni = hi + dir[0]; }
+    if (nj < snake.jMin || nj > snake.jMax) { dir = [0, -dir[1]]; nj = hj + dir[1]; }
+    snake.dir = dir;
+    snake.cells.unshift([ni, nj]);
+    if (snake.cells.length > snake.length) snake.cells.pop();
+    snake.stepsLeft--;
+  }
+
+  // brightness for each lit cell this frame: 1 at the head, falling off down the tail
+  function snakeCells(now) {
+    // (decay is derived from each snake's random length the first time it is drawn)
+    const lit = new Map();
+    for (let s = snakes.length - 1; s >= 0; s--) {
+      const snake = snakes[s];
+      while (now - snake.lastStep >= snakeStepMs) {
+        stepSnake(snake);
+        snake.lastStep += snakeStepMs;
+      }
+      if (!snake.cells.length) {
+        snakes.splice(s, 1);
+        continue;
+      }
+      snake.cells.forEach(function (cell, k) {
+        const key = cell[0] + ',' + cell[1];
+        if (!snake.decay) snake.decay = Math.pow(0.06, 1 / snake.length);
+        const brightness = Math.pow(snake.decay, k);
+        lit.set(key, Math.max(lit.get(key) || 0, brightness));
+      });
+    }
+    return lit;
+  }
+
   function drawGrid() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -270,7 +364,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // fade the grid in/out over the top and bottom 20% of the section
     const fadeBand = canvas.height * 0.2;
-    ctx.fillStyle = 'rgb(32, 32, 32)';
+
+    // snakes spawn only in rows that are fully visible (outside the fade bands)
+    const snakeNow = Date.now();
+    if (!reduceGridMotion && snakeNow >= nextSnakeAt) {
+      if (snakes.length < maxSnakes) {
+        const jMin = Math.ceil((fadeBand + currentScrollOffset) / spacing);
+        const jMax = Math.floor((canvas.height - fadeBand + currentScrollOffset) / spacing);
+        spawnSnake(cols, jMin, jMax, snakeNow);
+      }
+      nextSnakeAt = snakeNow + 800 + Math.random() * 1700;
+    }
+    const lit = snakes.length ? snakeCells(snakeNow) : null;
+    ctx.fillStyle = dotFill;
     let styledForGlow = false;
 
     for (let i = 0; i < cols; i++) {
@@ -340,19 +446,26 @@ document.addEventListener('DOMContentLoaded', function () {
           opacity += brightnessBoost;
           opacity = Math.min(opacity, 1.0);
 
-          // dots near the cursor brighten ~30% of the way toward white
-          if (mouseGlow > 0.01) {
-            const channel = Math.round(32 + 67 * mouseGlow);
-            ctx.fillStyle = `rgb(${channel}, ${channel}, ${channel})`;
+          const snakeGlow = lit ? (lit.get(i + ',' + j) || 0) : 0;
+          if (mouseGlow > 0.01 || snakeGlow > 0) {
+            // cursor: blend toward the glow colour; snake: tint toward the accent.
+            // Snakes only change colour; dot size and brightness still follow the cursor alone.
+            const channel = (c) => {
+              const base = dotRGB[c] + (glowRGB[c] - dotRGB[c]) * mouseGlow;
+              return Math.round(base + (accentRGB[c] - base) * snakeGlow);
+            };
+            ctx.fillStyle = `rgb(${channel(0)}, ${channel(1)}, ${channel(2)})`;
             styledForGlow = true;
           } else if (styledForGlow) {
-            ctx.fillStyle = 'rgb(32, 32, 32)';
+            ctx.fillStyle = dotFill;
             styledForGlow = false;
           }
-          ctx.globalAlpha = opacity * edgeFade;
+          // regular dots stay subdued; the canvas itself is fully opaque so snakes can glow
+          ctx.globalAlpha = opacity * edgeFade * gridDotAlpha;
           ctx.beginPath();
           ctx.arc(dotX, dotY, dotRadius, 0, Math.PI * 2);
           ctx.fill();
+
         }
       }
     }
@@ -360,7 +473,7 @@ document.addEventListener('DOMContentLoaded', function () {
     time += waveSpeed;
   }
 
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if (reduceGridMotion) {
     drawGrid();
   } else {
     gridLoop = runWhileVisible(heroSection, drawGrid);

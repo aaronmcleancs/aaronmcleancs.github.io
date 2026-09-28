@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // dimmer dots (blurred via CSS) so it reads as a quieter echo of it.
     const spacing = 45;
     const baseDotRadius = 1.5;
-    const dotBaseColor = '120, 120, 120';
+    const dotBaseColor = themeRGB('--footer-dot-rgb', [120, 120, 120]).join(', ');
 
     const waveSpeed = 0.005;
     const waveAmplitude = 15;

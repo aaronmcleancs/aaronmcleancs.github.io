@@ -1,0 +1,110 @@
+/* =========================================================================
+   Site colour theme: the single source for every colour on every page.
+
+   Change the values in :root below and the whole site follows: accents,
+   links, focus rings, the hero waves, the dot grids and all surfaces.
+   To switch palettes, copy one of the presets at the bottom over the
+   "Accent" and "Hero waves" blocks.
+
+   Colours used with transparency are also given as "R G B" triplets
+   (the *-rgb tokens), used as rgb(var(--accent-rgb) / 0.4).
+   ========================================================================= */
+
+:root {
+  /* Surfaces */
+  --bg: #000000;
+  --bg-elev: #111111;
+  --bg-elev-2: #171717;
+  --bg-elev-hover: #131313;
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.14);
+
+  /* Text */
+  --fg: #ededed;
+  --fg-2: #a1a1a1;
+  --fg-3: #707070;
+
+  /* Palette derived from the key colour rgb(0, 8, 255) */
+
+  /* Accent: section numbers, labels, links, focus rings, search highlights */
+  --accent: #7e82f1;
+  --accent-rgb: 126 130 241;
+  --accent-soft: rgb(var(--accent-rgb) / 0.12);
+
+  /* Status: "message sent" state */
+  --ok: #3ecf8e;
+  --ok-rgb: 62 207 142;
+
+  /* Hero waves, from the top band (lightest) down to the deepest band */
+  --wave-1: #35388b;
+  --wave-2: #2a2d6f;
+  --wave-3: #202253;
+  --wave-4: #151638;
+  --wave-5: #0b0b1c;
+
+  /* Hero vignette: darkens the waves toward the edges (0 = off) */
+  --hero-vignette: rgba(0, 0, 0, 0.7);
+
+  /* Expertise cards: near-black fill (their accent is the dot on each tag) */
+  --card-bg: #070707;
+
+  /* Liquid-metal name: highlight and shadow colours of the metal */
+  --metal-light: #f2f2f2;
+  --metal-dark: #0f1033;
+  /* 0 = solid metal, 1 = shadows fully transparent (dark glass) */
+  --metal-clarity: 0.5;
+
+  /* Hero subtitle: silver gradient echoing the metal */
+  --subtitle-top: #ffffff;
+  --subtitle-bottom: #8f8f8f;
+
+  /* Logo tile (nav + footer): vertical gradient with the letter on top */
+  --logo-top: #363ce2;
+  --logo-bottom: #1b1e7e;
+  --logo-mark: #ffffff;
+
+  /* Animated dot grids (read by js/dynamic-background.js and js/footer-grid.js) */
+  --grid-dot-rgb: 32 32 32;
+  --grid-dot-glow-rgb: 99 99 99;
+  --footer-dot-rgb: 120 120 120;
+}
+
+/* -------------------------------------------------------------------------
+   Presets: copy a block's values into :root above.
+   Each wave ramp is the accent at 65/52/39/26/13% brightness.
+
+   Dark green
+     --accent: #4cc38a;  --accent-rgb: 76 195 138;
+     --wave-1: #1e4f35; --wave-2: #183f2a; --wave-3: #122f1f; --wave-4: #0c1f15; --wave-5: #060f0a;
+     --logo-top: #2f9e64; --logo-bottom: #17603c;  --metal-dark: #0f2e1f;
+
+   Dark red
+     --accent: #e5534b;  --accent-rgb: 229 83 75;
+     --wave-1: #77201c; --wave-2: #5f1a16; --wave-3: #471311; --wave-4: #2f0d0b; --wave-5: #170605;
+     --logo-top: #d9443c; --logo-bottom: #7e1d18;
+
+   Blue
+     --accent: #8ea6ff;  --accent-rgb: 142 166 255;
+     --wave-1: #495e93; --wave-2: #3a4b76; --wave-3: #2c3858; --wave-4: #1d253b; --wave-5: #0e121d;
+     --logo-top: #414bf0; --logo-bottom: #2a62b8;
+
+   Teal
+     --accent: #5fd0c7;  --accent-rgb: 95 208 199;
+     --wave-1: #337772; --wave-2: #295f5b; --wave-3: #1e4744; --wave-4: #142f2d; --wave-5: #0a1716;
+     --logo-top: #2fa39a; --logo-bottom: #17605a;
+
+   Amber
+     --accent: #f0b46a;  --accent-rgb: 240 180 106;
+     --wave-1: #916a39; --wave-2: #74552d; --wave-3: #573f22; --wave-4: #3a2a16; --wave-5: #1d150b;
+     --logo-top: #d9953f; --logo-bottom: #8a5a1f;
+
+   Graphite (no colour)
+     --accent: #d4d4d4;  --accent-rgb: 212 212 212;
+     --wave-1: #696969; --wave-2: #545454; --wave-3: #3f3f3f; --wave-4: #2a2a2a; --wave-5: #151515;
+     --logo-top: #8a8a8a; --logo-bottom: #3d3d3d;
+
+   Violet
+     --accent: #b39cff;  --accent-rgb: 179 156 255;
+     --wave-1: #644f96; --wave-2: #503f78; --wave-3: #3c2f5a; --wave-4: #281f3c; --wave-5: #140f1e;
+     --logo-top: #7c5ce0; --logo-bottom: #4a3591;
+   ------------------------------------------------------------------------- */

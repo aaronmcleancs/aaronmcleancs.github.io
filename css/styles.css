@@ -6,22 +6,7 @@
    ========================================================================= */
 
 :root {
-  /* Surfaces */
-  --bg: #000000;
-  --bg-elev: #111111;
-  --bg-elev-2: #171717;
-  --line: rgba(255, 255, 255, 0.08);
-  --line-strong: rgba(255, 255, 255, 0.14);
-
-  /* Text */
-  --fg: #ededed;
-  --fg-2: #a1a1a1;
-  --fg-3: #707070;
-
-  /* Accent */
-  --accent: #8ea6ff;
-  --accent-soft: rgba(142, 166, 255, 0.12);
-  --ok: #3ecf8e;
+  /* Colours live in css/theme.css */
 
   /* Type */
   --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -34,7 +19,7 @@
 
   /* Legacy aliases (showcase.css and older markup read these) */
   --primary: var(--accent);
-  --primary-dark: #6f89e6;
+  --primary-dark: var(--accent);
   --secondary: var(--accent);
   --accentColor: var(--accent);
   --white: var(--fg);
@@ -232,8 +217,9 @@ textarea {
   flex-shrink: 0;
 }
 
-.nav-brand img {
-  border-radius: 6px;
+.logo-mark {
+  display: block;
+  flex-shrink: 0;
 }
 
 .nav-links {
@@ -349,7 +335,7 @@ textarea {
 .search-input:focus {
   outline: none;
   width: 260px;
-  border-color: rgba(142, 166, 255, 0.45);
+  border-color: rgb(var(--accent-rgb) / 0.45);
   background: rgba(255, 255, 255, 0.06);
   box-shadow: 0 0 0 3px var(--accent-soft);
 }
@@ -737,7 +723,7 @@ textarea {
 .hero__background {
   position: absolute;
   inset: 0;
-  background: url(output.svg) center top / 100% auto no-repeat;
+  /* waves are an inline SVG (index.html) so their fills can read theme.css */
   z-index: -2;
   /* no will-change: that froze the layer's raster at its unscaled size, so the up-to-9x
      phone zoom showed a stretched, soft bitmap. Five SVG paths are cheap to repaint crisp. */
@@ -745,6 +731,23 @@ textarea {
 }
 
 /* fade the waves into the page instead of a vignette */
+.hero__background svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* vignette over the waves (strength in theme.css) */
+.hero__section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 0%, var(--hero-vignette) 100%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* fade the waves into the page at the bottom of the hero */
 .hero__section::after {
   content: '';
   position: absolute;
@@ -778,7 +781,7 @@ textarea {
   position: relative;
   width: 100%;
   min-width: 300px;
-  height: 150px;
+  height: 180px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -816,31 +819,45 @@ textarea {
 }
 
 .action-word {
-  color: #ffffff !important;
-  font-family: Consolas, monaco, monospace;
-  font-size: var(--font-size-lg);
+  /* matches the name: same family, heavy weight, silver gradient like the metal */
+  font-family: var(--font-sans);
+  font-size: clamp(1rem, 0.9rem + 0.4vw, 1.1875rem);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--fg);
+  background: linear-gradient(180deg, var(--subtitle-top), var(--subtitle-bottom));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
   vertical-align: baseline;
   line-height: normal;
 }
 
-/* Caret: a hairline spanning exactly the visible glyphs, from the descender (0.227em
-   below the baseline) to the tallest ascender (0.803em above it), measured from this
-   title in Consolas/Monaco. It fades in and out on an exponential ease, so it holds
-   at full and zero opacity and turns over quickly in between. */
-.action-word::after {
-  content: '';
-  display: inline-block;
-  width: 1.5px;
-  height: 1.03em;
-  margin-left: 3px;
-  background-color: currentColor;
-  vertical-align: -0.227em;
-  animation: caretFade 1.2s cubic-bezier(0.87, 0, 0.13, 1) infinite alternate;
+/* education, on the title line after a centred dot (stacks under the title on phones) */
+.hero__edu {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: 12px;
+  /* same size and weight as the title beside it */
+  font-size: clamp(1rem, 0.9rem + 0.4vw, 1.1875rem);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  /* same silver gradient as the title */
+  color: var(--fg);
+  background: linear-gradient(180deg, var(--subtitle-top), var(--subtitle-bottom));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  white-space: nowrap;
 }
 
-@keyframes caretFade {
-  from { opacity: 1; }
-  to { opacity: 0; }
+.hero__edu::before {
+  content: '';
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--subtitle-bottom);
 }
 
 .hero__actions {
@@ -892,11 +909,7 @@ textarea {
 
 @media (max-width: 1300px) {
   .metal-text-container {
-    height: 100px;
-  }
-
-  .action-word {
-    font-size: var(--font-size-xs);
+    height: 120px;
   }
 }
 
@@ -907,9 +920,9 @@ textarea {
     padding: calc(var(--nav-h) + 96px) var(--gutter) 72px;
   }
 
-  /* 66px is the shortest box that keeps the name at its width-limited size (42px) */
+  /* 76px is the shortest box that keeps the name at its width-limited size (49px) */
   .metal-text-container {
-    height: 66px;
+    height: 76px;
     min-width: 0;
   }
 
@@ -918,11 +931,25 @@ textarea {
   }
 
   .action-word {
-    font-size: 14px;
+    font-size: 13.5px;
+  }
+
+  .text-wrapper p {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .hero__edu {
+    margin-left: 0;
+    font-size: 13.5px;
+  }
+
+  .hero__edu::before {
+    display: none;
   }
 
   .hero__actions {
-    margin-top: 28px;
+    margin-top: 24px;
   }
 
   .hero__actions .btn:not(.btn--icon) {
@@ -1008,7 +1035,6 @@ textarea {
   width: 100%;
   height: 100%;
   z-index: 0;
-  opacity: 0.55;
   pointer-events: none;
 }
 
@@ -1021,7 +1047,7 @@ textarea {
 .card-props {
   opacity: 0;
   transform: translateY(12px);
-  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease), border-color var(--transition-medium), background-color var(--transition-medium);
+  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease), border-color var(--transition-medium), box-shadow var(--transition-medium);
 }
 
 .card-props.visible {
@@ -1035,12 +1061,26 @@ textarea {
   padding: 24px;
   border-radius: var(--radius-lg);
   border: 1px solid var(--line);
-  background: var(--bg-elev);
+  background: var(--card-bg);
 }
 
 .xp-card:hover {
   border-color: var(--line-strong);
-  background: #131313;
+}
+
+/* the card's one touch of colour: a small accent dot leading each tag */
+.xp-card .skill-tag {
+  gap: 7px;
+}
+
+.xp-card .skill-tag::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px rgb(var(--accent-rgb) / 0.55);
+  flex-shrink: 0;
 }
 
 .xp-card__head {
@@ -1309,7 +1349,9 @@ textarea {
   height: 64px;
   border-radius: 50%;
   object-fit: cover;
-  border: 1px solid var(--line-strong);
+  /* accent ring with a thin dark gap between it and the photo */
+  border: 2px solid var(--bg);
+  box-shadow: 0 0 0 2px var(--accent), 0 0 18px -4px rgb(var(--accent-rgb) / 0.5);
   flex-shrink: 0;
 }
 
@@ -1318,10 +1360,13 @@ textarea {
   font-size: 16px;
   font-weight: 600;
   letter-spacing: -0.01em;
+  line-height: 1.35;
 }
 
 .contact__card span {
+  display: block;
   font-size: 14px;
+  line-height: 1.4;
   color: var(--fg-3);
 }
 
@@ -1383,7 +1428,7 @@ textarea {
 #contact-form input:focus,
 #contact-form textarea:focus {
   outline: none;
-  border-color: rgba(142, 166, 255, 0.5);
+  border-color: rgb(var(--accent-rgb) / 0.5);
   box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
@@ -1430,8 +1475,8 @@ textarea {
 }
 
 #contact-form button.contact-send.sent {
-  border-color: rgba(62, 207, 142, 0.6);
-  background: rgba(62, 207, 142, 0.1);
+  border-color: rgb(var(--ok-rgb) / 0.6);
+  background: rgb(var(--ok-rgb) / 0.1);
   color: var(--ok);
 }
 
@@ -1488,9 +1533,6 @@ textarea {
   letter-spacing: -0.01em;
 }
 
-.footer__brand img {
-  border-radius: 5px;
-}
 
 .footer__links {
   list-style: none;
@@ -1693,7 +1735,7 @@ textarea {
 
 .stage {
   display: grid;
-  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  grid-template-columns: minmax(0, 0.6fr) minmax(0, 1.4fr);
   gap: 40px;
   align-items: stretch;
 }
@@ -1781,7 +1823,8 @@ textarea {
 .stage__frame {
   position: relative;
   display: block;
-  min-height: 460px;
+  align-self: start;
+  aspect-ratio: 16 / 10;
   border-radius: var(--radius-lg);
   overflow: hidden;
   border: 1px solid var(--line);
@@ -1804,21 +1847,28 @@ textarea {
   transform: none;
 }
 
+/* caption text sits on small frosted-glass pills over the photo */
 .stage__caption {
   position: absolute;
-  inset: auto 0 0 0;
+  inset: auto 14px 14px 14px;
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  gap: 16px;
-  padding: 48px 20px 18px;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0));
-  font-size: 13.5px;
-  color: var(--fg-2);
+  gap: 12px;
+  pointer-events: none;
 }
 
+.stage__caption span,
 .stage__caption strong {
-  font-weight: 500;
+  padding: 7px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.38);
+  backdrop-filter: blur(14px) saturate(1.3);
+  -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
   color: var(--fg);
   white-space: nowrap;
 }
@@ -1831,8 +1881,7 @@ textarea {
 
   .stage__frame {
     order: -1;
-    min-height: 0;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 16 / 10;
   }
 
 }
