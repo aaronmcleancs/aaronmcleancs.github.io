@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Innovation in Mining Technology - Aaron McLean</title>
+  <meta name="description" content="Control software and the operator interface for a steerable large-diameter drill that mines narrow ore veins from the surface, with no blasting and no underground development.">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="preload" as="image" href="images/projects/surgical-mining/hero.jpg">
+  <script src="https://kit.fontawesome.com/ca7f2ffa51.js" crossorigin="anonymous" defer></script>
+  <script src="js/scroll.js" defer></script>
+  <script src="js/analytics.js" defer></script>
+</head>
+
+<body>
+  <div class="navbar">
+    <a href="index.html" class="nav-brand" aria-label="Aaron McLean, home">
+      <img src="icon.png" height="24" width="24" alt="">
+      <span>Aaron McLean</span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="index.html#expertise" class="nav-item"><span class="nav-text">Expertise</span></a>
+      <a href="index.html#work" class="nav-item"><span class="nav-text">Work</span></a>
+      <a href="index.html#experience" class="nav-item"><span class="nav-text">Experience</span></a>
+      <a href="index.html#contact" class="nav-item"><span class="nav-text">Contact</span></a>
+    </nav>
+    <div class="right-nav">
+      <a href="/images/CV.pdf" class="download-btn" target="_blank" rel="noopener noreferrer" aria-label="View CV">
+        CV <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>
+      </a>
+      <button type="button" class="nav-hamburger" aria-label="Menu" aria-expanded="false">
+        <i class="fas fa-bars" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="mobile-menu">
+      <a href="index.html#expertise">Expertise</a>
+      <a href="index.html#work">Work</a>
+      <a href="index.html#experience">Experience</a>
+      <a href="index.html#contact">Contact</a>
+      <a href="/images/CV.pdf" target="_blank" rel="noopener noreferrer">CV <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+    </div>
+  </div>
+
+  <main class="container">
+    <header class="proj-header">
+      <a class="proj-crumb" href="index.html#work"><i class="fas fa-arrow-left" aria-hidden="true"></i> Selected work</a>
+      <span class="proj-eyebrow">Surgical Mining</span>
+      <h1 class="proj-title">Innovation in Mining Technology</h1>
+      <p class="proj-summary">Control software and the operator interface for a steerable large-diameter drill that mines narrow ore veins from the surface, with no blasting and no underground development.</p>
+      <dl class="proj-meta">
+        <div><dt>Role</dt><dd>Controls and HMI engineer</dd></div>
+        <div><dt>Platform</dt><dd>PLCnext, Profinet, IO-Link</dd></div>
+      </dl>
+    </header>
+
+    <figure class="proj-cover proj-cover--pair image-gallery">
+      <img src="images/projects/surgical-mining/hero.jpg" alt="Fibre-optic gyro module inside the steerable drilling tip" fetchpriority="high">
+      <img src="images/projects/surgical-mining/drill-head.jpg" alt="Cutting head of the surgical mining drill at the collar of the hole">
+    </figure>
+
+    <section class="proj-section">
+      <h2>The system</h2>
+      <div class="proj-prose">
+        <p>Surgical mining extracts steeply dipping narrow veins by drilling large-diameter holes from the surface, up to 300&nbsp;m deep, instead of developing an underground mine. A course-correction device behind the cutting head steers the hole to follow the vein, guided by a gyro-based navigation system.</p>
+        <p>That puts the control system at the centre of the method. It has to hold the trajectory in real time, hundreds of metres down, across a surface-to-downhole Profinet link, while the driller keeps full situational awareness from a single panel.</p>
+      </div>
+    </section>
+
+    <section class="proj-section">
+      <h2>My contribution</h2>
+      <div class="proj-prose">
+        <h3>Operator interface</h3>
+        <ul>
+          <li>Built the operator HMI in PLCnext from first mockups through commissioning.</li>
+          <li>A live navigation reticle maps drill-head position against the target path and tolerance zones, on a grid that rescales automatically as the hole deviates.</li>
+          <li>Steering input is converted from operator XY commands to a force vector of direction and magnitude, saturated to the thrust the machine can actually deliver.</li>
+          <li>Manual and positioning-control modes, calibration screens for depth and steering, and a state-machine observer screen for debugging in the field.</li>
+        </ul>
+        <h3>Control system</h3>
+        <ul>
+          <li>Took over the surface control system ahead of commissioning and refactored the global state machine.</li>
+          <li>Moved fault handling from boolean flags to coded alarms on the PLCnext alarm server, with operator acknowledgement.</li>
+          <li>Wrote a depth-monitoring state machine for the incremental encoder that survives power cycles and handles pipe changes in software.</li>
+          <li>Added a comms-loss timeout that retracts the steering pads on the bottom-hole controller, and exposed system variables over the web API for cloud logging.</li>
+        </ul>
+        <h3>Documentation</h3>
+        <ul>
+          <li>Operator manual, installation manual, pre-commissioning plan, functional test plan and on-machine test plan.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="proj-section">
+      <h2>In the field</h2>
+      <div class="proj-prose">
+        <p>Two commissioning trips to a remote mine site in Newfoundland. I ran IO validation and site acceptance testing, then supervised the first days of drilling with the steering system live, fixing issues as they came up.</p>
+        <p>When the downhole capsule failed mid-shift, I supported the root-cause analysis (a short that tripped a breaker), brought the control system back after the loss of downhole comms, and replaced a failed IO-Link pressure sensor with an analog one, updating scaling and Profinet handling to match.</p>
+      </div>
+    </section>
+
+    <section class="proj-section">
+      <h2>Pilot preparation</h2>
+      <div class="proj-prose">
+        <p>For the 2026 pilot I audited the IO list against the codebase and the latest electrical schematics, integrated new vibration and flow sensors through IO-Link and their IODDs, and parameterized the IO-Link masters on the bench.</p>
+        <p>I also validated the surface-to-navigation-PC link with iperf and ran current-draw tests across valve control scenarios before the system shipped.</p>
+      </div>
+    </section>
+    <section class="proj-section">
+      <h2>Photos</h2>
+      <div class="proj-gallery image-gallery">
+        <figure><img src="images/projects/surgical-mining/rig.jpg" alt="Steering trials on the drill at dusk" loading="lazy" decoding="async"><figcaption>Steering trials on the drill at dusk</figcaption></figure>
+        <figure><img src="images/projects/surgical-mining/enclosure.jpg" alt="Control enclosure on the bench before shipping" loading="lazy" decoding="async"><figcaption>Control enclosure on the bench before shipping</figcaption></figure>
+        <figure><img src="images/projects/surgical-mining/bench.jpg" alt="Bench testing the steering valve bank" loading="lazy" decoding="async"><figcaption>Bench testing the steering valve bank</figcaption></figure>
+        <figure><img src="images/projects/surgical-mining/dev.jpg" alt="Control software and capsule design, side by side" loading="lazy" decoding="async"><figcaption>Control software and capsule design, side by side</figcaption></figure>
+      </div>
+    </section>
+
+
+    <a class="proj-next" href="electric-rigs.html">
+      <div>
+        <span>Next project</span>
+        <strong>Mobile Equipment Electrification</strong>
+      </div>
+      <i class="fas fa-arrow-right" aria-hidden="true"></i>
+    </a>
+  </main>
+
+  <footer class="footer-new">
+    <div class="container footer__container">
+      <div class="footer__brand">
+        <img src="icon.png" width="20" height="20" alt="">
+        <span>Aaron McLean</span>
+      </div>
+      <ul class="footer__links">
+        <li><a href="https://www.linkedin.com/in/aaronmcleann/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+        <li><a href="https://github.com/aaronmcleancs" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="/images/CV.pdf" target="_blank" rel="noopener noreferrer">CV</a></li>
+      </ul>
+      <p class="footer__copyright">&copy; 2026 Aaron McLean</p>
+    </div>
+  </footer>
+
+  <div class="fullscreen-viewer" role="dialog" aria-modal="true" aria-label="Image viewer">
+    <div class="fullscreen-topbar">
+      <span class="fullscreen-counter"></span>
+      <button class="fullscreen-close" aria-label="Close viewer">&times;</button>
+    </div>
+    <figure class="fullscreen-stage">
+      <img src="" alt="" class="fullscreen-image">
+      <figcaption class="fullscreen-caption"></figcaption>
+    </figure>
+    <div class="fullscreen-nav">
+      <button class="fullscreen-prev" aria-label="Previous image"><i class="fas fa-chevron-left"></i></button>
+      <button class="fullscreen-next" aria-label="Next image"><i class="fas fa-chevron-right"></i></button>
+    </div>
+  </div>
+
+  <script src="js/photo.js"></script>
+</body>
+
+</html>

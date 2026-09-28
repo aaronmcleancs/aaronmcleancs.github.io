@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobile Equipment Electrification - Aaron McLean</title>
+  <meta name="description" content="Test automation and field tuning for hybrid battery-electric oilfield rigs, as the conversion kit moved from a single prototype into production.">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="preload" as="image" href="images/projects/electric-rigs/hero.jpg">
+  <script src="https://kit.fontawesome.com/ca7f2ffa51.js" crossorigin="anonymous" defer></script>
+  <script src="js/scroll.js" defer></script>
+  <script src="js/analytics.js" defer></script>
+</head>
+
+<body>
+  <div class="navbar">
+    <a href="index.html" class="nav-brand" aria-label="Aaron McLean, home">
+      <img src="icon.png" height="24" width="24" alt="">
+      <span>Aaron McLean</span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="index.html#expertise" class="nav-item"><span class="nav-text">Expertise</span></a>
+      <a href="index.html#work" class="nav-item"><span class="nav-text">Work</span></a>
+      <a href="index.html#experience" class="nav-item"><span class="nav-text">Experience</span></a>
+      <a href="index.html#contact" class="nav-item"><span class="nav-text">Contact</span></a>
+    </nav>
+    <div class="right-nav">
+      <a href="/images/CV.pdf" class="download-btn" target="_blank" rel="noopener noreferrer" aria-label="View CV">
+        CV <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>
+      </a>
+      <button type="button" class="nav-hamburger" aria-label="Menu" aria-expanded="false">
+        <i class="fas fa-bars" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="mobile-menu">
+      <a href="index.html#expertise">Expertise</a>
+      <a href="index.html#work">Work</a>
+      <a href="index.html#experience">Experience</a>
+      <a href="index.html#contact">Contact</a>
+      <a href="/images/CV.pdf" target="_blank" rel="noopener noreferrer">CV <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+    </div>
+  </div>
+
+  <main class="container">
+    <header class="proj-header">
+      <a class="proj-crumb" href="index.html#work"><i class="fas fa-arrow-left" aria-hidden="true"></i> Selected work</a>
+      <span class="proj-eyebrow">Battery Electric Oil &amp; Gas Workover Rigs</span>
+      <h1 class="proj-title">Mobile Equipment Electrification</h1>
+      <p class="proj-summary">Test automation and field tuning for hybrid battery-electric oilfield rigs, as the conversion kit moved from a single prototype into production.</p>
+      <dl class="proj-meta">
+        <div><dt>Role</dt><dd>Controls engineer</dd></div>
+        <div><dt>Platform</dt><dd>CODESYS, Simulink, CANopen, J1939</dd></div>
+      </dl>
+    </header>
+
+    <figure class="proj-cover image-gallery">
+      <img src="images/projects/electric-rigs/hero.jpg" alt="Hybrid battery-electric workover rig on site" fetchpriority="high">
+    </figure>
+
+    <section class="proj-section">
+      <h2>The system</h2>
+      <div class="proj-prose">
+        <p>Workover rigs traditionally run a diesel engine flat-out all day. The conversion kit moves the drivetrain, winch and auxiliary systems onto a battery-electric powertrain and keeps the diesel only as a range extender, cutting engine runtime by more than 85%.</p>
+        <p>Each kit is a network of CAN-connected control modules for hydraulics, gearbox, thermal management, charging, high voltage and low-voltage power, coordinated by a vehicle controller. After the prototype proved out, the kit went into production, and more than ten have been built since.</p>
+      </div>
+    </section>
+
+    <section class="proj-section">
+      <h2>Testing for production</h2>
+      <div class="proj-prose">
+        <p>A prototype can be debugged by the people who designed it. A production line can't, so every module needed a repeatable way to be proven good before it shipped.</p>
+        <ul>
+          <li>Built CODESYS test dashboards for every control module in the kit, flashed onto the module controllers so shop technicians can validate IO and CAN communication without an engineer present.</li>
+          <li>Pass/fail indicators, live comms monitoring and raw analog voltages for quick diagnosis, with manual pump control for thermal checks.</li>
+          <li>Charger control and feedback tested against a simulated battery load.</li>
+          <li>Automatic firmware detection by decoding J1939 multi-frame broadcast messages.</li>
+          <li>Cross-checked software IO against the electrical schematics and sent every discrepancy back to the electrical team.</li>
+          <li>Wrote the manuals, test plans and flashing procedures, trained shop staff, and set up a request channel so testers could ask for the features they needed.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="proj-section">
+      <h2>In the field</h2>
+      <div class="proj-prose">
+        <p>Winter service trips to rigs in North Dakota, Colorado and Texas, working next to the operators who run them every day.</p>
+        <ul>
+          <li>Deployed new vehicle controller releases built in Simulink, then load-tested them to 100,000&nbsp;lb.</li>
+          <li>Tuned brake release, droop mitigation, drum speed, speed ramps and low-gear behaviour based on how the operators wanted the rig to feel.</li>
+          <li>Traced rig instability to a CAN database mismatch after a traction-inverter firmware change, then corrected the inverter parameters and derating margins.</li>
+          <li>Wrote a lossless flashing procedure so controllers could be updated in the field without losing their calibration.</li>
+        </ul>
+      </div>
+    </section>
+    <section class="proj-section">
+      <h2>Photos</h2>
+      <div class="proj-gallery image-gallery">
+        <figure><img src="images/projects/electric-rigs/night.jpg" alt="Mast raised at night" loading="lazy" decoding="async"><figcaption>Mast raised at night</figcaption></figure>
+        <figure><img src="images/projects/electric-rigs/deck.jpg" alt="Rig deck and mast during a North Dakota winter service trip" loading="lazy" decoding="async"><figcaption>Rig deck and mast during a North Dakota winter service trip</figcaption></figure>
+      </div>
+    </section>
+
+
+    <a class="proj-next" href="telematics.html">
+      <div>
+        <span>Next project</span>
+        <strong>Telematics Platform Management</strong>
+      </div>
+      <i class="fas fa-arrow-right" aria-hidden="true"></i>
+    </a>
+  </main>
+
+  <footer class="footer-new">
+    <div class="container footer__container">
+      <div class="footer__brand">
+        <img src="icon.png" width="20" height="20" alt="">
+        <span>Aaron McLean</span>
+      </div>
+      <ul class="footer__links">
+        <li><a href="https://www.linkedin.com/in/aaronmcleann/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+        <li><a href="https://github.com/aaronmcleancs" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="/images/CV.pdf" target="_blank" rel="noopener noreferrer">CV</a></li>
+      </ul>
+      <p class="footer__copyright">&copy; 2026 Aaron McLean</p>
+    </div>
+  </footer>
+
+  <div class="fullscreen-viewer" role="dialog" aria-modal="true" aria-label="Image viewer">
+    <div class="fullscreen-topbar">
+      <span class="fullscreen-counter"></span>
+      <button class="fullscreen-close" aria-label="Close viewer">&times;</button>
+    </div>
+    <figure class="fullscreen-stage">
+      <img src="" alt="" class="fullscreen-image">
+      <figcaption class="fullscreen-caption"></figcaption>
+    </figure>
+    <div class="fullscreen-nav">
+      <button class="fullscreen-prev" aria-label="Previous image"><i class="fas fa-chevron-left"></i></button>
+      <button class="fullscreen-next" aria-label="Next image"><i class="fas fa-chevron-right"></i></button>
+    </div>
+  </div>
+
+  <script src="js/photo.js"></script>
+</body>
+
+</html>

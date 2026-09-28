@@ -1,62 +1,28 @@
-$(document).ready(function() {
-  const isMobile = /Mobi|Android/i.test(navigator.userAgent);
-  if (isMobile) {
-    ['#card1', '#card2', '#card3', '#card4'].forEach(selector => {
-      const element = document.querySelector(selector);
-      if (element) {
-        $(element).addClass('animate__fadeInUp visible').removeClass('animate__fadeOutDown');
-      }
-    });
-    const scrollElement = document.querySelector('#scroll');
-    if (scrollElement) {
-      $('#scroll').addClass('animate__fadeInUp').removeClass('animate__fadeOutDown');
-    }
-  } else {
-    const observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
-    const cardSelectors = ['#card1', '#card2', '#card3', '#card4'];
-    const animatedCards = new Set();
-    const cardObserver = new IntersectionObserver((entries, observer) => {
-      entries.forEach(entry => {
-        const targetCard = entry.target;
-        const cardId = targetCard.id;
-        if (entry.isIntersecting && !animatedCards.has(cardId)) {
-          // stagger by DOM order so the cascade matches visual order in any layout
-          const index = Array.prototype.indexOf.call(targetCard.parentElement.children, targetCard);
-          requestAnimationFrame(() => {
-            setTimeout(() => {
-              $(targetCard).addClass('animate__fadeInUp visible').removeClass('animate__fadeOutDown');
-              animatedCards.add(cardId);
-            }, index * 50);
-          });
-          observer.unobserve(targetCard);
-        }
-      });
-    }, observerOptions);
-    cardSelectors.forEach(selector => {
-      const element = document.querySelector(selector);
-      if (element) {
-        $(element).removeClass('animate__fadeInUp visible').addClass('animate__fadeOutDown');
-        cardObserver.observe(element);
-      }
-    });
-    const scrollObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          $('#scroll').addClass('animate__fadeInUp').removeClass('animate__fadeOutDown');
-        }
-      });
-    }, observerOptions);
-    const scrollElement = document.querySelector('#scroll');
-    if (scrollElement) {
-      scrollObserver.observe(scrollElement);
-    }
+// Reveal expertise cards as they enter the viewport
+document.addEventListener('DOMContentLoaded', function () {
+  var cards = Array.prototype.slice.call(document.querySelectorAll('.card-props'));
+  if (!cards.length) return;
+  if (!('IntersectionObserver' in window)) {
+    cards.forEach(function (c) { c.classList.add('visible'); });
+    return;
   }
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) return;
+      var card = entry.target;
+      // stagger by DOM order so the cascade matches visual order
+      card.style.transitionDelay = (cards.indexOf(card) % 2) * 60 + 'ms';
+      card.classList.add('visible');
+      observer.unobserve(card);
+    });
+  }, { threshold: 0.1 });
+  cards.forEach(function (c) { observer.observe(c); });
 });
 document.addEventListener('DOMContentLoaded', function() {
   var scrollPill = document.querySelector('.scroll-pill');
   if (scrollPill) {
     scrollPill.addEventListener('click', function() {
-      var projectsSection = document.querySelector('#projects');
+      var projectsSection = document.querySelector('#expertise');
       if (projectsSection) {
         projectsSection.scrollIntoView({ behavior: 'smooth' });
       }
@@ -126,3 +92,43 @@ document.addEventListener('DOMContentLoaded', function () {
     if (e.key === 'Escape' && menu.classList.contains('open')) setOpen(false);
   });
 });
+
+// Selected work: one shared image frame that follows the hovered / selected project
+document.addEventListener('DOMContentLoaded', function () {
+  var stage = document.querySelector('[data-stage]');
+  if (!stage) return;
+  var items = stage.querySelectorAll('.stage__item');
+  var imgs = stage.querySelectorAll('.stage__frame img');
+  var frame = stage.querySelector('.stage__frame');
+  var caption = stage.querySelector('[data-stage-caption]');
+  var canHover = window.matchMedia('(hover: hover)').matches;
+
+  function select(n) {
+    items.forEach(function (item, i) {
+      var on = i === n;
+      item.classList.toggle('is-active', on);
+      item.querySelector('.stage__toggle').setAttribute('aria-expanded', on ? 'true' : 'false');
+      imgs[i].classList.toggle('is-active', on);
+    });
+    frame.href = items[n].dataset.href;
+    caption.innerHTML = items[n].dataset.caption;
+  }
+
+  // descriptions stay collapsed until an item is hovered or tapped; the photo keeps the last selection
+  function collapse() {
+    items.forEach(function (item) {
+      item.classList.remove('is-active');
+      item.querySelector('.stage__toggle').setAttribute('aria-expanded', 'false');
+    });
+  }
+
+  items.forEach(function (item, i) {
+    item.querySelector('.stage__toggle').addEventListener('click', function () {
+      if (item.classList.contains('is-active') && !canHover) collapse();
+      else select(i);
+    });
+    if (canHover) item.addEventListener('mouseenter', function () { select(i); });
+  });
+  if (canHover) stage.querySelector('.stage__list').addEventListener('mouseleave', collapse);
+});
+

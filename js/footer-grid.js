@@ -8,13 +8,28 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const ctx = canvas.getContext('2d');
 
+    // Drawn at half resolution and stretched by CSS: the upscale supplies most
+    // of the softness, so the per-frame CSS blur can be much smaller.
+    const RES = 0.5;
+    let W = 0;
+    let H = 0;
+
     function resizeCanvas() {
-        canvas.width = footerSection.offsetWidth;
-        canvas.height = footerSection.offsetHeight;
+        const w = footerSection.offsetWidth;
+        const h = footerSection.offsetHeight;
+        if (w === W && h === H) return;
+        W = w;
+        H = h;
+        canvas.width = Math.ceil(W * RES);
+        canvas.height = Math.ceil(H * RES);
     }
 
     resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    let resizeTimer = null;
+    window.addEventListener('resize', function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(resizeCanvas, 150);
+    });
 
     // Matched to the expertise-section grid: same spacing and layered wave motion,
     // dimmer dots (blurred via CSS) so it reads as a quieter echo of it.
@@ -39,8 +54,8 @@ document.addEventListener('DOMContentLoaded', function () {
     function spawnPulse() {
         if (pulses.length >= maxPulses) return;
 
-        const cols = Math.ceil(canvas.width / spacing) + 1;
-        const rows = Math.ceil(canvas.height / spacing) + 1;
+        const cols = Math.ceil(W / spacing) + 1;
+        const rows = Math.ceil(H / spacing) + 1;
 
         const randomCol = Math.floor(Math.random() * cols);
         const randomRow = Math.floor(Math.random() * rows);
@@ -56,7 +71,9 @@ document.addEventListener('DOMContentLoaded', function () {
     setInterval(spawnPulse, pulseSpawnInterval);
 
     function drawGrid() {
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.setTransform(RES, 0, 0, RES, 0, 0);
 
         // Update pulses
         const now = Date.now();
@@ -71,8 +88,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         const margin = spacing * 2;
-        const cols = Math.ceil(canvas.width / spacing) + 1;
-        const rows = Math.ceil(canvas.height / spacing) + 1;
+        const cols = Math.ceil(W / spacing) + 1;
+        const rows = Math.ceil(H / spacing) + 1;
 
         for (let i = 0; i < cols; i++) {
             for (let j = 0; j < rows; j++) {
@@ -104,8 +121,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 }
 
-                if (dotX >= -margin && dotX <= canvas.width + margin &&
-                    dotY >= -margin && dotY <= canvas.height + margin) {
+                if (dotX >= -margin && dotX <= W + margin &&
+                    dotY >= -margin && dotY <= H + margin) {
 
                     const waveHeight = Math.sqrt(offsetX * offsetX + offsetY * offsetY);
                     let opacity = 0.3 + (waveHeight / (waveAmplitude * 2)) * 0.4;
@@ -121,8 +138,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         time += waveSpeed;
-        requestAnimationFrame(drawGrid);
     }
 
-    drawGrid();
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        drawGrid();
+    } else {
+        runWhileVisible(footerSection, drawGrid);
+    }
 });

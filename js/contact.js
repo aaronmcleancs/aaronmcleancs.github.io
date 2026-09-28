@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var label = form.querySelector('.send-label');
   var icon = button ? button.querySelector('i') : null;
   if (!button || !label) return;
+  var idleText = label.textContent;
 
   function setState(text, iconClass, disabled, sent) {
     label.textContent = text;
@@ -28,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
         form.reset();
         setState('Sent', 'fas fa-check', true, true);
         setTimeout(function () {
-          setState('Send', 'fas fa-arrow-right', false, false);
+          setState(idleText, 'fas fa-arrow-right', false, false);
         }, 4000);
       } else {
         throw new Error('bad response');
@@ -36,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }).catch(function () {
       setState('Failed \u2014 try email above', 'fas fa-triangle-exclamation', false, false);
       setTimeout(function () {
-        setState('Send', 'fas fa-arrow-right', false, false);
+        setState(idleText, 'fas fa-arrow-right', false, false);
       }, 4000);
     });
   });

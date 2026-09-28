@@ -2,302 +2,160 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Showcase - ParticleBox</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/showcase.css">
-    <link rel="icon" type="image/png" href="icon.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Physics Simulation - Aaron McLean</title>
+  <meta name="description" content="A real-time demonstration of classical mechanics in software. Thousands of particles fall, collide and settle under a few physical rules, behaving like liquid, sand, gas or stone.">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-    <script src="https://kit.fontawesome.com/ca7f2ffa51.js" crossorigin="anonymous"></script>
+  <script src="https://kit.fontawesome.com/ca7f2ffa51.js" crossorigin="anonymous" defer></script>
+  <script src="js/scroll.js" defer></script>
   <script src="js/analytics.js" defer></script>
 </head>
 
 <body>
-    <div class="navbar">
-        <div class="logo">
-            <a href="index.html" class="icon">
-                <img src="icon.png" height="27px" width="27px" alt="Logo">
-            </a>
-        </div>
-        <a href="index.html" class="nav-text">Home</a>
-        <a href="#overview" class="nav-text">Overview</a>
-        <a href="#gallery" class="nav-text">Gallery</a>
-        <a href="#background" class="nav-text">Background</a>
-        <a href="#implementation" class="nav-text">Implementation</a>
-        <a href="#performance" class="nav-text">Performance</a>
-        <a href="#tech-stack" class="nav-text">Tech Stack</a>
-        <div class="right-nav" style="margin-left: auto; display: flex; align-items: center;">
-            <div class="mobile-search-trigger">
-                <i class="fas fa-search"></i>
-            </div>
-            <div class="navbar-search">
-                <button class="mobile-search-close">×</button>
-                <div class="input-wrapper" style="position: relative; width: 100%;">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" class="search-input" placeholder="Search site..." autocomplete="off">
-                    <button class="search-clear" aria-label="Clear search">×</button>
-                </div>
-                <div class="search-results"></div>
-            </div>
-        </div>
+  <div class="navbar">
+    <a href="index.html" class="nav-brand" aria-label="Aaron McLean, home">
+      <img src="icon.png" height="24" width="24" alt="">
+      <span>Aaron McLean</span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="index.html#expertise" class="nav-item"><span class="nav-text">Expertise</span></a>
+      <a href="index.html#work" class="nav-item"><span class="nav-text">Work</span></a>
+      <a href="index.html#experience" class="nav-item"><span class="nav-text">Experience</span></a>
+      <a href="index.html#contact" class="nav-item"><span class="nav-text">Contact</span></a>
+    </nav>
+    <div class="right-nav">
+      <a href="/images/CV.pdf" class="download-btn" target="_blank" rel="noopener noreferrer" aria-label="View CV">
+        CV <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>
+      </a>
+      <button type="button" class="nav-hamburger" aria-label="Menu" aria-expanded="false">
+        <i class="fas fa-bars" aria-hidden="true"></i>
+      </button>
     </div>
-    <div class="showcase__hero">
-        <div class="showcase__wrapper">
-            <div class="project-card">
-                <div class="project-card__header">
-                    <div class="project-card__header-left">
-                        <h1 class="project-title">ParticleBox</h1>
-                        <div class="project-meta">
-                            <span class="project-language">C++17 | SDL2 | Custom Thread Pool | SoA</span>
-                            <span class="project-license">MIT License</span>
-                        </div>
-                    </div>
-                    <div class="project-card__header-right">
-                        <div class="project-stats">
-                            <div class="stat-item">
-                                <i class="fas fa-star"></i>
-                                <span class="stat-count stars-count">128</span>
-                            </div>
-                            <div class="stat-item">
-                                <i class="fas fa-code-branch"></i>
-                                <span class="stat-count forks-count">24</span>
-                            </div>
-                            <div class="stat-item">
-                                <i class="fas fa-eye"></i>
-                                <span class="stat-count watchers-count">76</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="project-card__body">
-                    <p class="project-description">A real-time C++17 particle simulator built around a
-                        structure-of-arrays data layout, a counting-sort spatial hash, race-free parallel collision
-                        resolution on a persistent thread pool, and batched GPU rendering through a single draw call
-                        per frame.</p>
-                </div>
-                <div class="project-updated">
-                    <span>Updated <span class="updated-date">March 2025</span></span>
-                </div>
-            </div>
-        </div>
+    <div class="mobile-menu">
+      <a href="index.html#expertise">Expertise</a>
+      <a href="index.html#work">Work</a>
+      <a href="index.html#experience">Experience</a>
+      <a href="index.html#contact">Contact</a>
+      <a href="/images/CV.pdf" target="_blank" rel="noopener noreferrer">CV <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
     </div>
-
-    <div style="text-align: center; font-size: 2rem; margin: 20px 0;">
-        <span>•</span>
-        <span>•</span>
-        <span>•</span>
-    </div>
-
-    <div class="showcase__content">
-        <section id="overview" class="showcase__section">
-            <h2>Overview</h2>
-            <p>
-                ParticleBox simulates thousands of interacting particles at 60 fps. Each rendered frame runs four
-                physics sub-steps, and each sub-step is a six-phase pipeline: field accelerations, velocity
-                integration with damping, position integration, a serial spatial-hash rebuild, a parallel collision
-                pass, and a final phase that applies positional corrections and world bounds. Every parallel phase
-                runs as a <code>parallelFor</code> over particle ranges on a persistent worker pool.
-            </p>
-
-            <h3>Architecture at a Glance</h3>
-            <ul>
-                <li><strong>Structure-of-Arrays store:</strong> positions, velocities, accelerations, radii, masses,
-                    and even color channels live in separate contiguous <code>float</code>/<code>uint8</code> arrays,
-                    so the hot loops stream cache lines and auto-vectorize cleanly.</li>
-                <li><strong>Counting-sort spatial hash:</strong> the uniform grid is rebuilt from scratch every
-                    sub-step in \(O(n)\) — tally, prefix-sum, scatter — with power-of-two cells so the cell index is
-                    a bit shift instead of a division.</li>
-                <li><strong>Race-free parallel collisions:</strong> a one-sided Jacobi scheme where every thread
-                    writes only to the particle indices it owns, eliminating locks and atomics from the inner
-                    loop entirely.</li>
-                <li><strong>Batched rendering:</strong> all particles are drawn with one
-                    <code>SDL_RenderGeometry</code> call per frame — replacing per-particle draw calls removed a
-                    hard performance ceiling around a few thousand particles.</li>
-                <li><strong>Five material types:</strong> default, liquid, sand, gas, and kinematic stone, each with
-                    type-specific damping, cohesion, friction, and buoyancy behavior.</li>
-            </ul>
-        </section>
-
-        <section id="gallery" class="showcase__section">
-            <h2>Gallery</h2>
-            <div class="image-gallery">
-                <img src="images/p2.png" alt="Particle simulation screenshot - Example 1">
-                <img src="images/p1.png" alt="Animated particle simulation - Example 2">
-            </div>
-        </section>
-
-        <section id="background" class="showcase__section">
-            <h2>Background & Physics</h2>
-
-            <h3>Sub-Stepped Integration</h3>
-            <p>
-                State updates use semi-implicit Euler, with each frame's \(\Delta t\) divided across four sub-steps
-                for stability at high densities and under large impulses:
-            </p>
-            <p>
-                \[
-                \mathbf{v}_{t+\Delta t} = \mathbf{v}_t + (\mathbf{F}_t / m) \cdot \Delta t
-                \]
-                \[
-                \mathbf{p}_{t+\Delta t} = \mathbf{p}_t + \mathbf{v}_{t+\Delta t} \cdot \Delta t
-                \]
-            </p>
-
-            <h3>Broadphase Test</h3>
-            <p>
-                Candidate pairs come from the 3&times;3 cell neighborhood around each particle — the cell size is
-                constrained to at least twice the maximum particle radius, which guarantees no contact can span
-                further. The narrow test compares squared distances to keep square roots out of the reject path:
-            </p>
-            <p>
-                \[
-                d^2 = (p_2.x - p_1.x)^2 + (p_2.y - p_1.y)^2 < (r_1 + r_2)^2
-                \]
-            </p>
-
-            <h3>Collision Response</h3>
-            <p>
-                Contacts are resolved position-based-dynamics style: overlapping particles are projected out of
-                penetration with a mass-weighted split (a lighter particle, i.e. larger inverse mass, absorbs more of
-                the correction), followed by an impulse exchange along the contact normal with restitution
-                \(e = 0.4\) and a Coulomb-style friction term \(\mu = 0.1\) on the tangent. World boundaries
-                reflect velocity with restitution \(0.85\). Kinematic stone particles carry zero inverse mass and
-                are skipped by integration entirely.
-            </p>
-        </section>
-
-        <section id="implementation" class="showcase__section">
-            <h2>Implementation Details</h2>
-
-            <h3>Spatial Hash: Counting Sort, Not Buckets</h3>
-            <p>
-                Rather than per-cell <code>std::vector</code> buckets (allocation churn, pointer chasing), the grid is
-                rebuilt each sub-step as a counting sort over a single flat index buffer: tally per-cell occupancy,
-                prefix-sum the counts into start offsets, then scatter particle indices into their cell-local slots.
-                Each cell stores a <code>(start, count)</code> pair, so a collision query walks its neighbors as
-                contiguous ranges of one shared buffer. With 8 px cells the cell index reduces to
-                <code>x &gt;&gt; 3</code>.
-            </p>
-
-            <h3>Persistent Thread Pool</h3>
-            <p>
-                The original design spawned <code>std::async</code> tasks every frame, paying 50&ndash;300 &micro;s of
-                scheduling overhead per frame before any physics ran. The rewrite keeps a worker pool alive for the
-                program's lifetime, sized to hardware concurrency. <code>parallelFor</code> splits the particle range
-                into chunks that workers claim from an atomic cursor — cheap work stealing, so spatially dense regions
-                (which cost more per particle in the collision pass) don't starve idle cores. Chunk size targets four
-                chunks per worker, and workloads too small to amortize synchronization run inline on the calling
-                thread.
-            </p>
-
-            <h3>Race-Free Parallel Collisions</h3>
-            <p>
-                The collision pass is one-sided: when a thread processes particle <em>i</em> against neighbor
-                <em>j</em>, it accumulates corrections only into <em>i</em>'s slots; <em>j</em> reciprocates when its
-                own range is processed. No locks, no atomics, no false sharing in the inner loop. Positional
-                corrections are staged in the acceleration arrays — free real estate at that point in the sub-step,
-                since forces have already been folded into velocities — and applied in a separate phase, making the
-                scheme Jacobi-style: all corrections are computed against the same snapshot before any are applied.
-            </p>
-
-            <h3>Batched Rendering</h3>
-            <p>
-                The renderer assembles every particle into a <code>thread_local</code> vertex buffer (12-vertex fans)
-                and submits the whole frame as one <code>SDL_RenderGeometry</code> call. The previous
-                per-particle <code>SDL_RenderCopy</code> approach capped the simulation at a few thousand particles
-                regardless of how fast the physics ran.
-            </p>
-
-            <h3>Vectorization Strategy</h3>
-            <p>
-                Rather than hand-written intrinsics, the engine leans on the SoA layout plus compiler
-                auto-vectorization: <code>-O3 -ffast-math -funroll-loops -ftree-vectorize</code>, with
-                <code>-mcpu=apple-m1</code> on Apple Silicon and <code>-march=native</code> elsewhere. Contiguous
-                same-type arrays give the compiler straight-line, aliasing-friendly loops it can actually vectorize.
-            </p>
-        </section>
-
-        <section id="performance" class="showcase__section">
-            <h2>Performance Analysis</h2>
-            <p>
-                The repo ships a headless benchmark suite (<code>make test</code>) that runs 240 fixed-timestep frames
-                per scenario for reproducible wall-clock comparisons, isolating each optimization:
-            </p>
-            <ul>
-                <li><strong>Single-thread vs. multi-thread</strong> at 500 and 2,000 particles measures pool
-                    scaling — and shows where synchronization overhead outweighs parallelism at small counts.</li>
-                <li><strong>Grid vs. no-grid</strong> at 2,000 particles isolates the broadphase win: the spatial hash
-                    replaces the \(O(n^2)\) all-pairs check with a near-\(O(n)\) neighborhood walk.</li>
-                <li><strong>Scaling runs</strong> at 5,000 and 10,000 particles confirm the multithreaded, grid-backed
-                    configuration holds real-time budgets as counts grow.</li>
-            </ul>
-            <p>
-                Profiling with Instruments and VTune drove the priorities: the broadphase eliminated the algorithmic
-                bottleneck, the persistent pool removed per-frame scheduling cost, and batching collapsed rendering
-                from thousands of draw calls to one.
-            </p>
-        </section>
-
-        <section id="tech-stack" class="showcase__section">
-            <h2>Technology Stack</h2>
-            <div class="tech-icons">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/1/18/ISO_C%2B%2B_Logo.svg" alt="C++ Logo"
-                    title="C++" class="icon">
-            </div>
-            <ul>
-                <li><strong>Core Language:</strong> C++17</li>
-                <li><strong>Graphics/Windowing:</strong> SDL2, SDL2_ttf (batched <code>SDL_RenderGeometry</code>
-                    rendering)</li>
-                <li><strong>Parallelism:</strong> Custom persistent thread pool over <code>std::thread</code> with
-                    atomic chunk-stealing <code>parallelFor</code>; condition-variable synchronization (no spin
-                    waits)</li>
-                <li><strong>Data Layout:</strong> Structure-of-Arrays particle store with O(1) swap-removal and
-                    pre-allocated capacity (16,384 particles)</li>
-                <li><strong>Broadphase:</strong> Uniform-grid spatial hash, counting-sort rebuild per sub-step,
-                    power-of-two cells (shift-based indexing)</li>
-                <li><strong>Build System:</strong> Cross-platform Makefile (macOS / Linux / MinGW) with automatic
-                    dependency generation and platform-detected flags
-                    (<code>-O3</code>, <code>-ffast-math</code>, <code>-ftree-vectorize</code>,
-                    <code>-mcpu=apple-m1</code> / <code>-march=native</code>)</li>
-                <li><strong>Testing:</strong> Headless benchmark suite (<code>make test</code>) with reproducible
-                    fixed-timestep scenarios</li>
-                <li><strong>Profiling Tools:</strong> Apple Instruments, Intel VTune, Valgrind</li>
-            </ul>
-        </section>
-    </div>
-    <div class="fullscreen-viewer" role="dialog" aria-modal="true" aria-label="Image viewer">
-  <div class="fullscreen-topbar">
-    <span class="fullscreen-counter"></span>
-    <button class="fullscreen-close" aria-label="Close viewer">&times;</button>
   </div>
-  <figure class="fullscreen-stage">
-    <img src="" alt="" class="fullscreen-image">
-    <figcaption class="fullscreen-caption"></figcaption>
-  </figure>
-  <div class="fullscreen-nav">
-    <button class="fullscreen-prev" aria-label="Previous image">
-      <i class="fas fa-chevron-left"></i>
-    </button>
-    <button class="fullscreen-next" aria-label="Next image">
-      <i class="fas fa-chevron-right"></i>
-    </button>
-  </div>
-</div>
 
-    <script src="js/photo.js"></script>
-    <script src="js/showcase.js"></script>
-    <script src="js/github.js"></script>
-    <script src="js/track.js"></script>
-    <script src="js/search.js"></script>
-    <script>
-        var yearEl = document.getElementById('current-year');
-        if (yearEl) yearEl.textContent = new Date().getFullYear();
-        if (!document.querySelector('.stars-count').textContent.includes('Loading')) {
-        }
-    </script>
+  <main class="container">
+    <header class="proj-header">
+      <a class="proj-crumb" href="index.html#side-projects"><i class="fas fa-arrow-left" aria-hidden="true"></i> Side projects</a>
+      <span class="proj-eyebrow">Side project</span>
+      <h1 class="proj-title">Physics Simulation</h1>
+      <p class="proj-summary">A real-time demonstration of classical mechanics in software. Thousands of particles fall, collide and settle under a few physical rules, behaving like liquid, sand, gas or stone.</p>
+      <dl class="proj-meta">
+        <div><dt>Language</dt><dd>C++17</dd></div>
+        <div><dt>Graphics</dt><dd>SDL2</dd></div>
+        <div><dt>Source</dt><dd><a class="proj-link" href="https://github.com/aaronmcleancs/ParticleBox" target="_blank" rel="noopener noreferrer">View on GitHub <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a></dd></div>
+      </dl>
+    </header>
+
+    <figure class="proj-cover proj-cover--contain image-gallery">
+      <img src="images/projects/side/p1.jpg" alt="Thousands of particles settling under gravity" fetchpriority="high">
+    </figure>
+
+    <section class="proj-section">
+      <h2>Overview</h2>
+      <div class="proj-prose">
+          <p>This is a small physics sandbox. Every particle is a point mass with a radius, and everything on screen comes from a handful of rules: forces change velocity, velocity changes position, and particles that overlap push each other apart.</p>
+          <p>Change those rules per material and the same particles pour like water, pile like sand or drift like gas. The interesting part is not any single rule but how much behaviour emerges when thousands of particles follow them at once.</p>
+      </div>
+    </section>
+
+    <section class="proj-section">
+      <h2>Motion</h2>
+      <div class="proj-prose">
+          <p>Each particle's state advances with semi-implicit Euler integration: velocity is updated from the net force first, and the new velocity is used to move the particle.</p>
+          <p>\[ \mathbf{v}_{t+\Delta t} = \mathbf{v}_t + \frac{\mathbf{F}_t}{m}\,\Delta t \qquad \mathbf{p}_{t+\Delta t} = \mathbf{p}_t + \mathbf{v}_{t+\Delta t}\,\Delta t \]</p>
+          <p>Updating velocity before position keeps energy from drifting upward the way plain Euler does. Each frame is also split into four smaller sub-steps, so fast particles and dense piles stay stable instead of tunnelling through each other or exploding apart.</p>
+      </div>
+    </section>
+
+    <section class="proj-section">
+      <h2>Collisions</h2>
+      <div class="proj-prose">
+          <h3>Detecting contact</h3>
+          <p>Two particles touch when the distance between their centres is less than the sum of their radii. Comparing squared distances avoids a square root for every pair that isn't touching:</p>
+          <p>\[ (x_2 - x_1)^2 + (y_2 - y_1)^2 < (r_1 + r_2)^2 \]</p>
+          <h3>Responding to contact</h3>
+          <p>Overlapping particles are first pushed apart along the line between their centres, with the lighter particle moving further. Their velocities then exchange an impulse along that same normal:</p>
+          <p>\[ j = \frac{-(1 + e)\,(\mathbf{v}_{\text{rel}} \cdot \hat{\mathbf{n}})}{1/m_1 + 1/m_2} \]</p>
+          <p>The coefficient of restitution <em>e</em> sets how much energy survives a collision: 0.4 between particles, so piles settle, and 0.85 against the walls. A friction term (&mu; = 0.1) resists sliding along the contact, which is what lets sand hold a slope.</p>
+      </div>
+    </section>
+
+    <section class="proj-section">
+      <h2>Materials</h2>
+      <div class="proj-prose">
+          <p>Five materials share the same equations and differ only in their parameters:</p>
+          <ul>
+            <li><strong>Liquid</strong> flows and levels out, with cohesion holding it together.</li>
+            <li><strong>Sand</strong> uses friction to form piles with a natural angle of repose.</li>
+            <li><strong>Gas</strong> is buoyant and drifts upward, spreading to fill the space.</li>
+            <li><strong>Stone</strong> has infinite mass, so it never moves and everything else collides with it.</li>
+            <li><strong>Default</strong> particles are plain elastic spheres, a baseline to compare the others against.</li>
+          </ul>
+      </div>
+    </section>
+
+    <section class="proj-section">
+      <h2>Computing it in real time</h2>
+      <div class="proj-prose">
+          <p>Checking every particle against every other particle grows with the square of the count. Dividing the world into a grid means each particle only checks its immediate neighbours, which keeps the cost close to linear. With the work also spread across every CPU core, the simulation holds 60 frames per second with thousands of particles on screen.</p>
+      </div>
+    </section>
+
+
+    <a class="proj-next" href="quantum.html">
+      <div>
+        <span>Next side project</span>
+        <strong>Quantum-Assisted Consensus Protocol</strong>
+      </div>
+      <i class="fas fa-arrow-right" aria-hidden="true"></i>
+    </a>
+  </main>
+
+  <footer class="footer-new">
+    <div class="container footer__container">
+      <div class="footer__brand">
+        <img src="icon.png" width="20" height="20" alt="">
+        <span>Aaron McLean</span>
+      </div>
+      <ul class="footer__links">
+        <li><a href="https://www.linkedin.com/in/aaronmcleann/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+        <li><a href="https://github.com/aaronmcleancs" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="/images/CV.pdf" target="_blank" rel="noopener noreferrer">CV</a></li>
+      </ul>
+      <p class="footer__copyright">&copy; 2026 Aaron McLean</p>
+    </div>
+  </footer>
+
+  <div class="fullscreen-viewer" role="dialog" aria-modal="true" aria-label="Image viewer">
+    <div class="fullscreen-topbar">
+      <span class="fullscreen-counter"></span>
+      <button class="fullscreen-close" aria-label="Close viewer">&times;</button>
+    </div>
+    <figure class="fullscreen-stage">
+      <img src="" alt="" class="fullscreen-image">
+      <figcaption class="fullscreen-caption"></figcaption>
+    </figure>
+    <div class="fullscreen-nav">
+      <button class="fullscreen-prev" aria-label="Previous image"><i class="fas fa-chevron-left"></i></button>
+      <button class="fullscreen-next" aria-label="Next image"><i class="fas fa-chevron-right"></i></button>
+    </div>
+  </div>
+
+  <script src="js/photo.js"></script>
 </body>
 
 </html>

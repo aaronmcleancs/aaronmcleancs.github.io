@@ -1,24 +1,10 @@
 :root {
-
-  --primary: #7192e3;
-  --primary-dark: #5a78c7;
-  --secondary: #9370DB;
-  --text-primary: #f5f5f7;
-  --text-secondary: #a1a1a6;
-  --text-muted: #6e6e73;
-  --bg-primary: #000000;
-  --bg-secondary: #1d1d1f;
-  --bg-card: #151516;
-  --bg-card-hover: #1c1c1e;
-  --border-color: rgba(66, 66, 69, 0.5);
-
-  /* Sizing tokens (radius / type / spacing) are inherited from styles.css —
-     the single source of truth for the site-wide scale. */
-
-  --glass-bg: rgba(17, 17, 17, 0.5);
-  --glass-border: rgba(255, 255, 255, 0.1);
+  /* Colour, type and sizing tokens come from styles.css; only the
+     showcase-specific glass tokens live here. */
+  --glass-bg: rgba(17, 17, 17, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.08);
   --glass-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
-  --glass-blur: 30px;
+  --glass-blur: 20px;
 }
 
 
@@ -31,9 +17,9 @@
 }
 
 body {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -289,7 +275,7 @@ img {
 
 
 code {
-  font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   background-color: rgba(44, 44, 46, 0.5);
   padding: 0.2em 0.4em;
   border-radius: var(--radius-xs);

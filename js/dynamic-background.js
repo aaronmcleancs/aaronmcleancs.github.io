@@ -1,6 +1,36 @@
+// Runs `frame` on rAF only while `el` is on screen and the tab is visible.
+function runWhileVisible(el, frame) {
+  var inView = true, rafId = null;
+  function tick(t) {
+    rafId = null;
+    frame(t);
+    schedule();
+  }
+  function schedule() {
+    if (rafId === null && inView && !document.hidden) rafId = requestAnimationFrame(tick);
+  }
+  function stop() {
+    if (rafId !== null) cancelAnimationFrame(rafId);
+    rafId = null;
+  }
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      inView = entries[entries.length - 1].isIntersecting;
+      inView ? schedule() : stop();
+    }).observe(el);
+  }
+  document.addEventListener('visibilitychange', function () {
+    document.hidden ? stop() : schedule();
+  });
+  schedule();
+  return { active: function () { return rafId !== null; } };
+}
+
 (function () {
   const heroBackground = document.querySelector('.hero__background');
   if (!heroBackground) return;
+  const heroSection = heroBackground.parentElement;
+  const maxScrollPercent = 0.25;
 
   const zoomFactor = 1.2;
   let animationFrameId = null;
@@ -14,12 +44,13 @@
     return 1300 - (width - minWidth) * ((1300 - 220) / (maxWidth - minWidth));
   }
 
+  // Zoom progress is measured across the hero only (0 at the top, 0.25 once the hero has
+  // scrolled away, matching the old feel on a shorter page). Measuring across the whole
+  // document let the layer reach ~10x scale further down, and the browser then repainted
+  // that oversized layer in tiles when scrolling back up.
   function calculateTargetScale(scrollVal) {
-    const scrollHeight = Math.max(
-      document.body.scrollHeight,
-      document.documentElement.scrollHeight
-    );
-    const scrollPercent = scrollVal / (scrollHeight - window.innerHeight);
+    const heroHeight = heroSection.offsetHeight || window.innerHeight;
+    const scrollPercent = Math.min(Math.max(scrollVal / heroHeight, 0), 1) * maxScrollPercent;
     const baseScale = getBaseScale(window.innerWidth);
     const baselineWidth = 1920;
     const multiplier = window.innerWidth > baselineWidth ? 700 * (baselineWidth / window.innerWidth) : 700;
@@ -37,13 +68,13 @@
     heroBackground.style.transform = `translateX(${driftX.toFixed(2)}px) scale(${scale})`;
   }
 
-  function driftLoop(timestamp) {
-    driftX = Math.sin((timestamp * 2 * Math.PI) / driftPeriod) * driftAmplitude;
-    updateVisuals();
-    requestAnimationFrame(driftLoop);
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduceMotion) {
+    runWhileVisible(heroBackground.parentElement, function (timestamp) {
+      driftX = Math.sin((timestamp * 2 * Math.PI) / driftPeriod) * driftAmplitude;
+      updateVisuals();
+    });
   }
-
-  requestAnimationFrame(driftLoop);
 
   function smoothUpdate() {
     const targetScale = calculateTargetScale(window.scrollY);
@@ -61,6 +92,11 @@
 
   function onScroll() {
     if (Math.abs(window.scrollY - lastScrollY) < 5) return;
+    // nothing to animate once the hero is fully scrolled past and the scale is already capped
+    if (window.scrollY > heroSection.offsetHeight && lastScrollY > heroSection.offsetHeight) {
+      lastScrollY = window.scrollY;
+      return;
+    }
     lastScrollY = window.scrollY;
     if (animationFrameId) {
       cancelAnimationFrame(animationFrameId);
@@ -98,12 +134,20 @@ document.addEventListener('DOMContentLoaded', function () {
   const ctx = canvas.getContext('2d');
 
   function resizeCanvas() {
-    canvas.width = heroSection.offsetWidth;
-    canvas.height = heroSection.offsetHeight;
+    const w = heroSection.offsetWidth;
+    const h = heroSection.offsetHeight;
+    // resizing clears the canvas and reallocates it; skip no-op resizes (mobile URL bar)
+    if (w === canvas.width && h === canvas.height) return;
+    canvas.width = w;
+    canvas.height = h;
   }
 
   resizeCanvas();
-  window.addEventListener('resize', resizeCanvas);
+  let resizeTimer = null;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(resizeCanvas, 150);
+  });
 
   const spacing = 45;
   const baseDotRadius = 1.5;
@@ -187,7 +231,10 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  setInterval(spawnPulse, pulseSpawnInterval);
+  let gridLoop = null;
+  setInterval(function () {
+    if (gridLoop && gridLoop.active()) spawnPulse();
+  }, pulseSpawnInterval);
 
   function drawGrid() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -221,6 +268,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const rowStart = Math.floor(startY / spacing);
     const rowEnd = Math.ceil(endY / spacing);
 
+    // fade the grid in/out over the top and bottom 20% of the section
+    const fadeBand = canvas.height * 0.2;
+    ctx.fillStyle = 'rgb(32, 32, 32)';
+    let styledForGlow = false;
+
     for (let i = 0; i < cols; i++) {
       for (let j = rowStart; j <= rowEnd; j++) {
         const x = i * spacing;
@@ -237,6 +289,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         let dotRadius = baseDotRadius;
         let brightnessBoost = 0;
+
+        const edgeFade = Math.min(1, y / fadeBand, (canvas.height - y) / fadeBand);
+        if (edgeFade <= 0) continue;
 
         // Calculate pulsing brightness from all active pulses
         for (const pulse of pulses) {
@@ -286,31 +341,36 @@ document.addEventListener('DOMContentLoaded', function () {
           opacity = Math.min(opacity, 1.0);
 
           // dots near the cursor brighten ~30% of the way toward white
-          const channel = Math.round(32 + 67 * mouseGlow);
-
+          if (mouseGlow > 0.01) {
+            const channel = Math.round(32 + 67 * mouseGlow);
+            ctx.fillStyle = `rgb(${channel}, ${channel}, ${channel})`;
+            styledForGlow = true;
+          } else if (styledForGlow) {
+            ctx.fillStyle = 'rgb(32, 32, 32)';
+            styledForGlow = false;
+          }
+          ctx.globalAlpha = opacity * edgeFade;
           ctx.beginPath();
           ctx.arc(dotX, dotY, dotRadius, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${channel}, ${channel}, ${channel}, ${opacity})`;
           ctx.fill();
         }
       }
     }
 
     time += waveSpeed;
-
-    requestAnimationFrame(drawGrid);
   }
 
-  drawGrid();
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    drawGrid();
+  } else {
+    gridLoop = runWhileVisible(heroSection, drawGrid);
+  }
 });
 
 document.addEventListener('DOMContentLoaded', function () {
   const scrollSuggestion = document.querySelector('.scroll-suggestion');
+  if (!scrollSuggestion) return;
   window.addEventListener('scroll', function () {
-    if (window.scrollY > 50) {
-      scrollSuggestion.classList.add('hidden');
-    } else {
-      scrollSuggestion.classList.remove('hidden');
-    }
-  });
+    scrollSuggestion.classList.toggle('hidden', window.scrollY > 50);
+  }, { passive: true });
 });

@@ -2,254 +2,235 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Project Showcase - Quantum-Assisted Blockchain Consensus Simulation</title>
-    <link rel="stylesheet" href="css/styles.css" />
-    <link rel="stylesheet" href="css/showcase.css" />
-    <link rel="icon" type="image/png" href="icon.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quantum-Assisted Consensus Protocol - Aaron McLean</title>
+  <meta name="description" content="A blockchain consensus protocol that replaces proof-of-work with quantum state fidelity checks, simulated with Qiskit. Capstone research at Carleton University, supervised by Dr. Michel Barbeau.">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-    <script src="https://kit.fontawesome.com/ca7f2ffa51.js" crossorigin="anonymous"></script>
+  <script src="https://kit.fontawesome.com/ca7f2ffa51.js" crossorigin="anonymous" defer></script>
+  <script src="js/scroll.js" defer></script>
   <script src="js/analytics.js" defer></script>
 </head>
 
 <body>
-    <div class="navbar">
-        <div class="logo">
-            <a href="index.html" class="icon">
-                <img src="icon.png" height="27px" width="27px" alt="Logo">
-            </a>
-        </div>
-        <a href="index.html" class="nav-text">Home</a>
-        <a href="#overview" class="nav-text">Overview</a>
-        <a href="#gallery" class="nav-text">Gallery</a>
-        <a href="#background" class="nav-text">Background</a>
-        <a href="#implementation" class="nav-text">Implementation</a>
-        <a href="#performance" class="nav-text">Performance</a>
-        <div class="right-nav" style="margin-left: auto; display: flex; align-items: center;">
-            <div class="mobile-search-trigger">
-                <i class="fas fa-search"></i>
-            </div>
-            <div class="navbar-search">
-                <button class="mobile-search-close">×</button>
-                <div class="input-wrapper" style="position: relative; width: 100%;">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" class="search-input" placeholder="Search site..." autocomplete="off">
-                    <button class="search-clear" aria-label="Clear search">×</button>
-                </div>
-                <div class="search-results"></div>
-            </div>
-        </div>
+  <div class="navbar">
+    <a href="index.html" class="nav-brand" aria-label="Aaron McLean, home">
+      <img src="icon.png" height="24" width="24" alt="">
+      <span>Aaron McLean</span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="index.html#expertise" class="nav-item"><span class="nav-text">Expertise</span></a>
+      <a href="index.html#work" class="nav-item"><span class="nav-text">Work</span></a>
+      <a href="index.html#experience" class="nav-item"><span class="nav-text">Experience</span></a>
+      <a href="index.html#contact" class="nav-item"><span class="nav-text">Contact</span></a>
+    </nav>
+    <div class="right-nav">
+      <a href="/images/CV.pdf" class="download-btn" target="_blank" rel="noopener noreferrer" aria-label="View CV">
+        CV <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>
+      </a>
+      <button type="button" class="nav-hamburger" aria-label="Menu" aria-expanded="false">
+        <i class="fas fa-bars" aria-hidden="true"></i>
+      </button>
     </div>
-
-    <div class="showcase__hero">
-        <div class="showcase__wrapper">
-            <div class="project-card">
-                <div class="project-card__header">
-                    <div class="project-card__header-left">
-                        <h1 class="project-title">Quantum-Assisted Blockchain Consensus Simulation</h1>
-                        <div class="project-meta">
-                            <span class="project-language">Python</span>
-                            <span class="project-license">MIT License</span>
-                        </div>
-                    </div>
-                    <div class="project-card__header-right">
-                        <div class="project-stats">
-                            <div class="stat-item">
-                                <i class="fas fa-star"></i>
-                                <span class="stat-count stars-count">0</span>
-                            </div>
-                            <div class="stat-item">
-                                <i class="fas fa-code-branch"></i>
-                                <span class="stat-count forks-count">0</span>
-                            </div>
-                            <div class="stat-item">
-                                <i class="fas fa-eye"></i>
-                                <span class="stat-count watchers-count">0</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="project-card__body">
-                    <p class="project-description">
-                        A Python simulation exploring a blockchain consensus mechanism leveraging quantum state
-                        fidelity, implemented using Qiskit. Nodes generate unique quantum states from candidate blocks,
-                        compare them via fidelity measurements, and reach consensus based on state similarity
-                        thresholding.
-                    </p>
-                </div>
-                <div class="project-updated">
-                    <span>Updated <span class="updated-date">Recently</span></span>
-                </div>
-            </div>
-        </div>
+    <div class="mobile-menu">
+      <a href="index.html#expertise">Expertise</a>
+      <a href="index.html#work">Work</a>
+      <a href="index.html#experience">Experience</a>
+      <a href="index.html#contact">Contact</a>
+      <a href="/images/CV.pdf" target="_blank" rel="noopener noreferrer">CV <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
     </div>
-
-    <div style="text-align: center; font-size: 2rem; margin: 20px 0;">
-        <span>•</span>
-        <span>•</span>
-        <span>•</span>
-    </div>
-
-    <div class="showcase__content">
-        <section id="overview" class="showcase__section">
-            <h2>Overview</h2>
-            <p>
-                This project simulates a quantum-assisted blockchain consensus protocol using Qiskit. It explores the
-                potential of quantum fidelity checks and entanglement-based randomness to enhance security and
-                efficiency over classical Proof-of-Work mechanisms.
-            </p>
-            <h3>Key Features</h3>
-            <ul>
-                <li><strong>Quantum Fidelity Validation:</strong> Uses state vector fidelity to verify block integrity
-                    and consensus.</li>
-                <li><strong>Entanglement-Based Randomness:</strong> Generates nonces using GHZ states for true
-                    randomness.</li>
-                <li><strong>Fault Tolerance:</strong> Consensus mechanism resilient to minority node failure through
-                    fidelity thresholding.</li>
-            </ul>
-        </section>
-
-        <section id="gallery" class="showcase__section">
-            <h2>Project Gallery</h2>
-            <div class="image-gallery">
-                <img src="images/blockchain_uml.png" alt="Blockchain Data Structure UML Diagram">
-                <img src="images/quantum_circuit.png" alt="Illustrative Quantum Circuit Diagram">
-            </div>
-        </section>
-
-        <section id="background" class="showcase__section">
-            <h2>Background & Quantum Principles</h2>
-            <p>
-                The simulation replaces classical proof-of-work with a mechanism where nodes propose blocks encoded as
-                unique quantum states. Verification relies on measuring the similarity between these states.
-            </p>
-
-            <h3>Quantum State Fidelity</h3>
-            <p>
-                We quantify the similarity between block states \(\rho\) and \(\sigma\) using fidelity:
-            </p>
-            <p>
-                \[
-                F(\rho, \sigma) = \left( \text{Tr} \sqrt{\sqrt{\rho} \sigma \sqrt{\rho}} \right)^2
-                \]
-            </p>
-            <p>
-                For pure states \( \lvert\psi_i\rangle \) and \( \lvert\psi_j\rangle \), this simplifies to \(
-                F(\lvert\psi_i\rangle, \lvert\psi_j\rangle) = \bigl|\langle\psi_i|\psi_j\rangle\bigr|^2 \).
-            </p>
-
-            <h3>Entanglement (GHZ State)</h3>
-            <p>
-                The Quantum Random Number Generator (QRNG) leverages GHZ states to produce correlated random bits:
-            </p>
-            <p>
-                \[
-                \lvert GHZ_N \rangle = \frac{1}{\sqrt{2}} (\lvert 0 \rangle^{\otimes N} + \lvert 1 \rangle^{\otimes N})
-                \]
-            </p>
-
-            <h3>Unitary Transformations</h3>
-            <p>
-                Complex quantum circuits act as unitary operators \( U_{\text{block}} \) to map classical block data to
-                a unique quantum state:
-            </p>
-            <p>
-                \[
-                \lvert\psi_{\text{block}}\rangle = U_{\text{block}} \lvert 0 \rangle^{\otimes n}
-                \]
-            </p>
-        </section>
-
-        <section id="implementation" class="showcase__section">
-            <h2>Implementation Details</h2>
-            <p>
-                The system is a hybrid implementation combining a classical Python blockchain with quantum components
-                simulated via Qiskit.
-            </p>
-
-            <h3>System Architecture</h3>
-            <ul>
-                <li><strong>Classical Layer:</strong> Manages the blockchain ledger, transaction pool, and basic
-                    validation logic using standard cryptographic hashes (SHA-256).</li>
-                <li><strong>Quantum Layer:</strong> Handles nonce generation, state preparation, and fidelity-based
-                    consensus using Qiskit's statevector simulator.</li>
-            </ul>
-
-            <h3>Consensus Logic</h3>
-            <p>
-                The protocol follows a multi-step process:
-            </p>
-            <ol>
-                <li><strong>Proposal:</strong> Nodes generate a candidate block and map it to a quantum statevector
-                    using a custom Quantum Hash Function.</li>
-                <li><strong>Verification:</strong> Nodes exchange statevectors and compute pairwise fidelity.</li>
-                <li><strong>Agreement:</strong> Consensus is reached when a majority of nodes agree on state fidelity
-                    (>0.9), with a deterministic tie-breaker selecting the winning block.</li>
-            </ol>
-        </section>
-
-        <section id="performance" class="showcase__section">
-            <h2>Performance Observations</h2>
-            <p>
-                The simulation utilizes Qiskit Aer's <code>statevector_simulator</code> for ideal execution.
-            </p>
-
-            <h3>Simulation Metrics</h3>
-            <ul>
-                <li><strong>Scalability:</strong> Execution time scales with network size (\(O(N^2)\) for pairwise
-                    checks) and qubit count.</li>
-                <li><strong>Throughput:</strong> Preliminary tests indicate consensus rounds complete in seconds for
-                    small networks (3-5 nodes, 6-10 qubits).</li>
-                <li><strong>Bottlenecks:</strong> Statevector simulation is the primary computational cost, while
-                    fidelity calculations are relatively lightweight.</li>
-            </ul>
-        </section>
-
-        <section id="stack" class="showcase__section">
-        <h3>Technical Stack</h3>
-        <div class="tech-icons">
-            <i class="fab fa-python" title="Python"></i>
-            <i class="fas fa-atom" title="Qiskit"></i>
-        </div>
-        <ul class="tech-list">
-            <li><strong>Language:</strong> Python (3.x)</li>
-            <li><strong>Quantum Framework:</strong> Qiskit (~0.4x)</li>
-            <li><strong>Quantum Simulation:</strong> Qiskit Aer (`AerSimulator` with `method='statevector'`)</li>
-            <li><strong>Libraries:</strong> NumPy, hashlib, json, dataclasses</li>
-        </ul>
-        </section>
-    </div>
-
-    <div class="fullscreen-viewer" role="dialog" aria-modal="true" aria-label="Image viewer">
-  <div class="fullscreen-topbar">
-    <span class="fullscreen-counter"></span>
-    <button class="fullscreen-close" aria-label="Close viewer">&times;</button>
   </div>
-  <figure class="fullscreen-stage">
-    <img src="" alt="" class="fullscreen-image">
-    <figcaption class="fullscreen-caption"></figcaption>
-  </figure>
-  <div class="fullscreen-nav">
-    <button class="fullscreen-prev" aria-label="Previous image">
-      <i class="fas fa-chevron-left"></i>
-    </button>
-    <button class="fullscreen-next" aria-label="Next image">
-      <i class="fas fa-chevron-right"></i>
-    </button>
-  </div>
-</div>
-    <script src="js/photo.js"></script>
-    <script src="js/showcase.js"></script>
-    <script src="js/github.js"></script>
-    <script src="js/track.js"></script>
-    <script src="js/search.js"></script>
-    <script>
-        document.getElementById('current-year').textContent = new Date().getFullYear();
-    </script>
 
+  <main class="container">
+    <header class="proj-header">
+      <a class="proj-crumb" href="index.html#side-projects"><i class="fas fa-arrow-left" aria-hidden="true"></i> Side projects</a>
+      <span class="proj-eyebrow">Side project</span>
+      <h1 class="proj-title">Quantum-Assisted Consensus Protocol</h1>
+      <p class="proj-summary">A blockchain consensus protocol that replaces proof-of-work with quantum state fidelity checks, simulated with Qiskit. Capstone research at Carleton University, supervised by Dr. Michel Barbeau.</p>
+      <dl class="proj-meta">
+        <div><dt>Language</dt><dd>Python</dd></div>
+        <div><dt>Stack</dt><dd>Qiskit, Qiskit Aer</dd></div>
+        <div><dt>Source</dt><dd><a class="proj-link" href="https://github.com/aaronmcleancs/FidelityChain" target="_blank" rel="noopener noreferrer">View on GitHub <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a></dd></div>
+      </dl>
+    </header>
+
+    <figure class="proj-cover proj-cover--contain image-gallery">
+      <img src="images/projects/side/blockchain_uml.jpg" alt="Blockchain Data Structure UML Diagram" fetchpriority="high">
+    </figure>
+
+    <section class="proj-section">
+      <h2>Overview</h2>
+      <div class="proj-prose">
+          <p>
+          This project simulates a quantum-assisted blockchain consensus protocol using Qiskit. It explores the
+          potential of quantum fidelity checks and entanglement-based randomness to enhance security and
+          efficiency over classical Proof-of-Work mechanisms.
+          </p>
+          <h3>Key Features</h3>
+          <ul>
+          <li><strong>Quantum Fidelity Validation:</strong> Uses state vector fidelity to verify block integrity
+          and consensus.</li>
+          <li><strong>Entanglement-Based Randomness:</strong> Generates nonces using GHZ states for true
+          randomness.</li>
+          <li><strong>Fault Tolerance:</strong> Consensus mechanism resilient to minority node failure through
+          fidelity thresholding.</li>
+          </ul>
+      </div>
+    </section>
+
+    <section class="proj-section">
+      <h2>Background & Quantum Principles</h2>
+      <div class="proj-prose">
+          <p>
+          The simulation replaces classical proof-of-work with a mechanism where nodes propose blocks encoded as
+          unique quantum states. Verification relies on measuring the similarity between these states.
+          </p>
+          <h3>Quantum State Fidelity</h3>
+          <p>
+          We quantify the similarity between block states \(\rho\) and \(\sigma\) using fidelity:
+          </p>
+          <p>
+          \[
+          F(\rho, \sigma) = \left( \text{Tr} \sqrt{\sqrt{\rho} \sigma \sqrt{\rho}} \right)^2
+          \]
+          </p>
+          <p>
+          For pure states \( \lvert\psi_i\rangle \) and \( \lvert\psi_j\rangle \), this simplifies to \(
+          F(\lvert\psi_i\rangle, \lvert\psi_j\rangle) = \bigl|\langle\psi_i|\psi_j\rangle\bigr|^2 \).
+          </p>
+          <h3>Entanglement (GHZ State)</h3>
+          <p>
+          The Quantum Random Number Generator (QRNG) leverages GHZ states to produce correlated random bits:
+          </p>
+          <p>
+          \[
+          \lvert GHZ_N \rangle = \frac{1}{\sqrt{2}} (\lvert 0 \rangle^{\otimes N} + \lvert 1 \rangle^{\otimes N})
+          \]
+          </p>
+          <h3>Unitary Transformations</h3>
+          <p>
+          Complex quantum circuits act as unitary operators \( U_{\text{block}} \) to map classical block data to
+          a unique quantum state:
+          </p>
+          <p>
+          \[
+          \lvert\psi_{\text{block}}\rangle = U_{\text{block}} \lvert 0 \rangle^{\otimes n}
+          \]
+          </p>
+      </div>
+    </section>
+
+    <section class="proj-section">
+      <h2>Implementation Details</h2>
+      <div class="proj-prose">
+          <p>
+          The system is a hybrid implementation combining a classical Python blockchain with quantum components
+          simulated via Qiskit.
+          </p>
+          <h3>System Architecture</h3>
+          <ul>
+          <li><strong>Classical Layer:</strong> Manages the blockchain ledger, transaction pool, and basic
+          validation logic using standard cryptographic hashes (SHA-256).</li>
+          <li><strong>Quantum Layer:</strong> Handles nonce generation, state preparation, and fidelity-based
+          consensus using Qiskit's statevector simulator.</li>
+          </ul>
+          <h3>Consensus Logic</h3>
+          <p>
+          The protocol follows a multi-step process:
+          </p>
+          <ol>
+          <li><strong>Proposal:</strong> Nodes generate a candidate block and map it to a quantum statevector
+          using a custom Quantum Hash Function.</li>
+          <li><strong>Verification:</strong> Nodes exchange statevectors and compute pairwise fidelity.</li>
+          <li><strong>Agreement:</strong> Consensus is reached when a majority of nodes agree on state fidelity
+          (>0.9), with a deterministic tie-breaker selecting the winning block.</li>
+          </ol>
+      </div>
+    </section>
+
+    <section class="proj-section">
+      <h2>Performance Observations</h2>
+      <div class="proj-prose">
+          <p>
+          The simulation utilizes Qiskit Aer's <code>statevector_simulator</code> for ideal execution.
+          </p>
+          <h3>Simulation Metrics</h3>
+          <ul>
+          <li><strong>Scalability:</strong> Execution time scales with network size (\(O(N^2)\) for pairwise
+          checks) and qubit count.</li>
+          <li><strong>Throughput:</strong> Preliminary tests indicate consensus rounds complete in seconds for
+          small networks (3-5 nodes, 6-10 qubits).</li>
+          <li><strong>Bottlenecks:</strong> Statevector simulation is the primary computational cost, while
+          fidelity calculations are relatively lightweight.</li>
+          </ul>
+      </div>
+    </section>
+
+    <section class="proj-section">
+      <h2>Technology Stack</h2>
+      <div class="proj-prose">
+          <ul class="tech-list">
+          <li><strong>Language:</strong> Python (3.x)</li>
+          <li><strong>Quantum Framework:</strong> Qiskit (~0.4x)</li>
+          <li><strong>Quantum Simulation:</strong> Qiskit Aer (`AerSimulator` with `method='statevector'`)</li>
+          <li><strong>Libraries:</strong> NumPy, hashlib, json, dataclasses</li>
+          </ul>
+      </div>
+    </section>
+    <section class="proj-section">
+      <h2>Gallery</h2>
+      <div class="proj-gallery proj-gallery--contain image-gallery">
+        <figure><img src="images/projects/side/quantum_circuit.jpg" alt="Illustrative Quantum Circuit Diagram" loading="lazy" decoding="async"><figcaption>Illustrative Quantum Circuit Diagram</figcaption></figure>
+      </div>
+    </section>
+
+
+    <a class="proj-next" href="cnn.html">
+      <div>
+        <span>Next side project</span>
+        <strong>X-ray Diagnosis CNN</strong>
+      </div>
+      <i class="fas fa-arrow-right" aria-hidden="true"></i>
+    </a>
+  </main>
+
+  <footer class="footer-new">
+    <div class="container footer__container">
+      <div class="footer__brand">
+        <img src="icon.png" width="20" height="20" alt="">
+        <span>Aaron McLean</span>
+      </div>
+      <ul class="footer__links">
+        <li><a href="https://www.linkedin.com/in/aaronmcleann/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+        <li><a href="https://github.com/aaronmcleancs" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="/images/CV.pdf" target="_blank" rel="noopener noreferrer">CV</a></li>
+      </ul>
+      <p class="footer__copyright">&copy; 2026 Aaron McLean</p>
+    </div>
+  </footer>
+
+  <div class="fullscreen-viewer" role="dialog" aria-modal="true" aria-label="Image viewer">
+    <div class="fullscreen-topbar">
+      <span class="fullscreen-counter"></span>
+      <button class="fullscreen-close" aria-label="Close viewer">&times;</button>
+    </div>
+    <figure class="fullscreen-stage">
+      <img src="" alt="" class="fullscreen-image">
+      <figcaption class="fullscreen-caption"></figcaption>
+    </figure>
+    <div class="fullscreen-nav">
+      <button class="fullscreen-prev" aria-label="Previous image"><i class="fas fa-chevron-left"></i></button>
+      <button class="fullscreen-next" aria-label="Next image"><i class="fas fa-chevron-right"></i></button>
+    </div>
+  </div>
+
+  <script src="js/photo.js"></script>
 </body>
 
 </html>

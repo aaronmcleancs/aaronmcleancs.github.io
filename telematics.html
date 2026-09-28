@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Telematics Platform Management - Aaron McLean</title>
+  <meta name="description" content="A Linux-based telematics stack, built and run entirely in-house, that keeps a fleet of heavy machines logging, reporting and reachable from anywhere.">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="preload" as="image" href="images/projects/telematics/hero.jpg">
+  <script src="https://kit.fontawesome.com/ca7f2ffa51.js" crossorigin="anonymous" defer></script>
+  <script src="js/scroll.js" defer></script>
+  <script src="js/analytics.js" defer></script>
+</head>
+
+<body>
+  <div class="navbar">
+    <a href="index.html" class="nav-brand" aria-label="Aaron McLean, home">
+      <img src="icon.png" height="24" width="24" alt="">
+      <span>Aaron McLean</span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="index.html#expertise" class="nav-item"><span class="nav-text">Expertise</span></a>
+      <a href="index.html#work" class="nav-item"><span class="nav-text">Work</span></a>
+      <a href="index.html#experience" class="nav-item"><span class="nav-text">Experience</span></a>
+      <a href="index.html#contact" class="nav-item"><span class="nav-text">Contact</span></a>
+    </nav>
+    <div class="right-nav">
+      <a href="/images/CV.pdf" class="download-btn" target="_blank" rel="noopener noreferrer" aria-label="View CV">
+        CV <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>
+      </a>
+      <button type="button" class="nav-hamburger" aria-label="Menu" aria-expanded="false">
+        <i class="fas fa-bars" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="mobile-menu">
+      <a href="index.html#expertise">Expertise</a>
+      <a href="index.html#work">Work</a>
+      <a href="index.html#experience">Experience</a>
+      <a href="index.html#contact">Contact</a>
+      <a href="/images/CV.pdf" target="_blank" rel="noopener noreferrer">CV <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+    </div>
+  </div>
+
+  <main class="container">
+    <header class="proj-header">
+      <a class="proj-crumb" href="index.html#work"><i class="fas fa-arrow-left" aria-hidden="true"></i> Selected work</a>
+      <span class="proj-eyebrow">Telematics Platform</span>
+      <h1 class="proj-title">Telematics Platform Management</h1>
+      <p class="proj-summary">A Linux-based telematics stack, built and run entirely in-house, that keeps a fleet of heavy machines logging, reporting and reachable from anywhere.</p>
+      <dl class="proj-meta">
+        <div><dt>Role</dt><dd>Platform owner</dd></div>
+        <div><dt>Stack</dt><dd>Embedded Linux, AWS, WireGuard, Grafana</dd></div>
+      </dl>
+    </header>
+
+    <figure class="proj-cover image-gallery">
+      <img src="images/projects/telematics/hero.jpg" alt="Telematics logger installed in a machine control enclosure" fetchpriority="high">
+    </figure>
+
+    <section class="proj-section">
+      <h2>The system</h2>
+      <div class="proj-prose">
+        <p>Every machine carries a persistent embedded Linux logger that captures its CAN networks around the clock. Loggers connect over cellular or satellite through a WireGuard VPN to an AWS-hosted backend, which serves a fleet portal and Grafana dashboards to engineers and customers.</p>
+        <p>The fleet spans Canada, the US and South America, on everything from oilfield rigs to underground drills and haul trucks. I took ownership of the platform in late 2025 and have run it since.</p>
+      </div>
+    </section>
+
+    <section class="proj-section">
+      <h2>Reliability</h2>
+      <div class="proj-prose">
+        <ul>
+          <li>Root-caused intermittent data loss to CAN frames with invalid timestamps, then filtered them at the source.</li>
+          <li>Fixed a date-rollover bug at midnight UTC and rolled the fix out to the fleet over the air.</li>
+          <li>Fixed log compression timing out on dense 500&nbsp;kbps networks, and added CAN error frames to the logs.</li>
+          <li>Recovered loggers through the bootloader, corrected SD card partitioning, and wrote the flashing procedures.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="proj-section">
+      <h2>Features</h2>
+      <div class="proj-prose">
+        <ul>
+          <li>Uptime tracking, GPS appended to logs, on-demand manual recordings and live cellular diagnostics.</li>
+          <li>A local dashboard on every device, reachable remotely through HTTPS forwarding on the cloud host without joining the VPN.</li>
+          <li>Status emails to the service team for preventative maintenance.</li>
+          <li>Machine hour tracking end to end: new hour meters in the vehicle controller's Simulink model with non-volatile storage, broadcast over CAN, read by a Linux service on the logger and pushed to a customer's maintenance platform API.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="proj-section">
+      <h2>Security and infrastructure</h2>
+      <div class="proj-prose">
+        <ul>
+          <li>Brought the portal back after a critical remote-code-execution vulnerability (CVE-2025-55182), then hardened the deployment with process persistence, dependency audits and tighter security policy.</li>
+          <li>Role-based access in Grafana so customers only see their own machines.</li>
+          <li>Wrote the platform roadmap with AWS cost analysis, and evaluated AWS IoT, MQTT and self-hosted VPN key management as next steps.</li>
+          <li>Multi-IMSI SIM provisioning for South American sites, and haul-truck installs at an operating mine, including the wiring harness design.</li>
+        </ul>
+      </div>
+    </section>
+    <section class="proj-section">
+      <h2>Photos</h2>
+      <div class="proj-gallery image-gallery">
+        <figure><img src="images/projects/telematics/dashboard.jpg" alt="Fleet telemetry dashboard" loading="lazy" decoding="async"><figcaption>Fleet telemetry dashboard</figcaption></figure>
+        <figure><img src="images/projects/telematics/prototype.jpg" alt="Embedded prototyping on the bench" loading="lazy" decoding="async"><figcaption>Embedded prototyping on the bench</figcaption></figure>
+      </div>
+    </section>
+
+
+    <a class="proj-next" href="raise-drill.html">
+      <div>
+        <span>Next project</span>
+        <strong>Industrial Automation</strong>
+      </div>
+      <i class="fas fa-arrow-right" aria-hidden="true"></i>
+    </a>
+  </main>
+
+  <footer class="footer-new">
+    <div class="container footer__container">
+      <div class="footer__brand">
+        <img src="icon.png" width="20" height="20" alt="">
+        <span>Aaron McLean</span>
+      </div>
+      <ul class="footer__links">
+        <li><a href="https://www.linkedin.com/in/aaronmcleann/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+        <li><a href="https://github.com/aaronmcleancs" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="/images/CV.pdf" target="_blank" rel="noopener noreferrer">CV</a></li>
+      </ul>
+      <p class="footer__copyright">&copy; 2026 Aaron McLean</p>
+    </div>
+  </footer>
+
+  <div class="fullscreen-viewer" role="dialog" aria-modal="true" aria-label="Image viewer">
+    <div class="fullscreen-topbar">
+      <span class="fullscreen-counter"></span>
+      <button class="fullscreen-close" aria-label="Close viewer">&times;</button>
+    </div>
+    <figure class="fullscreen-stage">
+      <img src="" alt="" class="fullscreen-image">
+      <figcaption class="fullscreen-caption"></figcaption>
+    </figure>
+    <div class="fullscreen-nav">
+      <button class="fullscreen-prev" aria-label="Previous image"><i class="fas fa-chevron-left"></i></button>
+      <button class="fullscreen-next" aria-label="Next image"><i class="fas fa-chevron-right"></i></button>
+    </div>
+  </div>
+
+  <script src="js/photo.js"></script>
+</body>
+
+</html>

@@ -21,13 +21,13 @@ document.addEventListener('DOMContentLoaded', function() {
     [index - 1, index + 1].forEach(function (i) {
       const img = activeImages[(i + activeImages.length) % activeImages.length];
       const pre = new Image();
-      pre.src = img.src;
+      pre.src = img.dataset.full || img.src;
     });
   }
 
   function applyImage(index) {
     const img = activeImages[index];
-    fullscreenImage.src = img.src;
+    fullscreenImage.src = img.dataset.full || img.src;
     fullscreenImage.alt = img.alt || '';
     if (caption) caption.textContent = img.alt || '';
     if (counter) {

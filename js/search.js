@@ -18,6 +18,20 @@ class SiteSearch {
 
         if (!this.searchInput || !this.resultsContainer) return;
 
+        // "/" hint in the field, and "/" anywhere on the page to jump into search
+        const hint = document.createElement('kbd');
+        hint.className = 'search-kbd';
+        hint.textContent = '/';
+        this.searchInput.insertAdjacentElement('afterend', hint);
+        document.addEventListener('keydown', (e) => {
+            const typing = e.target.closest && e.target.closest('input, textarea, [contenteditable]');
+            if (e.key === '/' && !typing && !e.metaKey && !e.ctrlKey) {
+                e.preventDefault();
+                this.searchInput.focus();
+            }
+        });
+        this.selected = -1;
+
         // Index all pages
         await this.indexPages();
 
@@ -59,8 +73,22 @@ class SiteSearch {
             }
         });
 
-        // Keyboard navigation
+        // Keyboard navigation: arrows move through results, Enter opens the selection
         this.searchInput.addEventListener('keydown', (e) => {
+            const items = this.resultsContainer.querySelectorAll('.search-result-item');
+            if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && items.length) {
+                e.preventDefault();
+                const step = e.key === 'ArrowDown' ? 1 : -1;
+                this.selected = (this.selected + step + items.length) % items.length;
+                items.forEach((el, i) => el.classList.toggle('is-selected', i === this.selected));
+                items[this.selected].scrollIntoView({ block: 'nearest' });
+                return;
+            }
+            if (e.key === 'Enter' && this.selected >= 0 && items[this.selected]) {
+                e.preventDefault();
+                items[this.selected].click();
+                return;
+            }
             if (e.key === 'Escape') {
                 this.clearResults();
                 this.closeMobileSearch();
@@ -79,10 +107,13 @@ class SiteSearch {
     async indexPages() {
         const pages = [
             { sourceUrl: 'index.html', targetUrl: 'index.html', title: 'Home' },
+            { sourceUrl: 'surgical-mining.html', targetUrl: 'surgical-mining.html', title: 'Innovation in Mining Technology' },
+            { sourceUrl: 'electric-rigs.html', targetUrl: 'electric-rigs.html', title: 'Mobile Equipment Electrification' },
+            { sourceUrl: 'telematics.html', targetUrl: 'telematics.html', title: 'Telematics Platform Management' },
+            { sourceUrl: 'raise-drill.html', targetUrl: 'raise-drill.html', title: 'Industrial Automation' },
             { sourceUrl: 'cnn.html', targetUrl: 'cnn.html', title: 'Anomaly Detection Project' },
-            { sourceUrl: 'particle.html', targetUrl: 'particle.html', title: 'ParticleBox Project' },
+            { sourceUrl: 'particle.html', targetUrl: 'particle.html', title: 'Physics Simulation' },
             { sourceUrl: 'quantum.html', targetUrl: 'quantum.html', title: 'Quantum Blockchain Project' },
-            { sourceUrl: 'ios.html', targetUrl: 'ios.html', title: 'RepBook iOS Project' },
             // Shadow content for external links
             { sourceUrl: 'data/linkedin.html', targetUrl: 'https://www.linkedin.com/in/aaronmcleann/', title: 'LinkedIn Profile' },
             { sourceUrl: 'data/github.html', targetUrl: 'https://github.com/aaronmcleancs', title: 'GitHub Profile' },
@@ -201,11 +232,13 @@ class SiteSearch {
     }
 
     displayResults(results, query) {
+        this.selected = -1;
         this.resultsContainer.innerHTML = '';
         this.resultsContainer.classList.add('active');
 
         // Security: Sanitize query for display
-        const safeQuery = this.escapeHtml(query.trim().substring(0, 100)); // Limit length
+        // Shown via a text node, so it needs no HTML escaping (escaping here displayed "&amp;")
+        const displayQuery = query.trim().substring(0, 100);
 
         // Add site results
         results.forEach(result => {
@@ -244,7 +277,7 @@ class SiteSearch {
         const searchIcon = document.createElement('i');
         searchIcon.className = 'fas fa-search';
         text.appendChild(searchIcon);
-        text.appendChild(document.createTextNode(` Search Internet for "${safeQuery}"`));
+        text.appendChild(document.createTextNode(` Search the web for "${displayQuery}"`));
 
         internetSearch.appendChild(text);
         this.resultsContainer.appendChild(internetSearch);

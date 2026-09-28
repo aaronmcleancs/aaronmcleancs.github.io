@@ -2,292 +2,276 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Project Showcase - CVV_15M_SARS-CoV-2</title>
-    <link rel="stylesheet" href="css/styles.css" />
-    <link rel="stylesheet" href="css/showcase.css" />
-    <link rel="icon" type="image/png" href="icon.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>X-ray Diagnosis CNN - Aaron McLean</title>
+  <meta name="description" content="A compact TensorFlow vision model that detects COVID-19 and viral pneumonia from chest x-rays, sized to run on resource-constrained hardware.">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-    <script src="https://kit.fontawesome.com/ca7f2ffa51.js" crossorigin="anonymous"></script>
+  <script src="https://kit.fontawesome.com/ca7f2ffa51.js" crossorigin="anonymous" defer></script>
+  <script src="js/scroll.js" defer></script>
   <script src="js/analytics.js" defer></script>
 </head>
 
 <body>
-    <div class="navbar">
-        <div class="logo">
-            <a href="index.html" class="icon">
-                <img src="icon.png" height="27px" width="27px" alt="Logo">
-            </a>
-        </div>
-        <a href="index.html" class="nav-text">Home</a>
-        <a href="#overview" class="nav-text">Overview</a>
-        <a href="#gallery" class="nav-text">Gallery</a>
-        <a href="#background" class="nav-text">Background</a>
-        <a href="#implementation" class="nav-text">Implementation</a>
-        <a href="#performance" class="nav-text">Performance</a>
-        <div class="right-nav" style="margin-left: auto; display: flex; align-items: center;">
-            <div class="mobile-search-trigger">
-                <i class="fas fa-search"></i>
-            </div>
-            <div class="navbar-search">
-                <button class="mobile-search-close">×</button>
-                <div class="input-wrapper" style="position: relative; width: 100%;">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" class="search-input" placeholder="Search site..." autocomplete="off">
-                    <button class="search-clear" aria-label="Clear search">×</button>
-                </div>
-                <div class="search-results"></div>
-            </div>
-        </div>
+  <div class="navbar">
+    <a href="index.html" class="nav-brand" aria-label="Aaron McLean, home">
+      <img src="icon.png" height="24" width="24" alt="">
+      <span>Aaron McLean</span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="index.html#expertise" class="nav-item"><span class="nav-text">Expertise</span></a>
+      <a href="index.html#work" class="nav-item"><span class="nav-text">Work</span></a>
+      <a href="index.html#experience" class="nav-item"><span class="nav-text">Experience</span></a>
+      <a href="index.html#contact" class="nav-item"><span class="nav-text">Contact</span></a>
+    </nav>
+    <div class="right-nav">
+      <a href="/images/CV.pdf" class="download-btn" target="_blank" rel="noopener noreferrer" aria-label="View CV">
+        CV <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>
+      </a>
+      <button type="button" class="nav-hamburger" aria-label="Menu" aria-expanded="false">
+        <i class="fas fa-bars" aria-hidden="true"></i>
+      </button>
     </div>
-
-    <div class="showcase__hero">
-        <div class="showcase__wrapper">
-            <div class="project-card">
-                <div class="project-card__header">
-                    <div class="project-card__header-left">
-                        <h1 class="project-title"></h1>
-                        <div class="project-meta">
-                            <span class="project-language"></span>
-                            <span class="project-license"></span>
-                        </div>
-                    </div>
-                    <div class="project-card__header-right">
-                        <div class="project-stats">
-                            <div class="stat-item">
-                                <i class="fas fa-star"></i>
-                                <span class="stat-count stars-count">0</span>
-                            </div>
-                            <div class="stat-item">
-                                <i class="fas fa-code-branch"></i>
-                                <span class="stat-count forks-count">0</span>
-                            </div>
-                            <div class="stat-item">
-                                <i class="fas fa-eye"></i>
-                                <span class="stat-count watchers-count">0</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="project-card__body">
-                    <p class="project-description"></p>
-                </div>
-                <div class="project-updated">
-                    <span>Updated <span class="updated-date">Recently</span></span>
-                </div>
-            </div>
-        </div>
+    <div class="mobile-menu">
+      <a href="index.html#expertise">Expertise</a>
+      <a href="index.html#work">Work</a>
+      <a href="index.html#experience">Experience</a>
+      <a href="index.html#contact">Contact</a>
+      <a href="/images/CV.pdf" target="_blank" rel="noopener noreferrer">CV <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
     </div>
-
-    <div style="text-align: center; font-size: 2rem; margin: 20px 0;">
-        <span>&#8226;</span>
-        <span>&#8226;</span>
-        <span>&#8226;</span>
-    </div>
-
-
-    <div class="showcase__content">
-
-        <section id="overview" class="showcase__section">
-            <h2>Overview</h2>
-            <p>
-                CVV_15M_SARS-CoV-2 is a high-performance convolutional neural network designed for efficient deployment
-                on mobile hardware. Optimized for Apple M-series silicon, the model leverages mixed precision training
-                to classify chest X-rays into COVID-19, viral pneumonia, or normal categories with over 95% accuracy.
-            </p>
-            <h3>Key Features</h3>
-            <ul>
-                <li><strong>High-Fidelity Classification:</strong> Distinguishes between COVID-19, normal, and viral
-                    pneumonia with clinical-grade precision.</li>
-                <li><strong>Mobile Optimization:</strong> Finely tuned for Apple M-series architecture using TensorFlow
-                    Metal.</li>
-                <li><strong>Efficiency:</strong> Implements mixed precision training for accelerated inference and
-                    reduced memory footprint.</li>
-            </ul>
-        </section>
-
-        <section id="gallery" class="showcase__section">
-            <h2>Project Gallery</h2>
-            <div class="image-gallery">
-                <img src="images/cnn1.png" alt="Model architecture and training visualization">
-                <img src="images/cnn2.png" alt="Confusion matrix and performance metrics">
-            </div>
-        </section>
-
-        <section id="background" class="showcase__section">
-            <h2>Background & Methodology</h2>
-            <p>
-                The architecture integrates ReLU activation, Local Response Normalization (LRN), overlapping pooling,
-                and dropout layers to extract complex patterns while maintaining computational efficiency.
-            </p>
-
-            <h3>ReLU Activation</h3>
-            <p>
-                We employ Rectified Linear Units (ReLU) to accelerate convergence and induce sparsity, mitigating the
-                vanishing gradient problem:
-            </p>
-            <p>
-                \[
-                f(x) = \max(0, x)
-                \]
-            </p>
-
-            <h3>Local Response Normalization (LRN)</h3>
-            <p>
-                LRN enhances feature selectivity by modeling lateral inhibition, encouraging competition among neurons
-                to reduce redundancy:
-            </p>
-            <p>
-                \[
-                b_{i,x,y} = \frac{a_{i,x,y}}{\left(k + \alpha \sum_{j=\max(0,i-\frac{n}{2})}^{\min(N-1,i+\frac{n}{2})}
-                (a_{j,x,y})^2 \right)^{\beta}}
-                \]
-            </p>
-
-            <h3>Overlapping Pooling</h3>
-            <p>
-                By using overlapping pooling regions (\( s < z \)), the model captures spatial invariances more
-                    effectively than non-overlapping counterparts, preserving critical texture details in X-rays. </p>
-
-                    <h3>Dropout Regularization</h3>
-                    <p>
-                        To prevent overfitting, a dropout rate of 0.5 is applied to the fully connected layers, forcing
-                        the network to learn robust features:
-                    </p>
-                    <p>
-                        \[
-                        P(h_j \mid x) = \sum_i P(h_j \mid i) P(i \mid x)
-                        \]
-                    </p>
-
-                    <h3>Mixed Precision Training</h3>
-                    <p>
-                        We utilize TensorFlow's mixed precision policy to optimize performance on Apple Silicon. This
-                        combines 16-bit computation for throughput with 32-bit master weights for numerical stability,
-                        effectively doubling training speed while halving memory usage.
-                    </p>
-        </section>
-
-        <section id="implementation" class="showcase__section">
-            <h2>Implementation Details</h2>
-
-            <h3>Data Pipeline</h3>
-            <p>
-                The model was trained on a balanced dataset of 17,000 chest X-ray images, preprocessed for normalization
-                and augmentation to ensure generalization across diverse clinical inputs.
-            </p>
-
-            <h3>Model Architecture</h3>
-            <p>
-                The 15-million parameter network features a streamlined design:
-            </p>
-            <ul>
-                <li><strong>Convolutional Core:</strong> Four blocks with increasing filter depths (64 to 512), each
-                    followed by max-pooling.</li>
-                <li><strong>Classifier:</strong> Two fully connected layers (1024 neurons each) with dropout,
-                    terminating in a softmax layer.</li>
-            </ul>
-        </section>
-
-        <section id="performance" class="showcase__section">
-            <h2>Performance & Results</h2>
-            <p>
-                The model demonstrates robust diagnostic capabilities, achieving a test accuracy of
-                <strong>94.03%</strong>.
-            </p>
-
-            <h3>Training Metrics</h3>
-            <p>
-                <strong>Dataset:</strong> 17,000 images | <strong>Input Size:</strong> 224x224 | <strong>Batch
-                    Size:</strong> 16 | <strong>Epochs:</strong> 30
-            </p>
-
-            <h3>Confusion Matrix</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>Covid</th>
-                        <th>Normal</th>
-                        <th>Pneumonia</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th>Covid</th>
-                        <td>708</td>
-                        <td>10</td>
-                        <td>6</td>
-                    </tr>
-                    <tr>
-                        <th>Normal</th>
-                        <td>70</td>
-                        <td>922</td>
-                        <td>8</td>
-                    </tr>
-                    <tr>
-                        <th>Pneumonia</th>
-                        <td>11</td>
-                        <td>14</td>
-                        <td>244</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <h3>Analysis</h3>
-            <ul>
-                <li><strong>COVID-19 Sensitivity:</strong> 97.8% recall (708/724), ensuring reliable detection of
-                    positive cases.</li>
-                <li><strong>Specificity:</strong> High distinction between viral pneumonia and COVID-19, with minimal
-                    cross-class confusion.</li>
-                <li><strong>Normal Cases:</strong> 92.2% recall, with the majority of errors being false positives for
-                    COVID-19 rather than pneumonia.</li>
-            </ul>
-        </section>
-
-        <section id="tech-stack" class="showcase__section">
-            <h2>Technology Stack</h2>
-            <div class="tech-icons">
-                <i class="fab fa-python" title="Python"></i>
-                <i class="fab fa-aws" title="AWS"></i>
-                <i class="fab fa-kaggle" title="Kaggle"></i>
-            </div>
-            <ul>
-                <li><strong>Core Libraries:</strong> TensorFlow 2.10, Keras, NumPy, OpenCV</li>
-                <li><strong>Data Processing:</strong> Pandas, scikit-learn, tqdm</li>
-                <li><strong>Visualization:</strong> Matplotlib, TensorBoard</li>
-                <li><strong>Hardware Acceleration:</strong> TensorFlow Metal, Mixed Precision Training</li>
-                <li><strong>Development Environment:</strong> Python 3.9, macOS Monterey, Jupyter Notebook</li>
-                <li><strong>Hardware:</strong> Apple M1 Pro (16GB Unified Memory)</li>
-            </ul>
-        </section>
-    </div>
-    <div class="fullscreen-viewer" role="dialog" aria-modal="true" aria-label="Image viewer">
-  <div class="fullscreen-topbar">
-    <span class="fullscreen-counter"></span>
-    <button class="fullscreen-close" aria-label="Close viewer">&times;</button>
   </div>
-  <figure class="fullscreen-stage">
-    <img src="" alt="" class="fullscreen-image">
-    <figcaption class="fullscreen-caption"></figcaption>
-  </figure>
-  <div class="fullscreen-nav">
-    <button class="fullscreen-prev" aria-label="Previous image">
-      <i class="fas fa-chevron-left"></i>
-    </button>
-    <button class="fullscreen-next" aria-label="Next image">
-      <i class="fas fa-chevron-right"></i>
-    </button>
+
+  <main class="container">
+    <header class="proj-header">
+      <a class="proj-crumb" href="index.html#side-projects"><i class="fas fa-arrow-left" aria-hidden="true"></i> Side projects</a>
+      <span class="proj-eyebrow">Side project</span>
+      <h1 class="proj-title">X-ray Diagnosis CNN</h1>
+      <p class="proj-summary">A compact TensorFlow vision model that detects COVID-19 and viral pneumonia from chest x-rays, sized to run on resource-constrained hardware.</p>
+      <dl class="proj-meta">
+        <div><dt>Language</dt><dd>Python</dd></div>
+        <div><dt>Stack</dt><dd>TensorFlow, AWS</dd></div>
+        <div><dt>Source</dt><dd><a class="proj-link" href="https://github.com/aaronmcleancs/CVV_15M_SARS-CoV-2" target="_blank" rel="noopener noreferrer">View on GitHub <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a></dd></div>
+      </dl>
+    </header>
+
+    <figure class="proj-cover proj-cover--contain image-gallery">
+      <img src="images/projects/side/cnn1.jpg" alt="Model architecture and training visualization" fetchpriority="high">
+    </figure>
+
+    <section class="proj-section">
+      <h2>Overview</h2>
+      <div class="proj-prose">
+          <p>
+          CVV_15M_SARS-CoV-2 is a high-performance convolutional neural network designed for efficient deployment
+          on mobile hardware. Optimized for Apple M-series silicon, the model leverages mixed precision training
+          to classify chest X-rays into COVID-19, viral pneumonia, or normal categories with over 95% accuracy.
+          </p>
+          <h3>Key Features</h3>
+          <ul>
+          <li><strong>High-Fidelity Classification:</strong> Distinguishes between COVID-19, normal, and viral
+          pneumonia with clinical-grade precision.</li>
+          <li><strong>Mobile Optimization:</strong> Finely tuned for Apple M-series architecture using TensorFlow
+          Metal.</li>
+          <li><strong>Efficiency:</strong> Implements mixed precision training for accelerated inference and
+          reduced memory footprint.</li>
+          </ul>
+      </div>
+    </section>
+
+    <section class="proj-section">
+      <h2>Background & Methodology</h2>
+      <div class="proj-prose">
+          <p>
+          The architecture integrates ReLU activation, Local Response Normalization (LRN), overlapping pooling,
+          and dropout layers to extract complex patterns while maintaining computational efficiency.
+          </p>
+          <h3>ReLU Activation</h3>
+          <p>
+          We employ Rectified Linear Units (ReLU) to accelerate convergence and induce sparsity, mitigating the
+          vanishing gradient problem:
+          </p>
+          <p>
+          \[
+          f(x) = \max(0, x)
+          \]
+          </p>
+          <h3>Local Response Normalization (LRN)</h3>
+          <p>
+          LRN enhances feature selectivity by modeling lateral inhibition, encouraging competition among neurons
+          to reduce redundancy:
+          </p>
+          <p>
+          \[
+          b_{i,x,y} = \frac{a_{i,x,y}}{\left(k + \alpha \sum_{j=\max(0,i-\frac{n}{2})}^{\min(N-1,i+\frac{n}{2})}
+          (a_{j,x,y})^2 \right)^{\beta}}
+          \]
+          </p>
+          <h3>Overlapping Pooling</h3>
+          <p>
+          By using overlapping pooling regions (\( s < z \)), the model captures spatial invariances more
+          effectively than non-overlapping counterparts, preserving critical texture details in X-rays. </p>
+          <h3>Dropout Regularization</h3>
+          <p>
+          To prevent overfitting, a dropout rate of 0.5 is applied to the fully connected layers, forcing
+          the network to learn robust features:
+          </p>
+          <p>
+          \[
+          P(h_j \mid x) = \sum_i P(h_j \mid i) P(i \mid x)
+          \]
+          </p>
+          <h3>Mixed Precision Training</h3>
+          <p>
+          We utilize TensorFlow's mixed precision policy to optimize performance on Apple Silicon. This
+          combines 16-bit computation for throughput with 32-bit master weights for numerical stability,
+          effectively doubling training speed while halving memory usage.
+          </p>
+      </div>
+    </section>
+
+    <section class="proj-section">
+      <h2>Implementation Details</h2>
+      <div class="proj-prose">
+          <h3>Data Pipeline</h3>
+          <p>
+          The model was trained on a balanced dataset of 17,000 chest X-ray images, preprocessed for normalization
+          and augmentation to ensure generalization across diverse clinical inputs.
+          </p>
+          <h3>Model Architecture</h3>
+          <p>
+          The 15-million parameter network features a streamlined design:
+          </p>
+          <ul>
+          <li><strong>Convolutional Core:</strong> Four blocks with increasing filter depths (64 to 512), each
+          followed by max-pooling.</li>
+          <li><strong>Classifier:</strong> Two fully connected layers (1024 neurons each) with dropout,
+          terminating in a softmax layer.</li>
+          </ul>
+      </div>
+    </section>
+
+    <section class="proj-section">
+      <h2>Performance & Results</h2>
+      <div class="proj-prose">
+          <p>
+          The model demonstrates robust diagnostic capabilities, achieving a test accuracy of
+          <strong>94.03%</strong>.
+          </p>
+          <h3>Training Metrics</h3>
+          <p>
+          <strong>Dataset:</strong> 17,000 images | <strong>Input Size:</strong> 224x224 | <strong>Batch
+          Size:</strong> 16 | <strong>Epochs:</strong> 30
+          </p>
+          <h3>Confusion Matrix</h3>
+          <table>
+          <thead>
+          <tr>
+          <th></th>
+          <th>Covid</th>
+          <th>Normal</th>
+          <th>Pneumonia</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+          <th>Covid</th>
+          <td>708</td>
+          <td>10</td>
+          <td>6</td>
+          </tr>
+          <tr>
+          <th>Normal</th>
+          <td>70</td>
+          <td>922</td>
+          <td>8</td>
+          </tr>
+          <tr>
+          <th>Pneumonia</th>
+          <td>11</td>
+          <td>14</td>
+          <td>244</td>
+          </tr>
+          </tbody>
+          </table>
+          <h3>Analysis</h3>
+          <ul>
+          <li><strong>COVID-19 Sensitivity:</strong> 97.8% recall (708/724), ensuring reliable detection of
+          positive cases.</li>
+          <li><strong>Specificity:</strong> High distinction between viral pneumonia and COVID-19, with minimal
+          cross-class confusion.</li>
+          <li><strong>Normal Cases:</strong> 92.2% recall, with the majority of errors being false positives for
+          COVID-19 rather than pneumonia.</li>
+          </ul>
+      </div>
+    </section>
+
+    <section class="proj-section">
+      <h2>Technology Stack</h2>
+      <div class="proj-prose">
+          <ul>
+          <li><strong>Core Libraries:</strong> TensorFlow 2.10, Keras, NumPy, OpenCV</li>
+          <li><strong>Data Processing:</strong> Pandas, scikit-learn, tqdm</li>
+          <li><strong>Visualization:</strong> Matplotlib, TensorBoard</li>
+          <li><strong>Hardware Acceleration:</strong> TensorFlow Metal, Mixed Precision Training</li>
+          <li><strong>Development Environment:</strong> Python 3.9, macOS Monterey, Jupyter Notebook</li>
+          <li><strong>Hardware:</strong> Apple M1 Pro (16GB Unified Memory)</li>
+          </ul>
+      </div>
+    </section>
+    <section class="proj-section">
+      <h2>Gallery</h2>
+      <div class="proj-gallery proj-gallery--contain image-gallery">
+        <figure><img src="images/projects/side/cnn2.jpg" alt="Confusion matrix and performance metrics" loading="lazy" decoding="async"><figcaption>Confusion matrix and performance metrics</figcaption></figure>
+      </div>
+    </section>
+
+
+    <a class="proj-next" href="particle.html">
+      <div>
+        <span>Next side project</span>
+        <strong>Physics Simulation</strong>
+      </div>
+      <i class="fas fa-arrow-right" aria-hidden="true"></i>
+    </a>
+  </main>
+
+  <footer class="footer-new">
+    <div class="container footer__container">
+      <div class="footer__brand">
+        <img src="icon.png" width="20" height="20" alt="">
+        <span>Aaron McLean</span>
+      </div>
+      <ul class="footer__links">
+        <li><a href="https://www.linkedin.com/in/aaronmcleann/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+        <li><a href="https://github.com/aaronmcleancs" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="/images/CV.pdf" target="_blank" rel="noopener noreferrer">CV</a></li>
+      </ul>
+      <p class="footer__copyright">&copy; 2026 Aaron McLean</p>
+    </div>
+  </footer>
+
+  <div class="fullscreen-viewer" role="dialog" aria-modal="true" aria-label="Image viewer">
+    <div class="fullscreen-topbar">
+      <span class="fullscreen-counter"></span>
+      <button class="fullscreen-close" aria-label="Close viewer">&times;</button>
+    </div>
+    <figure class="fullscreen-stage">
+      <img src="" alt="" class="fullscreen-image">
+      <figcaption class="fullscreen-caption"></figcaption>
+    </figure>
+    <div class="fullscreen-nav">
+      <button class="fullscreen-prev" aria-label="Previous image"><i class="fas fa-chevron-left"></i></button>
+      <button class="fullscreen-next" aria-label="Next image"><i class="fas fa-chevron-right"></i></button>
+    </div>
   </div>
-</div>
-    <script src="js/photo.js"></script>
-    <script src="js/showcase.js"></script>
-    <script src="js/github.js"></script>
-    <script src="js/track.js"></script>
-    <script src="js/search.js"></script>
+
+  <script src="js/photo.js"></script>
 </body>
 
 </html>

@@ -5,50 +5,32 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aaron McLean - Portfolio</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <title>Aaron McLean - Automation &amp; Controls Engineer</title>
+  <meta name="description" content="Aaron McLean, software and controls engineer building PLC automation, CAN/J1939 electrification and embedded Linux telematics for heavy mobile mining and drilling machinery.">
+  <meta name="theme-color" content="#000000">
   <link rel="icon" type="image/png" href="icon.png">
-  <link rel="stylesheet" href="css/social-media-icons.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.14.0/devicon.min.css">
-  <script src="https://kit.fontawesome.com/ca7f2ffa51.js" crossorigin="anonymous"></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="/js/github.js"></script>
-  <script src="js/scroll.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="preload" as="image" href="css/output.svg">
+  <script src="https://kit.fontawesome.com/ca7f2ffa51.js" crossorigin="anonymous" defer></script>
+  <script src="js/scroll.js" defer></script>
   <script src="js/analytics.js" defer></script>
 </head>
 
 <body>
   <div class="navbar">
-    <div class="logo">
-      <div class="icon"><img src="icon.png" height="27px" width="27px" alt="Logo"></div>
-    </div>
-    <a href="#home" class="nav-item">
-      <i class="fas fa-home nav-icon" aria-hidden="true"></i>
-      <span class="nav-text">Home</span>
+    <a href="#home" class="nav-brand" aria-label="Aaron McLean, home">
+      <img src="icon.png" height="24" width="24" alt="">
+      <span>Aaron McLean</span>
     </a>
-    <a href="#projects" id="projects-link" class="nav-item">
-      <i class="fas fa-gears nav-icon" aria-hidden="true"></i>
-      <span class="nav-text">Expertise</span>
-    </a>
-    <a href="#experience" id="experience-link" class="nav-item">
-      <i class="fas fa-code-branch nav-icon" aria-hidden="true"></i>
-      <span class="nav-text">Experience</span>
-    </a>
-    <div class="nav-item nav-dropdown">
-      <button type="button" class="nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false">
-        <i class="fab fa-github nav-icon" aria-hidden="true"></i>
-        <span class="nav-text">Open Source</span>
-        <i class="fas fa-chevron-down nav-caret" aria-hidden="true"></i>
-      </button>
-      <div class="nav-dropdown-menu">
-        <a href="/particle.html">ParticleBox</a>
-        <a href="/quantum.html">Quantum Blockchain Sim</a>
-        <a href="/cnn.html">Anomaly Detection</a>
-        <a href="/ios.html">Fitness Tracker</a>
-      </div>
-    </div>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#expertise" class="nav-item"><span class="nav-text">Expertise</span></a>
+      <a href="#work" class="nav-item"><span class="nav-text">Work</span></a>
+      <a href="#experience" class="nav-item"><span class="nav-text">Experience</span></a>
+      <a href="#contact" class="nav-item"><span class="nav-text">Contact</span></a>
+    </nav>
     <div class="right-nav">
       <div class="mobile-search-trigger">
         <i class="fas fa-search"></i>
@@ -57,29 +39,27 @@
         <button class="mobile-search-close">×</button>
         <div class="input-wrapper" style="position: relative; width: 100%;">
           <i class="fas fa-search search-icon"></i>
-          <input type="text" class="search-input" placeholder="Search site..." autocomplete="off">
+          <input type="text" class="search-input" placeholder="Search" autocomplete="off">
           <button class="search-clear" aria-label="Clear search">×</button>
         </div>
         <div class="search-results"></div>
       </div>
-      <a href="/images/CV.pdf" class="download-btn" target="_blank" rel="noopener noreferrer" aria-label="View Resume">
-        <i class="fas fa-file-pdf"></i> CV
+      <a href="/images/CV.pdf" class="download-btn" target="_blank" rel="noopener noreferrer" aria-label="View CV">
+        CV <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>
       </a>
       <button type="button" class="nav-hamburger" aria-label="Menu" aria-expanded="false">
         <i class="fas fa-bars" aria-hidden="true"></i>
       </button>
     </div>
     <div class="mobile-menu">
-      <a href="#home"><i class="fas fa-home" aria-hidden="true"></i> Home</a>
-      <a href="#projects"><i class="fas fa-gears" aria-hidden="true"></i> Expertise</a>
-      <a href="#experience"><i class="fas fa-code-branch" aria-hidden="true"></i> Experience</a>
-      <div class="mobile-menu-label"><i class="fab fa-github" aria-hidden="true"></i> Open Source</div>
-      <a class="mobile-menu-sub" href="/particle.html">ParticleBox</a>
-      <a class="mobile-menu-sub" href="/quantum.html">Quantum Blockchain Sim</a>
-      <a class="mobile-menu-sub" href="/cnn.html">Anomaly Detection</a>
-      <a class="mobile-menu-sub" href="/ios.html">Fitness Tracker</a>
+      <a href="#expertise">Expertise</a>
+      <a href="#work">Work</a>
+      <a href="#experience">Experience</a>
+      <a href="#contact">Contact</a>
+      <a href="/images/CV.pdf" target="_blank" rel="noopener noreferrer">CV <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
     </div>
   </div>
+
   <div class="hero__section" id="home">
     <div class="hero__background"></div>
     <div class="hero__wrapper">
@@ -93,19 +73,15 @@
             <p>
               <span class="action-container">
                 <span class="action-wrapper">
-                                    <span class="action-word" style="color: var(--text-muted);">Embedded Software and Control Systems
-                    Engineer</span>
+                  <span class="action-word" style="color: var(--text-muted);">Software and Controls Engineer</span>
                 </span>
               </span>
             </p>
           </div>
         </div>
-        <div class="social-menu">
-          <ul>
-            <li><a href="https://github.com/aaronmcleancs" target="blank"><i class="fab fa-github"></i></a></li>
-            <li><a href="https://www.linkedin.com/in/aaronmcleann/" target="blank"><i
-                  class="fab fa-linkedin-in"></i></a></li>
-          </ul>
+        <div class="hero__actions">
+          <a href="https://github.com/aaronmcleancs" class="btn btn--icon" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><i class="fab fa-github"></i></a>
+          <a href="https://www.linkedin.com/in/aaronmcleann/" class="btn btn--icon" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
         </div>
       </div>
       <div class="scroll-suggestion">
@@ -113,336 +89,314 @@
       </div>
     </div>
   </div>
-  <div class="hero2__section" id="projects">
-    <div class="hero2__wrapper">
-      <div id="column2__right" class="column2__right">
-        <div id="card4" class="card-props white-card animate__animated">
-          <div class="card-content">
-            <img src="icon/4.svg" alt="Industrial automation icon" style="width: 30px; height: 30px;" />
-            <p>Industrial Control Systems Engineering</p>
-            <div class="skills-container">
+
+  <section class="hero2__section section" id="expertise">
+    <div class="container">
+      <header class="section__head">
+        <span class="section__index">01</span>
+        <h2 class="section__title">Expertise</h2>
+      </header>
+      <div id="column2__right" class="xp-grid">
+        <article id="card4" class="card-props xp-card">
+          <div class="xp-card__head">
+            <img class="xp-card__icon" src="icon/4.svg" alt="" aria-hidden="true" width="36" height="36" />
+            <h3 class="xp-card__title">Embedded Software Engineering</h3>
+          </div>
+          <p class="xp-card__desc">Real-time, safety-critical control systems for heavy mobile equipment, taken from concept through integration and deployment. Grounded in a computer science degree.</p>
+          <div class="skills-container">
               <span class="skill-tag">CODESYS</span>
-              <span class="skill-tag">IEC 61131-3</span>
-              <span class="skill-tag">MATLAB</span>
+              <span class="skill-tag">PLCnext</span>
               <span class="skill-tag">Simulink</span>
-            </div>
-            <p>Design and implementation of control systems for heavy-duty mobile equipment. Automated drilling and rod-handling sequences, closed-loop actuator and powertrain control, and safety interlocks and fault handling for reliable operation in demanding production environments.</p>
-            <div class="image-gallery card-gallery">
-              <img src="images/proj-drill-head.jpg" alt="Surgical drilling operations during automated steering development">
-              <img src="images/proj-raisepro-shop.jpg" alt="RaisePro-48T raise drill — automation sequence development">
-              <img src="images/proj-rig-sunset.jpg" alt="Automated steering trials on a surgical drilling rig">
-            </div>
           </div>
-        </div>
-        <div id="card3" class="card-props white-card animate__animated">
-          <div class="card-content">
-            <img src="icon/3.svg" alt="Vehicle networks icon" style="width: 30px; height: 30px;" />
-            <p>Vehicle Networks &amp; Diagnostics</p>
-            <div class="skills-container">
-              <span class="skill-tag">CAN / J1939</span>
-              <span class="skill-tag">CANopen</span>
-              <span class="skill-tag">DBC</span>
-              <span class="skill-tag">CANalyzer</span>
-            </div>
-            <p>Integration and diagnostics of multi-controller vehicle networks. CAN communication design, ECU
-              control, and fault diagnosis and handling. Experience with J1939, CANopen, Profinet, ModBus, OPC UA, and other industrial communication
-              protocols.</p>
-            <div class="image-gallery card-gallery">
-              <img src="images/proj-junction-box.jpg" alt="Fibre-optic gyro module in the steerable drilling tip">
-              <img src="images/proj-altdrive-bench.jpg" alt="Testing electric drive kit modules">
-              <img src="images/proj-field-commissioning.jpg" alt="Hydraulic bay of an Ontario Power Generation machine">
-            </div>
+        </article>
+        <article id="card3" class="card-props xp-card">
+          <div class="xp-card__head">
+            <img class="xp-card__icon" src="icon/3.svg" alt="" aria-hidden="true" width="36" height="36" />
+            <h3 class="xp-card__title">Industrial Automation</h3>
           </div>
-        </div>
-        <div id="card2" class="card-props white-card animate__animated">
-          <div class="card-content">
-            <img src="icon/2.svg" alt="Telematics icon" style="width: 30px; height: 30px;" />
-            <p>Telematics & Remote Monitoring</p>
-            <div class="skills-container">
-              <span class="skill-tag">Embedded Linux</span>
-              <span class="skill-tag">WireGuard</span>
-              <span class="skill-tag">Grafana</span>
-              <span class="skill-tag">Modbus</span>
-            </div>
-            <p>Telemetry infrastructure for connected equipment fleets. Linux-based data loggers with secure
-              access, high-frequency CAN and Modbus aggregation, and client dashboards for remote monitoring and
-              diagnostics.</p>
-            <div class="image-gallery card-gallery">
-              <img src="images/proj-owa-logger.jpg" alt="Telematics unit installed in a control enclosure">
-              <img src="images/proj-grafana-dashboard.jpg" alt="Fleet telemetry dashboard">
-              <img src="images/proj-field-rig.jpg" alt="Instrumented drill rig deployed in the field">
-            </div>
+          <p class="xp-card__desc">Integrating sensors, actuators and hydraulics into heavy machinery, working alongside electrical, mechanical and hydraulic engineers and the production and test teams who build it.</p>
+          <div class="skills-container">
+              <span class="skill-tag">Sensor Integration</span>
+              <span class="skill-tag">Hydraulics</span>
+              <span class="skill-tag">Commissioning</span>
           </div>
-        </div>
-        <div id="card1" class="card-props white-card animate__animated">
-          <div class="card-content">
-            <img src="icon/1.svg" alt="Software engineering icon" style="width: 30px; height: 30px;" />
-            <p>Software Engineering &amp; Simulation</p>
-            <div class="skills-container">
-              <span class="skill-tag">C++</span>
-              <span class="skill-tag">Python</span>
-              <span class="skill-tag">Multithreading</span>
-              <span class="skill-tag">TensorFlow</span>
-              <span class="skill-tag">Node.js</span>
-            </div>
-            <p>Performance-focused software development. Real-time simulation engines, applied
-              machine learning, full-stack applications, and validation tooling.</p>
-            <div class="image-gallery card-gallery">
-              <img src="images/proj-novamera-dev.jpg" alt="Capsule design phase for surgical drilling development">
-              <img src="images/proj-esp32.jpg" alt="ESP32 embedded prototyping on a breadboard">
-              <img src="images/proj-bench-harness.jpg" alt="Bench testing a control harness and valve bank">
-            </div>
+        </article>
+        <article id="card2" class="card-props xp-card">
+          <div class="xp-card__head">
+            <img class="xp-card__icon" src="icon/2.svg" alt="" aria-hidden="true" width="36" height="36" />
+            <h3 class="xp-card__title">Theoretical Computer Science</h3>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="section-separator">
-    <div class="separator-dot"></div>
-  </div>
-  <div class="timeline__section" id="experience">
-    <div class="timeline__wrapper">
-      <div class="timeline-line"></div>
-      <div class="timeline-item">
-        <div class="timeline-content left">
-          <div class="timeline-header">
-            <img src="images/medatech.jpeg" alt="MEDATech Logo">
-            <div class="header-content">
-              <h3>Software and Controls Engineer at MEDATech</h3>
-              <span class="timeline-date">2025-Present</span>
-            </div>
-          </div>
-          <div class="timeline-body">
-            <div class="skills-container">
-              <span class="skill-tag">Work</span>
-              <span class="skill-tag">Software Engineering</span>
-              <span class="skill-tag">Control Systems</span>
-              <span class="skill-tag">Embedded Systems</span>
-            </div>
-            <p>Embedded control systems for heavy mobile equipment with a focus on testing automation, control system
-              integration, and operator interfaces.</p>
-          </div>
-        </div>
-        <div class="timeline-dot"></div>
-      </div>
-      <div class="timeline-item">
-        <div class="timeline-content right">
-          <div class="timeline-header">
-            <img src="images/qiskit.png" alt="Qiskit Logo">
-            <div class="header-content">
-              <h3>Capstone Project</h3>
-              <span class="timeline-date">2025</span>
-            </div>
-          </div>
-          <div class="timeline-body">
-            <div class="skills-container">
-              <span class="skill-tag">Research</span>
-              <span class="skill-tag">Quantum Computing</span>
+          <p class="xp-card__desc">Research in distributed systems and quantum computation, building on concepts at the forefront of simulated quantum computing to rethink how decentralized networks reach agreement.</p>
+          <div class="skills-container">
               <span class="skill-tag">Distributed Systems</span>
-              <span class="skill-tag">Python</span>
-            </div>
-            <p>Quantum-assisted blockchain consensus protocol under the supervision of Dr. Barbeau.</p>
-          </div>
-        </div>
-        <div class="timeline-dot"></div>
-      </div>
-      <div class="timeline-item">
-        <div class="timeline-content left">
-          <div class="timeline-header">
-            <img src="images/chimoney.png" alt="Chimoney Logo">
-            <div class="header-content">
-              <h3>Developer at Chimoney</h3>
-              <span class="timeline-date">2024-2025</span>
-            </div>
-          </div>
-          <div class="timeline-body">
-            <div class="skills-container">
-              <span class="skill-tag">Internship</span>
-              <span class="skill-tag">Full-Stack</span>
-              <span class="skill-tag">API Development</span>
-              <span class="skill-tag">Payment Systems</span>
-            </div>
-            <p>Contributed to Chimoney's payment platform and authored documentation for API integration.</p>
-          </div>
-        </div>
-        <div class="timeline-dot"></div>
-      </div>
-      <div class="timeline-item">
-        <div class="timeline-content right">
-          <div class="timeline-header">
-            <img src="images/tensorflow.png" alt="TensorFlow Logo">
-            <div class="header-content">
-              <h3>Neural Network Architecture</h3>
-              <span class="timeline-date">2024</span>
-            </div>
-          </div>
-          <div class="timeline-body">
-            <div class="skills-container">
-              <span class="skill-tag">Research</span>
-              <span class="skill-tag">Jupyter</span>
-              <span class="skill-tag">Python</span>
-              <span class="skill-tag">TensorFlow</span>
-            </div>
-            <p>Developed a compact Neural Network for x-ray diagnosis, achieving 97.55% accuracy.</p>
-          </div>
-        </div>
-        <div class="timeline-dot"></div>
-      </div>
-      <div class="timeline-item">
-        <div class="timeline-content left">
-          <div class="timeline-header">
-            <img src="images/stonetree.png" alt="StoneTree Naturopathic Clinic Logo">
-            <div class="header-content">
-              <h3>IT Consultant</h3>
-              <span class="timeline-date">2023</span>
-            </div>
-          </div>
-          <div class="timeline-body">
-            <div class="skills-container">
-              <span class="skill-tag">Work</span>
-              <span class="skill-tag">Network Admin</span>
-              <span class="skill-tag">Security</span>
-              <span class="skill-tag">RBAC</span>
-            </div>
-            <p>Implemented file-sharing systems utilizing network-attached storage with role-based access control.</p>
-          </div>
-        </div>
-        <div class="timeline-dot"></div>
-      </div>
-      <div class="timeline-item">
-        <div class="timeline-content right">
-          <div class="timeline-header">
-            <img src="images/carleton.png" alt="Carleton University Logo">
-            <div class="header-content">
-              <h3>Bachelor of Computer Science</h3>
-              <span class="timeline-date">2021-2025</span>
-            </div>
-          </div>
-          <div class="timeline-body">
-            <div class="skills-container">
-              <span class="skill-tag">Education</span>
-              <span class="skill-tag">Combinatorics</span>
-              <span class="skill-tag">Node.js</span>
+              <span class="skill-tag">Quantum Computing</span>
               <span class="skill-tag">Algorithms</span>
-            </div>
-            <p>Pursued a B.C.S at Carleton University. Member of the Computer Science and AI Societies.</p>
           </div>
-        </div>
-        <div class="timeline-dot"></div>
-      </div>
-      <div class="timeline-item">
-        <div class="timeline-content left">
-          <div class="timeline-header">
-            <img src="images/staples.png" alt="Staples Logo">
-            <div class="header-content">
-              <h3>Technology Associate</h3>
-              <span class="timeline-date">2018-2022</span>
-            </div>
+        </article>
+        <article id="card1" class="card-props xp-card">
+          <div class="xp-card__head">
+            <img class="xp-card__icon" src="icon/1.svg" alt="" aria-hidden="true" width="36" height="36" />
+            <h3 class="xp-card__title">Linux</h3>
           </div>
-          <div class="timeline-body">
-            <div class="skills-container">
-              <span class="skill-tag">Work</span>
-              <span class="skill-tag">Sales</span>
-              <span class="skill-tag">Data Recovery</span>
-              <span class="skill-tag">Troubleshooting</span>
-            </div>
-            <p>Refined diagnostic and technical skills by assisting with a diverse range of technology problems.</p>
+          <p class="xp-card__desc">System design and operating system depth to build persistent, self-monitoring Linux deployments that run unattended, recover on their own and stay reachable from anywhere.</p>
+          <div class="skills-container">
+              <span class="skill-tag">System Design</span>
+              <span class="skill-tag">Operating Systems</span>
+              <span class="skill-tag">Networking</span>
           </div>
-        </div>
-        <div class="timeline-dot"></div>
-      </div>
-      <div class="timeline-item">
-        <div class="timeline-content right">
-          <div class="timeline-header">
-            <img src="images/cci.png" alt="Collingwood Collegiate Institute Logo">
-            <div class="header-content">
-              <h3>Ontario Secondary School Diploma</h3>
-              <span class="timeline-date">2017-2021</span>
-            </div>
-          </div>
-          <div class="timeline-body">
-            <div class="skills-container">
-              <span class="skill-tag">Education</span>
-              <span class="skill-tag">Academic Excellence</span>
-              <span class="skill-tag">Leadership</span>
-              <span class="skill-tag">Problem Solving</span>
-            </div>
-            <p>Graduated from Collingwood Collegiate Institute obtaining Honours with Distinction.</p>
-          </div>
-        </div>
-        <div class="timeline-dot"></div>
+        </article>
       </div>
     </div>
-  </div>
-  <div class="contact__section" id="contact">
-    <div class="contact__wrapper">
-      <div class="contact__panel">
-        <h2>Contact</h2>
-        <form id="contact-form" action="https://formspree.io/f/mvgzealp" method="POST">
-          <input type="text" name="name" placeholder="Name" autocomplete="name" required>
-          <input type="email" name="email" placeholder="Email" autocomplete="email" required>
-          <textarea name="message" placeholder="Message" required></textarea>
-          <button type="submit" class="contact-send">
-            <span class="send-label">Send</span>
-            <i class="fas fa-arrow-right" aria-hidden="true"></i>
-          </button>
-        </form>
+  </section>
+
+  <section class="section" id="work">
+    <div class="container">
+      <header class="section__head">
+        <span class="section__index">02</span>
+        <h2 class="section__title">Selected work</h2>
+      </header>
+      <div class="stage" data-stage>
+        <ul class="stage__list">
+          <li class="stage__item" data-href="surgical-mining.html" data-caption="Surgical Mining">
+            <button class="stage__toggle" type="button" aria-expanded="false">
+              <span class="stage__name">Innovation in Mining Technology</span>
+            </button>
+            <div class="stage__detail"><div>
+              <p>Control software and the operator interface for a steerable drill that mines narrow veins from the surface.</p>
+              <a href="surgical-mining.html">View project <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+            </div></div>
+          </li>
+          <li class="stage__item" data-href="electric-rigs.html" data-caption="Battery Electric Oil &amp; Gas Workover Rigs">
+            <button class="stage__toggle" type="button" aria-expanded="false">
+              <span class="stage__name">Mobile Equipment Electrification</span>
+            </button>
+            <div class="stage__detail"><div>
+              <p>Test automation and field tuning as a hybrid rig conversion moved from prototype to production.</p>
+              <a href="electric-rigs.html">View project <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+            </div></div>
+          </li>
+          <li class="stage__item" data-href="telematics.html" data-caption="Telematics Platform">
+            <button class="stage__toggle" type="button" aria-expanded="false">
+              <span class="stage__name">Telematics Platform Management</span>
+            </button>
+            <div class="stage__detail"><div>
+              <p>A Linux telematics stack, built and run in-house, that keeps a fleet of heavy machines connected.</p>
+              <a href="telematics.html">View project <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+            </div></div>
+          </li>
+          <li class="stage__item" data-href="raise-drill.html" data-caption="RaisePro 48-T Automation">
+            <button class="stage__toggle" type="button" aria-expanded="false">
+              <span class="stage__name">Industrial Automation</span>
+            </button>
+            <div class="stage__detail"><div>
+              <p>Automated breakout sequences and sensor-guided pipe handling for an underground raise drill.</p>
+              <a href="raise-drill.html">View project <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+            </div></div>
+          </li>
+        </ul>
+        <a class="stage__frame" href="surgical-mining.html" aria-label="View project">
+          <img class="is-active" src="images/projects/surgical-mining/stage.jpg" alt="Fibre-optic gyro module inside the steerable drilling tip" loading="lazy" decoding="async">
+          <img src="images/projects/electric-rigs/stage.jpg" alt="Hybrid battery-electric workover rig on site" loading="lazy" decoding="async">
+          <img src="images/projects/telematics/stage.jpg" alt="Grafana fleet monitoring dashboard" loading="lazy" decoding="async">
+          <img src="images/projects/raise-drill/stage.jpg" alt="The RaisePro 48-T drilling underground" loading="lazy" decoding="async">
+          <div class="stage__caption"><span data-stage-caption>Surgical Mining</span><strong>View project &rarr;</strong></div>
+        </a>
       </div>
     </div>
-  </div>
+  </section>
+
+  <section class="section" id="experience">
+    <div class="container">
+      <header class="section__head">
+        <span class="section__index">03</span>
+        <h2 class="section__title">Experience</h2>
+      </header>
+      <ol class="exp-list">
+        <li class="exp-item">
+          <div class="exp-item__date">2025 &ndash; Now</div>
+          <div class="exp-item__body">
+            <div class="exp-item__head">
+              <img src="images/logos/medatech.jpeg" alt="" aria-hidden="true" width="40" height="40" loading="lazy" decoding="async">
+              <div>
+                <h3>Software &amp; Controls Engineer</h3>
+                <span class="exp-item__org">MEDATech</span>
+              </div>
+            </div>
+            <p>Embedded control systems design for mining equipment across drilling automation, battery electric vehicles, and high-voltage electrification projects. Primarily focused on real-time data acquisition, hardware control system integration, and operator interface design.</p>
+            <ul class="exp-item__points">
+              <li>Automated drilling sequences and steering control</li>
+              <li>Battery-electric integration over CANopen and J1939</li>
+              <li>Commissioning and field service in Canada and the US</li>
+            </ul>
+          </div>
+        </li>
+        <li class="exp-item">
+          <div class="exp-item__date">2025</div>
+          <div class="exp-item__body">
+            <div class="exp-item__head">
+              <img src="images/logos/qiskit.png" alt="" aria-hidden="true" width="40" height="40" loading="lazy" decoding="async">
+              <div>
+                <h3>Capstone Project</h3>
+                <span class="exp-item__org">Carleton University</span>
+              </div>
+            </div>
+            <p>Quantum-assisted blockchain consensus protocol, supervised by Dr. Barbeau.</p>
+          </div>
+        </li>
+        <li class="exp-item">
+          <div class="exp-item__date">2024 &ndash; 2025</div>
+          <div class="exp-item__body">
+            <div class="exp-item__head">
+              <img src="images/logos/chimoney.png" alt="" aria-hidden="true" width="40" height="40" loading="lazy" decoding="async">
+              <div>
+                <h3>Software Developer</h3>
+                <span class="exp-item__org">Chimoney</span>
+              </div>
+            </div>
+            <p>Payment platform development and API integration documentation.</p>
+          </div>
+        </li>
+        <li class="exp-item">
+          <div class="exp-item__date">2023</div>
+          <div class="exp-item__body">
+            <div class="exp-item__head">
+              <img src="images/logos/stonetree.png" alt="" aria-hidden="true" width="40" height="40" loading="lazy" decoding="async">
+              <div>
+                <h3>IT Consultant</h3>
+                <span class="exp-item__org">StoneTree Naturopathic Clinic</span>
+              </div>
+            </div>
+            <p>Network storage and role-based file sharing for a clinical office.</p>
+          </div>
+        </li>
+        <li class="exp-item">
+          <div class="exp-item__date">2021 &ndash; 2025</div>
+          <div class="exp-item__body">
+            <div class="exp-item__head">
+              <img src="images/logos/carleton.png" alt="" aria-hidden="true" width="40" height="40" loading="lazy" decoding="async">
+              <div>
+                <h3>Bachelor of Computer Science</h3>
+                <span class="exp-item__org">Carleton University</span>
+              </div>
+            </div>
+            <p>Member of the Computer Science and AI Societies.</p>
+          </div>
+        </li>
+        <li class="exp-item">
+          <div class="exp-item__date">2018 &ndash; 2022</div>
+          <div class="exp-item__body">
+            <div class="exp-item__head">
+              <img src="images/logos/staples.png" alt="" aria-hidden="true" width="40" height="40" loading="lazy" decoding="async">
+              <div>
+                <h3>Technology Sales</h3>
+                <span class="exp-item__org">Staples</span>
+              </div>
+            </div>
+            <p>Hardware diagnostics, data recovery and technical support.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" id="side-projects">
+    <div class="container">
+      <header class="section__head">
+        <span class="section__index">04</span>
+        <h2 class="section__title">Side projects</h2>
+      </header>
+      <ul class="proj-list">
+        <li><a class="proj-row" href="/particle.html">
+          <span class="proj-row__name">Physics Simulation</span>
+          <span class="proj-row__desc">Real-time demonstration of classical mechanics, collisions and material behaviour</span>
+          <span class="proj-row__stack">C++17</span>
+          <i class="fas fa-arrow-right proj-row__arrow" aria-hidden="true"></i>
+        </a></li>
+        <li><a class="proj-row" href="/quantum.html">
+          <span class="proj-row__name">Quantum Consensus</span>
+          <span class="proj-row__desc">Blockchain consensus through quantum state fidelity, simulated with Qiskit</span>
+          <span class="proj-row__stack">Python</span>
+          <i class="fas fa-arrow-right proj-row__arrow" aria-hidden="true"></i>
+        </a></li>
+        <li><a class="proj-row" href="/cnn.html">
+          <span class="proj-row__name">X-ray Anomaly Detection</span>
+          <span class="proj-row__desc">Compact convolutional network for chest x-ray diagnosis</span>
+          <span class="proj-row__stack">TensorFlow</span>
+          <i class="fas fa-arrow-right proj-row__arrow" aria-hidden="true"></i>
+        </a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="contact__section section" id="contact">
+    <div class="container">
+      <header class="section__head">
+        <span class="section__index">05</span>
+        <h2 class="section__title">Contact</h2>
+      </header>
+      <div class="contact__wrapper">
+      <div class="contact__intro">
+        <div class="contact__card">
+          <img src="images/pfp.jpg" alt="Aaron McLean" width="64" height="64" loading="lazy" decoding="async">
+          <div>
+            <strong>Aaron McLean</strong>
+            <span>Software and Controls Engineer &middot; Collingwood, ON</span>
+          </div>
+        </div>
+        <p>Open to automation, controls and embedded roles.</p>
+        <ul class="contact__links">
+          <li><a href="mailto:aaronmclean26@gmail.com"><i class="fas fa-envelope" aria-hidden="true"></i>aaronmclean26@gmail.com</a></li>
+          <li><a href="https://www.linkedin.com/in/aaronmcleann/" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin-in" aria-hidden="true"></i>linkedin.com/in/aaronmcleann</a></li>
+          <li><a href="https://github.com/aaronmcleancs" target="_blank" rel="noopener noreferrer"><i class="fab fa-github" aria-hidden="true"></i>github.com/aaronmcleancs</a></li>
+        </ul>
+      </div>
+      <form id="contact-form" action="https://formspree.io/f/mvgzealp" method="POST">
+        <input type="text" name="name" placeholder="Name" autocomplete="name" required>
+        <input type="email" name="email" placeholder="Email" autocomplete="email" required>
+        <textarea name="message" placeholder="Message" required></textarea>
+        <button type="submit" class="contact-send">
+          <span class="send-label">Send message</span>
+          <i class="fas fa-arrow-right" aria-hidden="true"></i>
+        </button>
+      </form>
+      </div>
+    </div>
+  </section>
+
   <footer class="footer-new">
-    <div class="footer__container">
-      <div class="footer__links-grid">
-        <div class="footer__column">
-          <h4>Site</h4>
-          <ul class="footer__links">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#projects">Expertise</a></li>
-            <li><a href="#experience">Experience</a></li>
-            <li><a href="mailto:aaronmcleancs@gmail.com">Contact</a></li>
-          </ul>
-        </div>
-
-        <div class="footer__column">
-          <h4>Open Source</h4>
-          <ul class="footer__links">
-            <li><a href="/particle.html">ParticleBox</a></li>
-            <li><a href="/quantum.html">Quantum Blockchain Sim</a></li>
-            <li><a href="/cnn.html">Anomaly Detection</a></li>
-            <li><a href="/ios.html">Fitness Tracker</a></li>
-          </ul>
-        </div>
-
-        <div class="footer__column">
-          <h4>Connect</h4>
-          <ul class="footer__links">
-            <li><a href="https://www.linkedin.com/in/aaronmcleann/" target="_blank">LinkedIn</a></li>
-            <li><a href="https://github.com/aaronmcleancs" target="_blank">GitHub</a></li>
-            <li><a href="https://unsplash.com/@aaron1206" target="_blank">Unsplash</a></li>
-          </ul>
-        </div>
+    <div class="container footer__container">
+      <div class="footer__brand">
+        <img src="icon.png" width="20" height="20" alt="">
+        <span>Aaron McLean</span>
       </div>
+      <ul class="footer__links">
+        <li><a href="https://www.linkedin.com/in/aaronmcleann/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+        <li><a href="https://github.com/aaronmcleancs" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="https://unsplash.com/@aaron1206" target="_blank" rel="noopener noreferrer">Unsplash</a></li>
+        <li><a href="/images/CV.pdf" target="_blank" rel="noopener noreferrer">CV</a></li>
+      </ul>
+      <p class="footer__copyright">&copy; <span id="current-year">2026</span> Aaron McLean</p>
     </div>
   </footer>
 
   <div class="fullscreen-viewer" role="dialog" aria-modal="true" aria-label="Image viewer">
-  <div class="fullscreen-topbar">
-    <span class="fullscreen-counter"></span>
-    <button class="fullscreen-close" aria-label="Close viewer">&times;</button>
+    <div class="fullscreen-topbar">
+      <span class="fullscreen-counter"></span>
+      <button class="fullscreen-close" aria-label="Close viewer">&times;</button>
+    </div>
+    <figure class="fullscreen-stage">
+      <img src="" alt="" class="fullscreen-image">
+      <figcaption class="fullscreen-caption"></figcaption>
+    </figure>
+    <div class="fullscreen-nav">
+      <button class="fullscreen-prev" aria-label="Previous image">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <button class="fullscreen-next" aria-label="Next image">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
   </div>
-  <figure class="fullscreen-stage">
-    <img src="" alt="" class="fullscreen-image">
-    <figcaption class="fullscreen-caption"></figcaption>
-  </figure>
-  <div class="fullscreen-nav">
-    <button class="fullscreen-prev" aria-label="Previous image">
-      <i class="fas fa-chevron-left"></i>
-    </button>
-    <button class="fullscreen-next" aria-label="Next image">
-      <i class="fas fa-chevron-right"></i>
-    </button>
-  </div>
-</div>
 
   <script>
     var yearEl = document.getElementById('current-year');
@@ -451,10 +405,8 @@
 
   <script src="js/photo.js"></script>
   <script src="js/contact.js"></script>
-  <script src="js/timeline-interactions.js"></script>
   <script src="js/dynamic-background.js"></script>
   <script src="js/search.js"></script>
-  <script src="js/smooth-scroll.js"></script>
   <script src="js/liquid-metal-text.js"></script>
   <script src="js/footer-grid.js"></script>
 </body>
