@@ -132,3 +132,27 @@ document.addEventListener('DOMContentLoaded', function () {
   if (canHover) stage.querySelector('.stage__list').addEventListener('mouseleave', collapse);
 });
 
+
+// Smooth wheel scrolling on Windows and Linux. Their mouse wheels jump about 100px per notch,
+// which made the hero zoom and the dot grid step instead of glide. Macs already scroll
+// smoothly, and touch devices keep native scrolling. Runs even with reduced motion on,
+// since Windows reports that whenever "Animation effects" is off.
+(function () {
+  var isApple = /Mac|iPhone|iPad|iPod/.test(navigator.platform || '') ||
+    (navigator.userAgentData && navigator.userAgentData.platform === 'macOS');
+  if (isApple || !window.matchMedia('(pointer: fine)').matches) return;
+
+  var s = document.createElement('script');
+  s.src = 'https://unpkg.com/lenis@1.1.13/dist/lenis.min.js';
+  s.onload = function () {
+    if (typeof Lenis === 'undefined') return;
+    var navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 56;
+    var lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 1, anchors: { offset: -(navH + 16) } });
+    function raf(t) {
+      lenis.raf(t);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+  };
+  document.head.appendChild(s);
+})();
