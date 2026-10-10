@@ -24,11 +24,11 @@
   --fg-2: #a1a1a1;
   --fg-3: #707070;
 
-  /* Palette derived from the key colour rgb(0, 8, 255) */
+  /* Palette: iPhone message blue, key colour #0A84FF */
 
   /* Accent: section numbers, labels, links, focus rings, search highlights */
-  --accent: #7e82f1;
-  --accent-rgb: 126 130 241;
+  --accent: #0a84ff;
+  --accent-rgb: 10 132 255;
   --accent-soft: rgb(var(--accent-rgb) / 0.12);
 
   /* Status: "message sent" state */
@@ -36,11 +36,11 @@
   --ok-rgb: 62 207 142;
 
   /* Hero waves, from the top band (lightest) down to the deepest band */
-  --wave-1: #35388b;
-  --wave-2: #2a2d6f;
-  --wave-3: #202253;
-  --wave-4: #151638;
-  --wave-5: #0b0b1c;
+  --wave-1: #0756a6;
+  --wave-2: #054585;
+  --wave-3: #043363;
+  --wave-4: #032242;
+  --wave-5: #011121;
 
   /* Hero vignette: darkens the waves toward the edges (0 = off) */
   --hero-vignette: rgba(0, 0, 0, 0.7);
@@ -50,7 +50,7 @@
 
   /* Liquid-metal name: highlight and shadow colours of the metal */
   --metal-light: #f2f2f2;
-  --metal-dark: #0f1033;
+  --metal-dark: #021a33;
   /* 0 = solid metal, 1 = shadows fully transparent (dark glass) */
   --metal-clarity: 0.5;
 
@@ -59,8 +59,8 @@
   --subtitle-bottom: #8f8f8f;
 
   /* Logo tile (nav + footer): vertical gradient with the letter on top */
-  --logo-top: #363ce2;
-  --logo-bottom: #1b1e7e;
+  --logo-top: #34aaff;
+  --logo-bottom: #0060df;
   --logo-mark: #ffffff;
 
   /* Animated dot grids (read by js/dynamic-background.js and js/footer-grid.js) */
@@ -72,6 +72,16 @@
 /* -------------------------------------------------------------------------
    Presets: copy a block's values into :root above.
    Each wave ramp is the accent at 65/52/39/26/13% brightness.
+
+   Red and orange
+     --accent: #f28a3c;  --accent-rgb: 242 138 60;
+     --wave-1: #8a2a12; --wave-2: #6e1d10; --wave-3: #52140c; --wave-4: #350c08; --wave-5: #1a0604;
+     --logo-top: #f07a2a; --logo-bottom: #8e1c12;  --metal-dark: #2e0b07;
+
+   Indigo (original)
+     --accent: #7e82f1;  --accent-rgb: 126 130 241;
+     --wave-1: #35388b; --wave-2: #2a2d6f; --wave-3: #202253; --wave-4: #151638; --wave-5: #0b0b1c;
+     --logo-top: #363ce2; --logo-bottom: #1b1e7e;  --metal-dark: #0f1033;
 
    Dark green
      --accent: #4cc38a;  --accent-rgb: 76 195 138;

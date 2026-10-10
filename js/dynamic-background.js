@@ -59,8 +59,9 @@ function runWhileVisible(el, frame) {
     const scrollPercent = Math.min(Math.max(scrollVal / heroHeight, 0), 1) * maxScrollPercent;
     const baseScale = getBaseScale(window.innerWidth);
     const baselineWidth = 1920;
-    const multiplier = window.innerWidth > baselineWidth ? 700 * (baselineWidth / window.innerWidth) : 700;
-    const offset = baseScale * 0.4;
+    // Starts well stretched so the bands sit lower on load, then grows gently on scroll
+    const multiplier = window.innerWidth > baselineWidth ? 350 * (baselineWidth / window.innerWidth) : 350;
+    const offset = baseScale * 0.1;
     return ((baseScale + scrollPercent * multiplier) - offset * (1 - scrollPercent)) * desktopBoost();
   }
 

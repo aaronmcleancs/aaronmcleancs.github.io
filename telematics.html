@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Telematics Platform Management - Aaron McLean</title>
-  <meta name="description" content="A Linux-based telematics stack, built and run entirely in-house, that keeps a fleet of heavy machines logging, reporting and reachable from anywhere.">
+  <title>Fleet Telemetry Platform - Aaron McLean</title>
+  <meta name="description" content="A production telemetry platform for a heavy-equipment fleet of 50+ machines across Canada, the US and South America. I lead its development direction and own every feature from client requirements to production.">
   <meta name="theme-color" content="#0a0a0a">
   <link rel="icon" type="image/svg+xml" href="icon.svg">
   <link rel="alternate icon" type="image/png" href="icon.png">
@@ -53,11 +53,12 @@
     <header class="proj-header">
       <a class="proj-crumb" href="index.html#work"><i class="fas fa-arrow-left" aria-hidden="true"></i> Selected work</a>
       <span class="proj-eyebrow">Telematics Platform</span>
-      <h1 class="proj-title">Telematics Platform Management</h1>
-      <p class="proj-summary">A Linux-based telematics stack, built and run entirely in-house, that keeps a fleet of heavy machines logging, reporting and reachable from anywhere.</p>
+      <h1 class="proj-title">Fleet Telemetry Platform</h1>
+      <p class="proj-summary">A production telemetry platform for a heavy-equipment fleet of 50+ machines across Canada, the US and South America. I lead its development direction and own every feature from client requirements to production.</p>
       <dl class="proj-meta">
-        <div><dt>Role</dt><dd>Platform owner</dd></div>
-        <div><dt>Stack</dt><dd>Embedded Linux, AWS, WireGuard, Grafana</dd></div>
+        <div><dt>Role</dt><dd>Platform lead</dd></div>
+        <div><dt>Scope</dt><dd>50+ devices, 3 countries</dd></div>
+        <div><dt>Stack</dt><dd>Embedded Linux, AWS, WireGuard, Next.js, Grafana</dd></div>
       </dl>
     </header>
 
@@ -66,10 +67,21 @@
     </figure>
 
     <section class="proj-section">
+      <h2>Impact</h2>
+      <div class="proj-prose">
+        <ul>
+          <li>Led the platform&rsquo;s development direction, owning delivery and support for a production fleet the client&rsquo;s service and engineering teams rely on daily.</li>
+          <li>Ran the full lifecycle of every feature: client requirements, effort and cloud-cost scoping, build, bench validation, over-the-air rollout and production monitoring.</li>
+          <li>Led a fleet-wide reliability initiative that cut data loss, and turned the platform into a preventive-maintenance tool for the service team.</li>
+          <li>Owned and operated the AWS stack, and modelled how cloud cost scales with every connected logger.</li>
+        </ul>
+      </div>
+    </section>
+    <section class="proj-section">
       <h2>The system</h2>
       <div class="proj-prose">
-        <p>Every machine carries a persistent embedded Linux logger that captures its CAN networks around the clock. Loggers connect over cellular or satellite through a WireGuard VPN to an AWS-hosted backend, which serves a fleet portal and Grafana dashboards to engineers and customers.</p>
-        <p>The fleet spans Canada, the US and South America, on everything from oilfield rigs to underground drills and haul trucks. I took ownership of the platform in late 2025 and have run it since.</p>
+        <p>Every machine carries a persistent embedded Linux logger that captures its CAN networks around the clock. Loggers connect over cellular or satellite through a WireGuard VPN into EC2, where nginx terminates TLS in front of a Next.js fleet portal with Cognito auth. Machine-fault events land in DynamoDB, customer telemetry in Timestream and Grafana, and raw logs in S3.</p>
+        <p>The fleet is 50+ devices across Canada, the US and South America, on everything from oilfield rigs to underground drills and haul trucks. I took ownership of the platform in late 2025 and have led it since.</p>
       </div>
     </section>
 
@@ -98,10 +110,11 @@
     </section>
 
     <section class="proj-section">
-      <h2>Security and infrastructure</h2>
+      <h2>Cloud and security</h2>
       <div class="proj-prose">
         <ul>
           <li>Brought the portal back after a critical remote-code-execution vulnerability (CVE-2025-55182), then hardened the deployment with process persistence, dependency audits and tighter security policy.</li>
+          <li>An SSRF-safe reverse proxy that gives users remote access to on-device dashboards, forwarding only to an allowlist of live VPN peers so it can&rsquo;t be used as a relay into the rest of the network.</li>
           <li>Role-based access in Grafana so customers only see their own machines.</li>
           <li>Wrote the platform roadmap with AWS cost analysis, and evaluated AWS IoT, MQTT and self-hosted VPN key management as next steps.</li>
           <li>Multi-IMSI SIM provisioning for South American sites, and haul-truck installs at an operating mine, including the wiring harness design.</li>
@@ -117,10 +130,10 @@
     </section>
 
 
-    <a class="proj-next" href="raise-drill.html">
+    <a class="proj-next" href="surgical-mining.html">
       <div>
         <span>Next project</span>
-        <strong>Industrial Automation</strong>
+        <strong>First-of-its-Kind System Delivery</strong>
       </div>
       <i class="fas fa-arrow-right" aria-hidden="true"></i>
     </a>

@@ -107,10 +107,10 @@ class SiteSearch {
     async indexPages() {
         const pages = [
             { sourceUrl: 'index.html', targetUrl: 'index.html', title: 'Home' },
-            { sourceUrl: 'surgical-mining.html', targetUrl: 'surgical-mining.html', title: 'Innovation in Mining Technology' },
-            { sourceUrl: 'electric-rigs.html', targetUrl: 'electric-rigs.html', title: 'Mobile Equipment Electrification' },
-            { sourceUrl: 'telematics.html', targetUrl: 'telematics.html', title: 'Telematics Platform Management' },
-            { sourceUrl: 'raise-drill.html', targetUrl: 'raise-drill.html', title: 'Industrial Automation' },
+            { sourceUrl: 'surgical-mining.html', targetUrl: 'surgical-mining.html', title: 'First-of-its-Kind System Delivery' },
+            { sourceUrl: 'electric-rigs.html', targetUrl: 'electric-rigs.html', title: 'Electrification to Production' },
+            { sourceUrl: 'telematics.html', targetUrl: 'telematics.html', title: 'Fleet Telemetry Platform' },
+            { sourceUrl: 'raise-drill.html', targetUrl: 'raise-drill.html', title: 'Machine Automation' },
             { sourceUrl: 'cnn.html', targetUrl: 'cnn.html', title: 'Anomaly Detection Project' },
             { sourceUrl: 'particle.html', targetUrl: 'particle.html', title: 'Physics Simulation' },
             { sourceUrl: 'quantum.html', targetUrl: 'quantum.html', title: 'Quantum Blockchain Project' },
