@@ -259,6 +259,8 @@ document.addEventListener('DOMContentLoaded', function () {
   // and each segment is darker than the one before. When a snake's run ends, the tail
   // drains away behind the head rather than vanishing.
   const gridDotAlpha = 0.55;
+  // Windows turns this on whenever "Animation effects" is off, which used to freeze the
+  // whole grid (no hover, no snakes). Now it only stills the ambient wave drift.
   const reduceGridMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const accentRGB = themeRGB('--accent-rgb', [126, 130, 241]);
   const snakes = [];
@@ -368,7 +370,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // snakes spawn only in rows that are fully visible (outside the fade bands)
     const snakeNow = Date.now();
-    if (!reduceGridMotion && snakeNow >= nextSnakeAt) {
+    if (snakeNow >= nextSnakeAt) {
       if (snakes.length < maxSnakes) {
         const jMin = Math.ceil((fadeBand + currentScrollOffset) / spacing);
         const jMax = Math.floor((canvas.height - fadeBand + currentScrollOffset) / spacing);
@@ -482,14 +484,10 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
 
-    time += waveSpeed;
+    if (!reduceGridMotion) time += waveSpeed;
   }
 
-  if (reduceGridMotion) {
-    drawGrid();
-  } else {
-    gridLoop = runWhileVisible(heroSection, drawGrid);
-  }
+  gridLoop = runWhileVisible(heroSection, drawGrid);
 });
 
 document.addEventListener('DOMContentLoaded', function () {
