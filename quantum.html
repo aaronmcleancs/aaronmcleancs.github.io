@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quantum-Assisted Consensus Protocol - Aaron McLean</title>
-  <meta name="description" content="A blockchain consensus protocol that replaces proof-of-work with quantum state fidelity checks, simulated with Qiskit. Capstone research at Carleton University, supervised by Dr. Michel Barbeau.">
+  <title>Quantum State Fidelity as a Consensus Mechanism - Aaron McLean</title>
+  <meta name="description" content="Research at Carleton&#39;s School of Computer Science: a blockchain consensus protocol that replaces proof-of-work with quantum-state fidelity checks, implemented in Qiskit and benchmarked against proof-of-work and proof-of-stake.">
   <meta name="theme-color" content="#0a0a0a">
   <link rel="icon" type="image/svg+xml" href="icon.svg">
   <link rel="alternate icon" type="image/png" href="icon.png">
@@ -52,151 +52,103 @@
   <main class="container">
     <header class="proj-header">
       <a class="proj-crumb" href="index.html#side-projects"><i class="fas fa-arrow-left" aria-hidden="true"></i> Side projects</a>
-      <span class="proj-eyebrow">Side project</span>
-      <h1 class="proj-title">Quantum-Assisted Consensus Protocol</h1>
-      <p class="proj-summary">A blockchain consensus protocol that replaces proof-of-work with quantum state fidelity checks, simulated with Qiskit. Capstone research at Carleton University, supervised by Dr. Michel Barbeau.</p>
+      <span class="proj-eyebrow">Research &middot; School of Computer Science, Carleton University</span>
+      <h1 class="proj-title">Quantum State Fidelity as a Consensus Mechanism</h1>
+      <p class="proj-summary">A blockchain consensus protocol that replaces proof-of-work with quantum-state fidelity checks. Each node encodes its candidate block as a quantum state, and the network agrees on the block whose state the most nodes match. Designed, implemented in Qiskit and evaluated against classical proof-of-work and proof-of-stake in simulation.</p>
       <dl class="proj-meta">
-        <div><dt>Language</dt><dd>Python</dd></div>
-        <div><dt>Stack</dt><dd>Qiskit, Qiskit Aer</dd></div>
+        <div><dt>Role</dt><dd>Sole author, supervised by Dr. Michel Barbeau</dd></div>
+        <div><dt>Stack</dt><dd>Python, Qiskit, Qiskit Aer</dd></div>
         <div><dt>Source</dt><dd><a class="proj-link" href="https://github.com/aaronmcleancs/FidelityChain" target="_blank" rel="noopener noreferrer">View on GitHub <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a></dd></div>
       </dl>
     </header>
-
     <figure class="proj-cover proj-cover--contain image-gallery">
-      <img src="images/projects/side/blockchain_uml.jpg" alt="Blockchain Data Structure UML Diagram" fetchpriority="high">
+      <img src="images/projects/side/blockchain_uml.jpg" alt="Class structure of the quantum consensus blockchain" fetchpriority="high">
     </figure>
 
     <section class="proj-section">
-      <h2>Overview</h2>
+      <h2>Contribution</h2>
       <div class="proj-prose">
-          <p>
-          This project simulates a quantum-assisted blockchain consensus protocol using Qiskit. It explores the
-          potential of quantum fidelity checks and entanglement-based randomness to enhance security and
-          efficiency over classical Proof-of-Work mechanisms.
-          </p>
-          <h3>Key Features</h3>
-          <ul>
-          <li><strong>Quantum Fidelity Validation:</strong> Uses state vector fidelity to verify block integrity
-          and consensus.</li>
-          <li><strong>Entanglement-Based Randomness:</strong> Generates nonces using GHZ states for true
-          randomness.</li>
-          <li><strong>Fault Tolerance:</strong> Consensus mechanism resilient to minority node failure through
-          fidelity thresholding.</li>
-          </ul>
+        <ul>
+          <li>Designed a six-phase consensus protocol: quantum random nonces, candidate blocks, quantum state encoding, fidelity comparison, majority agreement and ledger update.</li>
+          <li>Built a five-layer quantum hash circuit that maps a block&rsquo;s hash, transactions, structure and nonce onto a 6-qubit state, so similar blocks produce similar states.</li>
+          <li>Implemented the full protocol alongside classical proof-of-work and proof-of-stake baselines on identical block structures, then benchmarked them on simulated networks of 3 to 20 nodes.</li>
+          <li>Wrote it up as a research paper covering the theory, mathematical framework, implementation and evaluation.</li>
+        </ul>
       </div>
     </section>
 
     <section class="proj-section">
-      <h2>Background & Quantum Principles</h2>
+      <h2>How consensus works</h2>
       <div class="proj-prose">
-          <p>
-          The simulation replaces classical proof-of-work with a mechanism where nodes propose blocks encoded as
-          unique quantum states. Verification relies on measuring the similarity between these states.
-          </p>
-          <h3>Quantum State Fidelity</h3>
-          <p>
-          We quantify the similarity between block states \(\rho\) and \(\sigma\) using fidelity:
-          </p>
-          <p>
-          \[
-          F(\rho, \sigma) = \left( \text{Tr} \sqrt{\sqrt{\rho} \sigma \sqrt{\rho}} \right)^2
-          \]
-          </p>
-          <p>
-          For pure states \( \lvert\psi_i\rangle \) and \( \lvert\psi_j\rangle \), this simplifies to \(
-          F(\lvert\psi_i\rangle, \lvert\psi_j\rangle) = \bigl|\langle\psi_i|\psi_j\rangle\bigr|^2 \).
-          </p>
-          <h3>Entanglement (GHZ State)</h3>
-          <p>
-          The Quantum Random Number Generator (QRNG) leverages GHZ states to produce correlated random bits:
-          </p>
-          <p>
-          \[
-          \lvert GHZ_N \rangle = \frac{1}{\sqrt{2}} (\lvert 0 \rangle^{\otimes N} + \lvert 1 \rangle^{\otimes N})
-          \]
-          </p>
-          <h3>Unitary Transformations</h3>
-          <p>
-          Complex quantum circuits act as unitary operators \( U_{\text{block}} \) to map classical block data to
-          a unique quantum state:
-          </p>
-          <p>
-          \[
-          \lvert\psi_{\text{block}}\rangle = U_{\text{block}} \lvert 0 \rangle^{\otimes n}
-          \]
-          </p>
+        <p>Proof-of-work asks every node to burn compute on a puzzle. Here, agreement comes from comparing quantum states instead. Each node prepares the state of its own candidate block and compares it with every other node&rsquo;s using state fidelity, the overlap of two states in Hilbert space:</p>
+        <p>\[ F_{ij} = \lvert\langle\psi_i\vert\psi_j\rangle\rvert^2 \]</p>
+        <p>Nodes whose states match closely form an agreement set, with a threshold of 0.9:</p>
+        <p>\[ \mathcal{A}_i = \{\, j : F_{ij} \geq 0.9 \,\} \]</p>
+        <p>The proposer is the lowest-ID node with the largest agreement set, and that set must hold more than half the network or the round fails. The winning block is then hashed, distributed and appended, and each node re-verifies its chain.</p>
       </div>
     </section>
 
     <section class="proj-section">
-      <h2>Implementation Details</h2>
+      <h2>Encoding a block</h2>
       <div class="proj-prose">
-          <p>
-          The system is a hybrid implementation combining a classical Python blockchain with quantum components
-          simulated via Qiskit.
-          </p>
-          <h3>System Architecture</h3>
-          <ul>
-          <li><strong>Classical Layer:</strong> Manages the blockchain ledger, transaction pool, and basic
-          validation logic using standard cryptographic hashes (SHA-256).</li>
-          <li><strong>Quantum Layer:</strong> Handles nonce generation, state preparation, and fidelity-based
-          consensus using Qiskit's statevector simulator.</li>
-          </ul>
-          <h3>Consensus Logic</h3>
-          <p>
-          The protocol follows a multi-step process:
-          </p>
-          <ol>
-          <li><strong>Proposal:</strong> Nodes generate a candidate block and map it to a quantum statevector
-          using a custom Quantum Hash Function.</li>
-          <li><strong>Verification:</strong> Nodes exchange statevectors and compute pairwise fidelity.</li>
-          <li><strong>Agreement:</strong> Consensus is reached when a majority of nodes agree on state fidelity
-          (>0.9), with a deterministic tie-breaker selecting the winning block.</li>
-          </ol>
+        <p>The quantum hash is a stack of unitaries, each encoding one aspect of the block:</p>
+        <p>\[ U_{\text{hash}} = U_{\text{nonce}}\, U_{\text{structure}}\, U_{\text{entanglement}}\, U_{\text{transactions}}\, U_{\text{init}} \]</p>
+        <ul>
+          <li><strong>Initial state:</strong> U gates parameterized by bytes of the block&rsquo;s SHA-256 hash.</li>
+          <li><strong>Transactions:</strong> R<sub>y</sub> and R<sub>z</sub> rotations driven by transaction count, volume and sender diversity.</li>
+          <li><strong>Entanglement:</strong> a CNOT ring plus a CZ, so no qubit can be changed in isolation.</li>
+          <li><strong>Structure:</strong> R<sub>x</sub> rotations from the block index and timestamp.</li>
+          <li><strong>Nonce:</strong> phase shifts from the quantum-generated nonce.</li>
+        </ul>
+        <h3>Verifiable randomness</h3>
+        <p>Nonces come from an entangled circuit rather than a pseudo-random generator. For \(N\) nodes, the last qubit carries the parity of the others, so every node&rsquo;s random bit can be checked against the rest: \( b_N = b_1 \oplus b_2 \oplus \cdots \oplus b_{N-1} \).</p>
       </div>
     </section>
 
     <section class="proj-section">
-      <h2>Performance Observations</h2>
+      <h2>Results</h2>
       <div class="proj-prose">
-          <p>
-          The simulation utilizes Qiskit Aer's <code>statevector_simulator</code> for ideal execution.
-          </p>
-          <h3>Simulation Metrics</h3>
-          <ul>
-          <li><strong>Scalability:</strong> Execution time scales with network size (\(O(N^2)\) for pairwise
-          checks) and qubit count.</li>
-          <li><strong>Throughput:</strong> Preliminary tests indicate consensus rounds complete in seconds for
-          small networks (3-5 nodes, 6-10 qubits).</li>
-          <li><strong>Bottlenecks:</strong> Statevector simulation is the primary computational cost, while
-          fidelity calculations are relatively lightweight.</li>
-          </ul>
+        <p>Benchmarked in noise-free statevector simulation (Qiskit Aer) against classical baselines using the same blocks, transactions and validation.</p>
+        <div class="proj-table-wrap">
+          <table class="proj-table">
+            <thead><tr><th>Metric</th><th>Quantum (simulated)</th><th>Proof-of-work</th><th>Proof-of-stake</th></tr></thead>
+            <tbody>
+              <tr><td>Transactions per second</td><td>124.5</td><td>7.3</td><td>78.2</td></tr>
+              <tr><td>Block finalization time</td><td>12.3&nbsp;s</td><td>582.4&nbsp;s</td><td>21.5&nbsp;s</td></tr>
+              <tr><td>Consensus time, 20 nodes</td><td>2.14&nbsp;s</td><td>23.76&nbsp;s</td><td>&ndash;</td></tr>
+              <tr><td>Byzantine fault tolerance</td><td>33%</td><td>49%</td><td>33%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Consensus time grew linearly with network size, against roughly quadratic growth for proof-of-work. In simulation the protocol tolerated up to a third of nodes acting maliciously.</p>
+        <p>These are upper bounds from an idealized simulator, not predictions for real quantum hardware, where decoherence and gate errors would cut into them.</p>
       </div>
     </section>
 
     <section class="proj-section">
-      <h2>Technology Stack</h2>
+      <h2>Limitations and next steps</h2>
       <div class="proj-prose">
-          <ul class="tech-list">
-          <li><strong>Language:</strong> Python (3.x)</li>
-          <li><strong>Quantum Framework:</strong> Qiskit (~0.4x)</li>
-          <li><strong>Quantum Simulation:</strong> Qiskit Aer (`AerSimulator` with `method='statevector'`)</li>
-          <li><strong>Libraries:</strong> NumPy, hashlib, json, dataclasses</li>
-          </ul>
+        <ul>
+          <li>Runs on simulated quantum operations. Validating on real hardware is the obvious next step.</li>
+          <li>The fidelity threshold and hash circuit need calibrating for each network configuration.</li>
+          <li>The advantage shrinks in very small networks, below five nodes.</li>
+          <li>Noise-resistant circuits for near-term (NISQ) hardware, and alternative encodings with stronger security guarantees, are open directions.</li>
+        </ul>
       </div>
     </section>
+
     <section class="proj-section">
-      <h2>Gallery</h2>
-      <div class="proj-gallery proj-gallery--contain image-gallery">
-        <figure><img src="images/projects/side/quantum_circuit.jpg" alt="Illustrative Quantum Circuit Diagram" loading="lazy" decoding="async"><figcaption>Illustrative Quantum Circuit Diagram</figcaption></figure>
+      <h2>Diagrams</h2>
+      <div class="proj-gallery image-gallery">
+        <figure><img src="images/projects/side/blockchain_uml.jpg" alt="Class structure of the protocol" loading="lazy" decoding="async"><figcaption>Class structure of the protocol</figcaption></figure>
+        <figure><img src="images/projects/side/quantum_circuit.jpg" alt="Sequence of one consensus round across nodes" loading="lazy" decoding="async"><figcaption>One consensus round, node by node</figcaption></figure>
       </div>
     </section>
 
-
-    <a class="proj-next" href="cnn.html">
+    <a class="proj-next" href="index.html#work">
       <div>
-        <span>Next side project</span>
-        <strong>X-ray Diagnosis CNN</strong>
+        <span>Back to</span>
+        <strong>Selected work</strong>
       </div>
       <i class="fas fa-arrow-right" aria-hidden="true"></i>
     </a>

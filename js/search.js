@@ -111,9 +111,7 @@ class SiteSearch {
             { sourceUrl: 'electric-rigs.html', targetUrl: 'electric-rigs.html', title: 'Testing Automation' },
             { sourceUrl: 'telematics.html', targetUrl: 'telematics.html', title: 'Telematics Platform Management' },
             { sourceUrl: 'raise-drill.html', targetUrl: 'raise-drill.html', title: 'Embedded Software Engineering' },
-            { sourceUrl: 'cnn.html', targetUrl: 'cnn.html', title: 'Anomaly Detection Project' },
-            { sourceUrl: 'particle.html', targetUrl: 'particle.html', title: 'Physics Simulation' },
-            { sourceUrl: 'quantum.html', targetUrl: 'quantum.html', title: 'Quantum Blockchain Project' },
+            { sourceUrl: 'quantum.html', targetUrl: 'quantum.html', title: 'Quantum Consensus Research' },
             // Shadow content for external links
             { sourceUrl: 'data/linkedin.html', targetUrl: 'https://www.linkedin.com/in/aaronmcleann/', title: 'LinkedIn Profile' },
             { sourceUrl: 'data/github.html', targetUrl: 'https://github.com/aaronmcleancs', title: 'GitHub Profile' },
