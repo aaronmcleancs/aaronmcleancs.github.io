@@ -1,4 +1,3 @@
-// Smart Site Search Engine
 class SiteSearch {
     constructor() {
         this.index = [];
@@ -18,7 +17,6 @@ class SiteSearch {
 
         if (!this.searchInput || !this.resultsContainer) return;
 
-        // "/" hint in the field, and "/" anywhere on the page to jump into search
         const hint = document.createElement('kbd');
         hint.className = 'search-kbd';
         hint.textContent = '/';
@@ -32,15 +30,13 @@ class SiteSearch {
         });
         this.selected = -1;
 
-        // Index all pages
         await this.indexPages();
 
-        // Mobile Toggle
         if (mobileTrigger) {
             mobileTrigger.addEventListener('click', () => {
                 this.searchContainer.classList.add('active');
                 this.searchInput.focus();
-                document.body.style.overflow = 'hidden'; // Prevent scrolling
+                document.body.style.overflow = 'hidden';
             });
         }
 
@@ -50,7 +46,6 @@ class SiteSearch {
             });
         }
 
-        // Event listeners
         this.searchInput.addEventListener('input', (e) => {
             clearTimeout(this.debounceTimeout);
             this.debounceTimeout = setTimeout(() => {
@@ -64,16 +59,13 @@ class SiteSearch {
             this.searchInput.focus();
         });
 
-        // Close on outside click
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.navbar-search') && !e.target.closest('.mobile-search-trigger')) {
                 this.clearResults();
-                // Only close mobile search if we clicked outside (optional, maybe we want it persistent until X is clicked)
-                // For now, let's keep it persistent on mobile until X is clicked or Escape
+
             }
         });
 
-        // Keyboard navigation: arrows move through results, Enter opens the selection
         this.searchInput.addEventListener('keydown', (e) => {
             const items = this.resultsContainer.querySelectorAll('.search-result-item');
             if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && items.length) {
@@ -112,7 +104,7 @@ class SiteSearch {
             { sourceUrl: 'telematics.html', targetUrl: 'telematics.html', title: 'Telematics Platform Management' },
             { sourceUrl: 'raise-drill.html', targetUrl: 'raise-drill.html', title: 'Embedded Software Engineering' },
             { sourceUrl: 'quantum.html', targetUrl: 'quantum.html', title: 'Quantum Consensus Research' },
-            // Shadow content for external links
+
             { sourceUrl: 'data/linkedin.html', targetUrl: 'https://www.linkedin.com/in/aaronmcleann/', title: 'LinkedIn Profile' },
             { sourceUrl: 'data/github.html', targetUrl: 'https://github.com/aaronmcleancs', title: 'GitHub Profile' },
             { sourceUrl: 'data/cv.html', targetUrl: '/images/CV.pdf', title: 'Curriculum Vitae' }
@@ -125,32 +117,30 @@ class SiteSearch {
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
 
-                // Extract text from main content areas, excluding nav/footer
                 const contentSelectors = [
                     '.showcase__section',
                     '.hero2__section',
                     '.project-card',
                     'section',
                     'main',
-                    'body' // Added body for shadow files which might be simple
+                    'body'
                 ];
 
                 let content = '';
                 contentSelectors.forEach(selector => {
                     const elements = doc.querySelectorAll(selector);
                     elements.forEach(el => {
-                        // Skip navigation and footer
+
                         if (!el.closest('nav') && !el.closest('footer') && !el.closest('.navbar')) {
                             content += ' ' + el.textContent;
                         }
                     });
                 });
 
-                // Clean up whitespace
                 content = content.replace(/\s+/g, ' ').trim();
 
                 this.index.push({
-                    url: page.targetUrl, // Use targetUrl for navigation
+                    url: page.targetUrl,
                     title: page.title,
                     content: content.toLowerCase()
                 });
@@ -179,16 +169,14 @@ class SiteSearch {
         this.index.forEach(page => {
             const index = page.content.indexOf(searchTerm);
             if (index !== -1) {
-                // Extract snippet around match
+
                 const snippetStart = Math.max(0, index - 50);
                 const snippetEnd = Math.min(page.content.length, index + searchTerm.length + 50);
                 let snippet = page.content.substring(snippetStart, snippetEnd);
 
-                // Add ellipsis
                 if (snippetStart > 0) snippet = '...' + snippet;
                 if (snippetEnd < page.content.length) snippet = snippet + '...';
 
-                // Calculate relevance (exact match vs partial)
                 const relevance = page.content.split(searchTerm).length - 1;
 
                 results.push({
@@ -201,21 +189,17 @@ class SiteSearch {
             }
         });
 
-        // Sort by relevance
         results.sort((a, b) => b.relevance - a.relevance || a.matchIndex - b.matchIndex);
 
-        // Return top 5
         return results.slice(0, 5);
     }
 
-    // Security: Escape HTML to prevent XSS
     escapeHtml(text) {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
     }
 
-    // Security: Escape regex special characters to prevent ReDoS
     escapeRegex(string) {
         return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
@@ -234,18 +218,12 @@ class SiteSearch {
         this.resultsContainer.innerHTML = '';
         this.resultsContainer.classList.add('active');
 
-        // Security: Sanitize query for display
-        // Shown via a text node, so it needs no HTML escaping (escaping here displayed "&amp;")
         const displayQuery = query.trim().substring(0, 100);
 
-        // Add site results
         results.forEach(result => {
             const item = document.createElement('a');
             item.className = 'search-result-item';
 
-            // Construct URL with Text Fragment
-            // Format: #:~:text=[prefix-,]textStart[,suffix]
-            // We'll use the simple format #:~:text=term for now
             const encodedQuery = encodeURIComponent(query.trim());
             item.href = `${result.url}#:~:text=${encodedQuery}`;
 
@@ -262,7 +240,6 @@ class SiteSearch {
             this.resultsContainer.appendChild(item);
         });
 
-        // Always add "Search Internet" option
         const internetSearch = document.createElement('a');
         internetSearch.className = 'search-result-item search-internet';
         internetSearch.href = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
@@ -271,7 +248,7 @@ class SiteSearch {
 
         const text = document.createElement('div');
         text.className = 'search-result-title';
-        // Use textContent instead of innerHTML for user input
+
         const searchIcon = document.createElement('i');
         searchIcon.className = 'fas fa-search';
         text.appendChild(searchIcon);
@@ -280,7 +257,6 @@ class SiteSearch {
         internetSearch.appendChild(text);
         this.resultsContainer.appendChild(internetSearch);
 
-        // Show "no results" if needed
         if (results.length === 0) {
             const noResults = document.createElement('div');
             noResults.className = 'search-no-results';
@@ -295,7 +271,6 @@ class SiteSearch {
     }
 }
 
-// Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
     const search = new SiteSearch();
     search.init();

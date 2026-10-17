@@ -6,18 +6,18 @@ document.addEventListener('DOMContentLoaded', function() {
     { id: 'implementation', name: 'Implementation' },
     { id: 'performance', name: 'Performance' }
   ];
-  
+
   const progressTracker = document.createElement('div');
   progressTracker.className = 'progress-tracker';
-  // Initially hide the tracker
+
   progressTracker.classList.add('hidden');
-  
+
   sections.forEach(section => {
     const dot = document.createElement('div');
     dot.className = 'progress-tracker__item';
     dot.setAttribute('data-section', section.name);
     dot.setAttribute('data-target', section.id);
-    
+
     dot.addEventListener('click', function() {
       const targetSection = document.getElementById(this.getAttribute('data-target'));
       if (targetSection) {
@@ -27,12 +27,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
       }
     });
-    
+
     progressTracker.appendChild(dot);
   });
-  
+
   document.body.appendChild(progressTracker);
-  
+
   function updateActiveSection() {
     if (document.querySelector('.fullscreen-viewer.active')) {
       progressTracker.style.display = 'none';
@@ -40,11 +40,11 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
       progressTracker.style.display = 'flex';
     }
-    
+
     const sectionElements = sections.map(section => document.getElementById(section.id));
     const dots = progressTracker.querySelectorAll('.progress-tracker__item');
     const scrollPosition = window.scrollY + window.innerHeight / 3;
-    
+
     let activeIndex = -1;
     sectionElements.forEach((section, index) => {
       if (!section) return;
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
         activeIndex = index;
       }
     });
-    
+
     dots.forEach((dot, index) => {
       if (index === activeIndex) {
         dot.classList.add('active');
@@ -62,8 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
         dot.classList.remove('active');
       }
     });
-    
-    // Show tracker only when scrolled past initial view
+
     if (window.scrollY > 100 && (window.innerHeight + window.scrollY) < document.documentElement.scrollHeight - 100) {
       progressTracker.classList.remove('hidden');
       progressTracker.classList.add('visible');
@@ -72,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
       progressTracker.classList.add('hidden');
     }
   }
-  
+
   window.addEventListener('scroll', updateActiveSection);
   updateActiveSection();
 });

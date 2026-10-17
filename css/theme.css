@@ -24,11 +24,11 @@
   --fg-2: #a1a1a1;
   --fg-3: #707070;
 
-  /* Palette: iPhone message blue, key colour #0A84FF */
+  /* Palette: iPhone message blue nudged slightly toward green */
 
   /* Accent: section numbers, labels, links, focus rings, search highlights */
-  --accent: #0a84ff;
-  --accent-rgb: 10 132 255;
+  --accent: #0a90ff;
+  --accent-rgb: 10 144 255;
   --accent-soft: rgb(var(--accent-rgb) / 0.12);
 
   /* Status: "message sent" state */
@@ -36,11 +36,11 @@
   --ok-rgb: 62 207 142;
 
   /* Hero waves, from the top band (lightest) down to the deepest band */
-  --wave-1: #0756a6;
-  --wave-2: #054585;
-  --wave-3: #043363;
-  --wave-4: #032242;
-  --wave-5: #011121;
+  --wave-1: #075ea6;
+  --wave-2: #054b85;
+  --wave-3: #043863;
+  --wave-4: #032542;
+  --wave-5: #011321;
 
   /* Hero vignette: darkens the waves toward the edges (0 = off) */
   --hero-vignette: rgba(0, 0, 0, 0.7);
@@ -49,22 +49,24 @@
   --card-bg: #070707;
 
   /* Liquid-metal name: highlight and shadow colours of the metal */
-  --metal-light: #f2f2f2;
-  --metal-dark: #021a33;
+  --metal-light: #ffffff;
+  --metal-dark: #021c33;
+  /* neutral tone for the metal's wide gradient bands; the coloured dark tone stays in the thin bands */
+  --metal-mid: #6a707a;
   /* 0 = solid metal, 1 = shadows fully transparent (dark glass) */
-  --metal-clarity: 0.5;
+  --metal-clarity: 0;
 
   /* Hero subtitle: silver gradient echoing the metal */
   --subtitle-top: #ffffff;
   --subtitle-bottom: #8f8f8f;
 
   /* Logo tile (nav + footer): vertical gradient with the letter on top */
-  --logo-top: #34aaff;
-  --logo-bottom: #0060df;
+  --logo-top: #34b4ff;
+  --logo-bottom: #006bdf;
   --logo-mark: #ffffff;
 
   /* Animated dot grids (read by js/dynamic-background.js and js/footer-grid.js) */
-  --grid-dot-rgb: 32 32 32;
+  --grid-dot-rgb: 42 42 42;
   --grid-dot-glow-rgb: 99 99 99;
   --footer-dot-rgb: 120 120 120;
 }

@@ -8,8 +8,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const ctx = canvas.getContext('2d');
 
-    // Drawn at half resolution and stretched by CSS: the upscale supplies most
-    // of the softness, so the per-frame CSS blur can be much smaller.
     const RES = 0.5;
     let W = 0;
     let H = 0;
@@ -31,8 +29,6 @@ document.addEventListener('DOMContentLoaded', function () {
         resizeTimer = setTimeout(resizeCanvas, 150);
     });
 
-    // Matched to the expertise-section grid: same spacing and layered wave motion,
-    // dimmer dots (blurred via CSS) so it reads as a quieter echo of it.
     const spacing = 45;
     const baseDotRadius = 1.5;
     const dotBaseColor = themeRGB('--footer-dot-rgb', [120, 120, 120]).join(', ');
@@ -43,10 +39,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let time = 0;
 
-    // Pulsing brightness system
     const pulses = [];
     const maxPulses = 2;
-    const pulseSpawnInterval = 3000; // Slower for footer
+    const pulseSpawnInterval = 3000;
     const pulseSpeed = 60;
     const pulseMaxRadius = 400;
     const pulseBrightness = 0.5;
@@ -75,7 +70,6 @@ document.addEventListener('DOMContentLoaded', function () {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.setTransform(RES, 0, 0, RES, 0, 0);
 
-        // Update pulses
         const now = Date.now();
         for (let p = pulses.length - 1; p >= 0; p--) {
             const pulse = pulses[p];
@@ -96,7 +90,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 const x = i * spacing;
                 const y = j * spacing;
 
-                // Same multi-layered sine/cosine wave as the expertise-section grid
                 let offsetX = Math.sin(time + j * waveFrequency) * waveAmplitude +
                     Math.sin(time * 0.7 + i * waveFrequency * 0.5) * (waveAmplitude * 0.3);
                 let offsetY = Math.cos(time + i * waveFrequency) * waveAmplitude +
@@ -107,7 +100,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 let brightnessBoost = 0;
 
-                // Calculate pulsing brightness
                 for (const pulse of pulses) {
                     const distX = dotX - pulse.x;
                     const distY = dotY - pulse.y;

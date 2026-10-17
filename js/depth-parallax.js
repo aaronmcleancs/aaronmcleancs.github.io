@@ -1,9 +1,3 @@
-// Selected work: subtle 3D parallax on hover, driven by a per-photo depth map.
-// Each depth map was generated offline with Depth Anything V2 (monocular depth
-// estimation) and ships as a small greyscale PNG next to the photo (data-depth).
-// A WebGL layer redraws the active photo with each pixel shifted by
-// (depth - 0.5) * cursor offset, so near objects move against the background.
-// At rest the offset is zero and the layer matches the <img> under it exactly.
 (function () {
   var frame = document.querySelector('.stage__frame');
   if (!frame || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
@@ -18,7 +12,7 @@
   if (!gl) return;
   frame.insertBefore(canvas, frame.querySelector('.stage__caption'));
 
-  var STRENGTH = 0.009; // max UV shift (0.9% of the image); depth maps get edge artifacts beyond this
+  var STRENGTH = 0.009;
   var EASE = 0.08;
 
   var vsrc = 'attribute vec2 p; varying vec2 v; void main(){ v = p * 0.5 + 0.5; gl_Position = vec4(p, 0.0, 1.0); }';
@@ -28,7 +22,7 @@
     'uniform sampler2D uImg; uniform sampler2D uDepth;',
     'uniform vec2 uScale; uniform vec2 uMouse; uniform float uStrength;',
     'void main(){',
-    '  vec2 uv = (vec2(v.x, 1.0 - v.y) - 0.5) * uScale + 0.5;',  // object-fit: cover
+    '  vec2 uv = (vec2(v.x, 1.0 - v.y) - 0.5) * uScale + 0.5;',
     '  float d = texture2D(uDepth, uv).r;',
     '  uv += uMouse * (d - 0.5) * uStrength;',
     '  gl_FragColor = texture2D(uImg, clamp(uv, 0.001, 0.999));',
@@ -82,7 +76,6 @@
     });
   }
 
-  // textures per photo, loaded the first time that photo becomes active
   var cache = new Map();
   function pair(img) {
     if (!cache.has(img)) {
@@ -137,7 +130,6 @@
     if (!raf) raf = requestAnimationFrame(tick);
   }
 
-  // active only while the cursor is over the photo
   frame.addEventListener('pointermove', function (e) {
     var r = frame.getBoundingClientRect();
     target.x = ((e.clientX - r.left) / r.width - 0.5) * 2;
@@ -150,7 +142,6 @@
     kick();
   });
 
-  // follow the photo the work list selects; hide the layer while the photos cross-fade
   var swapTimer = null;
   function activate() {
     var active = frame.querySelector('img.is-active');
@@ -168,7 +159,6 @@
     }).catch(function () {});
   }
 
-  // watch only the photos (the canvas toggles its own class, which must not re-trigger this)
   var observer = new MutationObserver(activate);
   frame.querySelectorAll('img').forEach(function (img) {
     observer.observe(img, { attributes: true, attributeFilter: ['class'] });

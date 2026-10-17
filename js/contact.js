@@ -1,4 +1,3 @@
-// Contact form: async submit with in-button state feedback
 document.addEventListener('DOMContentLoaded', function () {
   var form = document.getElementById('contact-form');
   if (!form || !window.fetch) return;

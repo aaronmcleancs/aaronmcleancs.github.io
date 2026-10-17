@@ -1,4 +1,3 @@
-// Reveal expertise cards as they enter the viewport
 document.addEventListener('DOMContentLoaded', function () {
   var cards = Array.prototype.slice.call(document.querySelectorAll('.card-props'));
   if (!cards.length) return;
@@ -10,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
     entries.forEach(function (entry) {
       if (!entry.isIntersecting) return;
       var card = entry.target;
-      // stagger by DOM order so the cascade matches visual order
+
       card.style.transitionDelay = (cards.indexOf(card) % 2) * 60 + 'ms';
       card.classList.add('visible');
       observer.unobserve(card);
@@ -29,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 });
-// Open Source nav dropdown: click toggle for touch devices, close on outside click / Escape
+
 document.addEventListener('DOMContentLoaded', function () {
   var dropdown = document.querySelector('.nav-dropdown');
   if (!dropdown) return;
@@ -56,7 +55,6 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
-// Mobile hamburger menu
 document.addEventListener('DOMContentLoaded', function () {
   var hamburger = document.querySelector('.nav-hamburger');
   var menu = document.querySelector('.mobile-menu');
@@ -77,7 +75,6 @@ document.addEventListener('DOMContentLoaded', function () {
     setOpen(!menu.classList.contains('open'));
   });
 
-  // Close when a link is tapped, when tapping outside, or on Escape
   menu.addEventListener('click', function (e) {
     if (e.target.closest('a')) setOpen(false);
   });
@@ -93,7 +90,6 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
-// Selected work: one shared image frame that follows the hovered / selected project
 document.addEventListener('DOMContentLoaded', function () {
   var stage = document.querySelector('[data-stage]');
   if (!stage) return;
@@ -114,7 +110,6 @@ document.addEventListener('DOMContentLoaded', function () {
     caption.innerHTML = items[n].dataset.caption;
   }
 
-  // descriptions stay collapsed until an item is hovered or tapped; the photo keeps the last selection
   function collapse() {
     items.forEach(function (item) {
       item.classList.remove('is-active');
@@ -132,11 +127,6 @@ document.addEventListener('DOMContentLoaded', function () {
   if (canHover) stage.querySelector('.stage__list').addEventListener('mouseleave', collapse);
 });
 
-
-// Smooth wheel scrolling on Windows and Linux. Their mouse wheels jump about 100px per notch,
-// which made the hero zoom and the dot grid step instead of glide. Macs already scroll
-// smoothly, and touch devices keep native scrolling. Runs even with reduced motion on,
-// since Windows reports that whenever "Animation effects" is off.
 (function () {
   var isApple = /Mac|iPhone|iPad|iPod/.test(navigator.platform || '') ||
     (navigator.userAgentData && navigator.userAgentData.platform === 'macOS');
@@ -147,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
   s.onload = function () {
     if (typeof Lenis === 'undefined') return;
     var navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 56;
-    var lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 1, anchors: { offset: -(navH + 16) } });
+    var lenis = new Lenis({ lerp: 0.14, wheelMultiplier: 1, anchors: { offset: -(navH + 16) } });
     function raf(t) {
       lenis.raf(t);
       requestAnimationFrame(raf);

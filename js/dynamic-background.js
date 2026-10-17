@@ -1,10 +1,8 @@
-// Reads an "R G B" triplet token from css/theme.css, e.g. --grid-dot-rgb: 32 32 32
 function themeRGB(name, fallback) {
   var parts = getComputedStyle(document.documentElement).getPropertyValue(name).trim().split(/[\s,]+/).map(Number);
   return parts.length === 3 && parts.every(function (n) { return !isNaN(n); }) ? parts : fallback;
 }
 
-// Runs `frame` on rAF only while `el` is on screen and the tab is visible.
 function runWhileVisible(el, frame) {
   var inView = true, rafId = null;
   function tick(t) {
@@ -34,7 +32,8 @@ function runWhileVisible(el, frame) {
 
 (function () {
   const heroBackground = document.querySelector('.hero__background');
-  if (!heroBackground) return;
+
+  if (!heroBackground || heroBackground.hidden) return;
   const heroSection = heroBackground.parentElement;
   const maxScrollPercent = 0.25;
 
@@ -50,33 +49,25 @@ function runWhileVisible(el, frame) {
     return 1300 - (width - minWidth) * ((1300 - 220) / (maxWidth - minWidth));
   }
 
-  // Zoom progress is measured across the hero only (0 at the top, 0.25 once the hero has
-  // scrolled away, matching the old feel on a shorter page). Measuring across the whole
-  // document let the layer reach ~10x scale further down, and the browser then repainted
-  // that oversized layer in tiles when scrolling back up.
   function calculateTargetScale(scrollVal) {
     const heroHeight = heroSection.offsetHeight || window.innerHeight;
     const scrollPercent = Math.min(Math.max(scrollVal / heroHeight, 0), 1) * maxScrollPercent;
     const baseScale = getBaseScale(window.innerWidth);
     const baselineWidth = 1920;
-    // Starts well stretched so the bands sit lower on load, then grows gently on scroll
+
     const multiplier = window.innerWidth > baselineWidth ? 350 * (baselineWidth / window.innerWidth) : 350;
     const offset = baseScale * 0.1;
     return ((baseScale + scrollPercent * multiplier) - offset * (1 - scrollPercent)) * desktopBoost();
   }
 
-  // On standard-aspect desktops and laptops (16:9, 16:10, 3:2...) zoom the waves in a little.
-  // They scale from the top edge, so this sits the bands lower without opening a gap under
-  // the nav. Phones, tablets and ultrawides keep the original framing.
   function desktopBoost() {
     const w = window.innerWidth;
     const aspect = w / Math.max(window.innerHeight, 1);
     return w >= 1024 && aspect >= 1.3 && aspect <= 1.9 ? 1.2 : 1;
   }
 
-  // Subtle idle drift: slow horizontal sway composed with the scroll zoom
-  const driftAmplitude = 35; // px each direction
-  const driftPeriod = 12000; // ms per full cycle
+  const driftAmplitude = 35;
+  const driftPeriod = 12000;
   let driftX = 0;
 
   function updateVisuals() {
@@ -108,7 +99,7 @@ function runWhileVisible(el, frame) {
 
   function onScroll() {
     if (Math.abs(window.scrollY - lastScrollY) < 5) return;
-    // nothing to animate once the hero is fully scrolled past and the scale is already capped
+
     if (window.scrollY > heroSection.offsetHeight && lastScrollY > heroSection.offsetHeight) {
       lastScrollY = window.scrollY;
       return;
@@ -152,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function resizeCanvas() {
     const w = heroSection.offsetWidth;
     const h = heroSection.offsetHeight;
-    // resizing clears the canvas and reallocates it; skip no-op resizes (mobile URL bar)
+
     if (w === canvas.width && h === canvas.height) return;
     canvas.width = w;
     canvas.height = h;
@@ -166,8 +157,8 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   const spacing = 45;
-  const baseDotRadius = 1.8;
-  const maxDotRadius = 2.9;
+  const baseDotRadius = 1.55;
+  const maxDotRadius = 2.6;
   const dotRGB = themeRGB('--grid-dot-rgb', [32, 32, 32]);
   const glowRGB = themeRGB('--grid-dot-glow-rgb', [99, 99, 99]);
   const dotFill = 'rgb(' + dotRGB.join(', ') + ')';
@@ -194,11 +185,10 @@ document.addEventListener('DOMContentLoaded', function () {
   let currentMouseY = 0;
   let mouseInfluence = 0;
 
-  // Pulsing brightness system
   const pulses = [];
   const maxPulses = 3;
-  const pulseSpawnInterval = 2000; // ms
-  const pulseSpeed = 80; // pixels per second
+  const pulseSpawnInterval = 2000;
+  const pulseSpeed = 80;
   const pulseMaxRadius = 300;
   const pulseBrightness = 0.6;
 
@@ -223,15 +213,13 @@ document.addEventListener('DOMContentLoaded', function () {
   let mouseTimeout;
   let mouseInfluenceTarget = 0;
 
-  // Track scroll for translation effect
   function updateScrollOffset() {
     targetScrollOffset = window.scrollY * scrollTranslationFactor;
   }
 
   window.addEventListener('scroll', updateScrollOffset, { passive: true });
-  updateScrollOffset(); // Initialize
+  updateScrollOffset();
 
-  // Spawn pulses at random dots
   function spawnPulse() {
     if (pulses.length >= maxPulses) return;
 
@@ -254,13 +242,8 @@ document.addEventListener('DOMContentLoaded', function () {
     if (gridLoop && gridLoop.active()) spawnPulse();
   }, pulseSpawnInterval);
 
-  // Snakes: quick, infrequent trails that run through the grid in the theme accent. A head
-  // steps cell to cell with occasional random turns; the tail behind it is a random length
-  // and each segment is darker than the one before. When a snake's run ends, the tail
-  // drains away behind the head rather than vanishing.
   const gridDotAlpha = 0.55;
-  // Windows turns this on whenever "Animation effects" is off, which used to freeze the
-  // whole grid (no hover, no snakes). Now it only stills the ambient wave drift.
+
   const reduceGridMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const accentRGB = themeRGB('--accent-rgb', [126, 130, 241]);
   const snakes = [];
@@ -277,7 +260,7 @@ document.addEventListener('DOMContentLoaded', function () {
       cells: [head],
       dir: DIRS[Math.floor(Math.random() * 4)],
       length: 5 + Math.floor(Math.random() * 12),
-      // each segment is this fraction of the one ahead of it, reaching ~6% at the tail end
+
       decay: 0,
       stepsLeft: 18 + Math.floor(Math.random() * 30),
       lastStep: now,
@@ -289,7 +272,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function stepSnake(snake) {
     if (snake.stepsLeft <= 0) {
-      snake.cells.pop(); // run finished: drain the tail
+      snake.cells.pop();
       return;
     }
     let dir = snake.dir;
@@ -300,7 +283,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let [hi, hj] = snake.cells[0];
     let ni = hi + dir[0];
     let nj = hj + dir[1];
-    // turn back inward at the edges of the grid
+
     if (ni < 1 || ni > snake.cols - 2) { dir = [-dir[0], 0]; ni = hi + dir[0]; }
     if (nj < snake.jMin || nj > snake.jMax) { dir = [0, -dir[1]]; nj = hj + dir[1]; }
     snake.dir = dir;
@@ -309,9 +292,8 @@ document.addEventListener('DOMContentLoaded', function () {
     snake.stepsLeft--;
   }
 
-  // brightness for each lit cell this frame: 1 at the head, falling off down the tail
   function snakeCells(now) {
-    // (decay is derived from each snake's random length the first time it is drawn)
+
     const lit = new Map();
     for (let s = snakes.length - 1; s >= 0; s--) {
       const snake = snakes[s];
@@ -336,15 +318,12 @@ document.addEventListener('DOMContentLoaded', function () {
   function drawGrid() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Smooth scroll translation
     currentScrollOffset += (targetScrollOffset - currentScrollOffset) * transitionSpeed;
 
-    // Mouse tracking
     currentMouseX += (targetMouseX - currentMouseX) * transitionSpeed;
     currentMouseY += (targetMouseY - currentMouseY) * transitionSpeed;
     mouseInfluence += (mouseInfluenceTarget - mouseInfluence) * transitionSpeed;
 
-    // Update pulses
     const now = Date.now();
     for (let p = pulses.length - 1; p >= 0; p--) {
       const pulse = pulses[p];
@@ -356,7 +335,6 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
 
-    // Calculate grid bounds with extra margin for smooth transitions
     const margin = spacing * 2;
     const startY = Math.floor((currentScrollOffset - margin) / spacing) * spacing;
     const endY = currentScrollOffset + canvas.height + margin;
@@ -365,10 +343,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const rowStart = Math.floor(startY / spacing);
     const rowEnd = Math.ceil(endY / spacing);
 
-    // fade the grid in/out over the top and bottom 20% of the section
     const fadeBand = canvas.height * 0.2;
 
-    // snakes spawn only in rows that are fully visible (outside the fade bands)
     const snakeNow = Date.now();
     if (snakeNow >= nextSnakeAt) {
       if (snakes.length < maxSnakes) {
@@ -385,12 +361,10 @@ document.addEventListener('DOMContentLoaded', function () {
     for (let i = 0; i < cols; i++) {
       for (let j = rowStart; j <= rowEnd; j++) {
         const x = i * spacing;
-        const y = j * spacing - currentScrollOffset; // Apply scroll translation
+        const y = j * spacing - currentScrollOffset;
 
-        // Skip dots that are way outside the visible area
         if (y < -margin || y > canvas.height + margin) continue;
 
-        // Improved wave animation with multi-layered sine/cosine
         let offsetX = Math.sin(time + j * waveFrequency) * waveAmplitude +
           Math.sin(time * 0.7 + i * waveFrequency * 0.5) * (waveAmplitude * 0.3);
         let offsetY = Math.cos(time + i * waveFrequency) * waveAmplitude +
@@ -402,7 +376,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const edgeFade = Math.min(1, y / fadeBand, (canvas.height - y) / fadeBand);
         if (edgeFade <= 0) continue;
 
-        // Calculate pulsing brightness from all active pulses
         for (const pulse of pulses) {
           const distX = x - pulse.x;
           const distY = y - pulse.y;
@@ -416,7 +389,6 @@ document.addEventListener('DOMContentLoaded', function () {
           }
         }
 
-        // Mouse interaction
         let mouseGlow = 0;
         if (mouseInfluence > 0.01) {
           const distX = x - currentMouseX;
@@ -440,7 +412,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const dotX = x + offsetX;
         const dotY = y + offsetY;
 
-        // Only draw dots within the visible area (with some margin)
         if (dotX >= -spacing && dotX <= canvas.width + spacing &&
           dotY >= -spacing && dotY <= canvas.height + spacing) {
 
@@ -451,8 +422,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
           const snakeGlow = lit ? (lit.get(i + ',' + j) || 0) : 0;
           if (mouseGlow > 0.01 || snakeGlow > 0) {
-            // cursor: blend toward the glow colour; snake: tint toward the accent.
-            // Snakes only change colour; dot size and brightness still follow the cursor alone.
+
             const channel = (c) => {
               const base = dotRGB[c] + (glowRGB[c] - dotRGB[c]) * mouseGlow;
               return Math.round(base + (accentRGB[c] - base) * snakeGlow);
@@ -463,10 +433,9 @@ document.addEventListener('DOMContentLoaded', function () {
             ctx.fillStyle = dotFill;
             styledForGlow = false;
           }
-          // regular dots stay subdued; the canvas itself is fully opaque so snakes can glow
+
           if (snakeGlow > 0) {
-            // slight halo behind snake dots, strongest at the head and fading down the tail;
-            // the dot itself keeps its normal size and brightness
+
             const fill = ctx.fillStyle;
             ctx.fillStyle = `rgb(${accentRGB[0]}, ${accentRGB[1]}, ${accentRGB[2]})`;
             ctx.globalAlpha = 0.16 * snakeGlow * edgeFade;

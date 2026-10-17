@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const caption = viewer.querySelector('.fullscreen-caption');
   if (!fullscreenImage || !prevButton || !nextButton || !closeButton) return;
 
-  // Navigation is scoped to the gallery the clicked image belongs to
   let activeImages = [];
   let currentIndex = 0;
   let swapTimer = null;
@@ -44,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
       applyImage(index);
       return;
     }
-    // brief crossfade: fade out, swap, fade back once loaded
+
     clearTimeout(swapTimer);
     fullscreenImage.classList.add('swapping');
     swapTimer = setTimeout(function () {
@@ -119,7 +118,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // close on backdrop click (anything that isn't the image, caption, or a control)
   viewer.addEventListener('click', function(e) {
     if (!e.target.closest('.fullscreen-image, .fullscreen-caption, .fullscreen-nav, .fullscreen-topbar')) {
       closeViewer();

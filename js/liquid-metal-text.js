@@ -1,5 +1,3 @@
-// Tuned for a text-sized canvas: stripe scale and refraction close to the original
-// liquid-metal shader, with a gentle flow speed.
 const params = {
   refraction: 0.006,
   edge: 0.05,
@@ -20,7 +18,6 @@ out vec2 vUv;
   gl_Position = vec4(a_position, 0.0, 1.0);
 }`;
 
-
 const liquidFragSource = `#version 300 es
 precision mediump float;
 
@@ -40,11 +37,10 @@ uniform float u_pattern_ratio;
 uniform float u_clarity;
 uniform vec3 u_color_light;
 uniform vec3 u_color_dark;
-
+uniform vec3 u_color_mid;
 
 #define TWO_PI 6.28318530718
 #define PI 3.14159265358979323846
-
 
 vec3 mod289(vec3 x) { return x - floor(x * (1. / 289.)) * 289.; }
 vec2 mod289(vec2 x) { return x - floor(x * (1. / 289.)) * 289.; }
@@ -92,7 +88,7 @@ vec2 get_img_uv() {
 vec2 rotate(vec2 uv, float th) {
   return mat2(cos(th), sin(th), -sin(th), cos(th)) * uv;
 }
-float get_color_channel(float c1, float c2, float stripe_p, vec3 w, float extra_blur, float b) {
+float get_color_channel(float c1, float c2, float c3, float stripe_p, vec3 w, float extra_blur, float b) {
   float ch = c2;
   float border = 0.;
   float blur = u_patternBlur + extra_blur;
@@ -113,7 +109,7 @@ float get_color_channel(float c1, float c2, float stripe_p, vec3 w, float extra_
   ch = mix(ch, c1, smoothstep(border - blur, border + blur, stripe_p));
 
   float gradient_t = (stripe_p - w[0] - w[1]) / w[2];
-  float gradient = mix(c1, c2, smoothstep(0., 1., gradient_t));
+  float gradient = mix(c1, c3, smoothstep(0., 1., gradient_t));
   ch = mix(ch, gradient, smoothstep(border - blur, border + blur, stripe_p));
 
   return ch;
@@ -128,8 +124,6 @@ float get_img_frame_alpha(vec2 uv, float img_frame_width) {
 void main() {
   vec2 uv = vUv;
   uv.y = 1. - uv.y;
-  // pattern space is capped near 2:1 (the shader's bulge maths assumes a squarish canvas;
-  // on a 7:1 name it went strongly negative at the ends and aliased into noise)
   uv.x *= u_pattern_ratio;
 
   float diagonal = uv.x - uv.y;
@@ -144,11 +138,10 @@ void main() {
 
   vec3 color1 = u_color_light;
   vec3 color2 = u_color_dark;
+  vec3 color3 = u_color_mid;
 
   float edge = img.r;
-  // rim: the outer edge of each stroke, where glass catches light (img.r -> 1 at the outline)
   float rim = smoothstep(.72, .96, img.r);
-
 
   vec2 grad_uv = uv;
   grad_uv.x -= u_pattern_ratio * 0.5;
@@ -162,7 +155,6 @@ void main() {
   bulge = 1. - bulge;
   bulge *= pow(uv.y, .3);
 
-
   float cycle_width = u_patternScale;
   float thin_strip_1_ratio = .12 / cycle_width * (1. - .4 * bulge);
   float thin_strip_2_ratio = .07 / cycle_width * (1. + .4 * bulge);
@@ -174,7 +166,6 @@ void main() {
   opacity = 1. - smoothstep(.9 - .5 * u_edge, 1. - .5 * u_edge, edge);
   opacity *= get_img_frame_alpha(img_uv, 0.01);
 
-
   float noise = snoise(uv - t);
 
   edge += (1. - edge) * u_liquid * noise;
@@ -184,7 +175,6 @@ void main() {
   refr = clamp(refr, 0., 1.);
 
   float dir = grad_uv.x;
-
 
   dir += diagonal;
 
@@ -220,37 +210,29 @@ void main() {
   vec3 w = vec3(thin_strip_1_width, thin_strip_2_width, wide_strip_ratio);
   w[1] -= .02 * smoothstep(.0, 1., edge + bulge);
   float stripe_r = mod(dir + refr_r, 1.);
-  float r = get_color_channel(color1.r, color2.r, stripe_r, w, 0.02 + .03 * u_refraction * bulge, bulge);
+  float r = get_color_channel(color1.r, color2.r, color3.r, stripe_r, w, 0.02 + .03 * u_refraction * bulge, bulge);
   float stripe_g = mod(dir, 1.);
-  float g = get_color_channel(color1.g, color2.g, stripe_g, w, 0.01, bulge);
+  float g = get_color_channel(color1.g, color2.g, color3.g, stripe_g, w, 0.01, bulge);
   float stripe_b = mod(dir - refr_b, 1.);
-  float b = get_color_channel(color1.b, color2.b, stripe_b, w, .01, bulge);
+  float b = get_color_channel(color1.b, color2.b, color3.b, stripe_b, w, .01, bulge);
 
   color = vec3(r, g, b);
 
-  // Dark glass: the darker the metal, the more see-through it is (u_clarity = 0 is solid),
-  // so shadows let the background through while highlights stay bright.
   float lum = dot(color, vec3(.299, .587, .114));
   float alpha = opacity * mix(1. - u_clarity, 1., smoothstep(.05, .85, lum));
-  // a light rim keeps every letter's outline readable even where the glass is clearest
   color = mix(color, u_color_light, rim * .55);
   alpha = max(alpha, opacity * rim * .85);
 
   fragColor = vec4(color * alpha, alpha);
 }`;
 
-
 function init() {
   createTextImage();
   initWebGL();
 }
 
-// Resolution of both canvases relative to CSS pixels.
 const METAL_SCALE = Math.min((window.devicePixelRatio || 1) * 1.5, 3);
 
-// The effect is laid out across the canvas, so the canvas is cropped tightly around the
-// name (plus a small margin) instead of spanning the whole column. Otherwise the letters
-// only ever showed a small slice of the pattern.
 function createTextImage() {
   const textCanvas = document.getElementById('text-canvas');
   const shaderCanvas = document.getElementById('shader-canvas');
@@ -288,8 +270,6 @@ function createTextImage() {
   ctx.textBaseline = 'alphabetic';
   ctx.fillText('Aaron McLean', pad + m.actualBoundingBoxLeft, pad + m.actualBoundingBoxAscent);
 
-  // The container's CSS height only sets the font size; collapse the empty space above and
-  // below the letters so the hero's spacing is measured from the visible ink of the name.
   const trim = Math.max(0, (containerHeight - boxH) / 2 + pad);
   container.style.marginTop = -trim + 'px';
   container.style.marginBottom = -trim + 'px';
@@ -298,7 +278,6 @@ function createTextImage() {
   processTextImage(textCanvas);
 }
 
-// 1D squared Euclidean distance transform (Felzenszwalb & Huttenlocher), in place.
 function edt1d(f, n, v, z, d) {
   let k = 0;
   v[0] = 0;
@@ -322,11 +301,6 @@ function edt1d(f, n, v, z, d) {
   }
 }
 
-// Builds the depth texture the shader reads: white outside the letters, and inside them
-// a rounded profile that is brightest at each stroke's edge and darkest along its centre,
-// like a pipe. Uses an exact distance transform (linear time) shaped into the parabolic
-// profile a fully relaxed Poisson solve would give, so every stroke gets full depth
-// instead of only a thin ramp at its edges.
 function processTextImage(canvas) {
   const ctx = canvas.getContext('2d', { willReadFrequently: true });
   const W = canvas.width;
@@ -381,7 +355,6 @@ function processTextImage(canvas) {
   window.processedTextImage = out;
 }
 
-// Metal colours come from css/theme.css (--metal-light / --metal-dark).
 function themeMetalColors() {
   const cs = getComputedStyle(document.documentElement);
   function rgb(name, fallback) {
@@ -395,10 +368,10 @@ function themeMetalColors() {
   return {
     light: rgb('--metal-light', '#ffffff') || [1, 1, 1],
     dark: rgb('--metal-dark', '#000000') || [0, 0, 0],
+    mid: rgb('--metal-mid', '#6a707a') || [0.42, 0.44, 0.48],
     clarity: parseFloat(cs.getPropertyValue('--metal-clarity')) || 0,
   };
 }
-
 
 function initWebGL() {
   const shaderCanvas = document.getElementById('shader-canvas');
@@ -455,7 +428,8 @@ function initWebGL() {
     'u_pattern_ratio',
     'u_clarity',
     'u_color_light',
-    'u_color_dark'
+    'u_color_dark',
+    'u_color_mid'
   ];
 
   uniformNames.forEach(name => {
@@ -470,6 +444,7 @@ function initWebGL() {
   const metal = themeMetalColors();
   gl.uniform3fv(uniforms.u_color_light, metal.light);
   gl.uniform3fv(uniforms.u_color_dark, metal.dark);
+  gl.uniform3fv(uniforms.u_color_mid, metal.mid);
   gl.uniform1f(uniforms.u_clarity, metal.clarity);
   gl.uniform1f(uniforms.u_patternScale, params.patternScale);
   gl.uniform1f(uniforms.u_refraction, params.refraction);
@@ -487,7 +462,7 @@ function initWebGL() {
 
   function render(currentTime) {
     currentTime *= 0.001;
-    // resume without a jump after the loop has been paused off screen
+
     const deltaTime = Math.min(currentTime - lastTime, 0.1);
     lastTime = currentTime;
 
@@ -502,8 +477,6 @@ function initWebGL() {
     (function loop(t) { render(t); requestAnimationFrame(loop); })(0);
   }
 
-  // Rebuild only when the width actually changes (phones fire resize when the URL bar
-  // moves), and upload the new texture so the change is actually drawn.
   let lastWidth = shaderCanvas.parentElement.offsetWidth;
   let resizeTimer = null;
   window.addEventListener('resize', function () {
@@ -533,18 +506,15 @@ function createShaderProgram(gl, vsSource, fsSource) {
   gl.shaderSource(vertexShader, vsSource);
   gl.compileShader(vertexShader);
 
-
   if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
     console.error('Vertex shader compilation error:', gl.getShaderInfoLog(vertexShader));
     gl.deleteShader(vertexShader);
     return null;
   }
 
-
   const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
   gl.shaderSource(fragmentShader, fsSource);
   gl.compileShader(fragmentShader);
-
 
   if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
     console.error('Fragment shader compilation error:', gl.getShaderInfoLog(fragmentShader));
@@ -553,12 +523,10 @@ function createShaderProgram(gl, vsSource, fsSource) {
     return null;
   }
 
-
   const program = gl.createProgram();
   gl.attachShader(program, vertexShader);
   gl.attachShader(program, fragmentShader);
   gl.linkProgram(program);
-
 
   if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
     console.error('Program linking error:', gl.getProgramInfoLog(program));
@@ -571,19 +539,16 @@ function createShaderProgram(gl, vsSource, fsSource) {
   return program;
 }
 
-
 function setupTexture(gl, uniforms) {
 
   const texture = gl.createTexture();
   gl.activeTexture(gl.TEXTURE0);
   gl.bindTexture(gl.TEXTURE_2D, texture);
 
-
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-
 
   const checkImage = () => {
     if (window.processedTextImage) {
@@ -600,7 +565,6 @@ function setupTexture(gl, uniforms) {
         window.processedTextImage.data
       );
 
-
       gl.uniform1i(uniforms.u_image_texture, 0);
     } else {
 
@@ -610,7 +574,6 @@ function setupTexture(gl, uniforms) {
 
   checkImage();
 }
-
 
 document.addEventListener('DOMContentLoaded', function () {
   try {

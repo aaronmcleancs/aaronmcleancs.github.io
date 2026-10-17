@@ -1,21 +1,12 @@
-/* ============================================================
- * analytics.js — lightweight first-party beacon
- * Sends pageview + duration heartbeats to a Cloudflare Worker.
- * The endpoint URL is public by design; it only accepts writes.
- * All reads (the dashboard) require server-side auth.
- * ============================================================ */
 (function () {
   'use strict';
 
-  // Set this to your deployed Worker URL (no trailing slash)
   var ENDPOINT = 'https://YOUR-WORKER.YOUR-SUBDOMAIN.workers.dev';
 
-  // Don't track local development or opted-out browsers
   if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') return;
   if (navigator.doNotTrack === '1' || window.doNotTrack === '1') return;
-  if (ENDPOINT.indexOf('YOUR-WORKER') !== -1) return; // not configured yet
+  if (ENDPOINT.indexOf('YOUR-WORKER') !== -1) return;
 
-  // One session id per browser tab-session
   var sid;
   try {
     sid = sessionStorage.getItem('am_sid');
@@ -25,7 +16,7 @@
       sessionStorage.setItem('am_sid', sid);
     }
   } catch (e) {
-    return; // storage blocked — skip tracking entirely
+    return;
   }
 
   function send(event) {
@@ -35,7 +26,7 @@
       path: location.pathname,
       ref: event === 'view' ? document.referrer : undefined
     });
-    // sendBeacon survives page unloads; fetch keepalive as fallback
+
     if (navigator.sendBeacon) {
       navigator.sendBeacon(ENDPOINT + '/collect', new Blob([payload], { type: 'application/json' }));
     } else {
@@ -44,16 +35,12 @@
         body: payload,
         headers: { 'Content-Type': 'application/json' },
         keepalive: true
-      }).catch(function () { /* fire-and-forget */ });
+      }).catch(function () {   });
     }
   }
 
-  // Pageview
   send('view');
 
-  // Duration heartbeats — every 15 s while the tab is visible.
-  // The server derives session duration from last_seen − started,
-  // so a closed laptop or killed tab still yields an accurate figure.
   var HEARTBEAT_MS = 15000;
   var timer = null;
 
@@ -68,7 +55,7 @@
   document.addEventListener('visibilitychange', function () {
     if (document.visibilityState === 'hidden') {
       stopBeats();
-      send('end'); // final timestamp on tab hide / close
+      send('end');
     } else {
       startBeats();
     }
