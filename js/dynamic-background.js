@@ -315,17 +315,7 @@ document.addEventListener('DOMContentLoaded', function () {
     return lit;
   }
 
-  const midLayer = heroSection.querySelector('.xp-grid');
-  const midFactor = 0.06;
-  function placeMidLayer() {
-    if (!midLayer) return;
-    const r = heroSection.getBoundingClientRect();
-    const off = (window.innerHeight / 2 - (r.top + r.height / 2)) * midFactor;
-    midLayer.style.transform = 'translate3d(0,' + off.toFixed(2) + 'px,0)';
-  }
-
   function drawGrid() {
-    placeMidLayer();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     currentScrollOffset = targetScrollOffset;

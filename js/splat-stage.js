@@ -31,6 +31,23 @@ async function start() {
   const cache = new Map();
   let current = null, raf = null, settle = 0;
   const hover = { x: 0, y: 0 }, cam = { x: 0, y: 0 }, aim = { x: 0, y: 0 };
+  const GW = 128, GH = 96;
+  function depthGrid(image) {
+    const c = document.createElement('canvas');
+    c.width = GW; c.height = GH;
+    const x = c.getContext('2d');
+    x.drawImage(image, 0, 0, GW, GH);
+    const d = x.getImageData(0, 0, GW, GH).data, g = new Float32Array(GW * GH);
+    for (let i = 0; i < g.length; i++) g[i] = d[i * 4] / 255;
+    return g;
+  }
+  function sampleGrid(grid, u, v) {
+    const x = Math.min(GW - 1.001, Math.max(0, u * GW - 0.5)), y = Math.min(GH - 1.001, Math.max(0, v * GH - 0.5));
+    const x0 = Math.floor(x), y0 = Math.floor(y), fx = x - x0, fy = y - y0, i = y0 * GW + x0;
+    const top = grid[i] * (1 - fx) + grid[i + 1] * fx, bot = grid[i + GW] * (1 - fx) + grid[i + GW + 1] * fx;
+    return top * (1 - fy) + bot * fy;
+  }
+
   function load(img) {
     if (!cache.has(img)) {
       cache.set(img, (async () => {
@@ -38,32 +55,36 @@ async function start() {
         const mesh = new SplatMesh({ url: img.dataset.splat });
         mesh.quaternion.set(1, 0, 0, 0);
         const depthTex = await new THREE.TextureLoader().loadAsync(img.dataset.depth).catch(() => null);
-        if (depthTex) { depthTex.minFilter = depthTex.magFilter = THREE.LinearFilter; depthTex.generateMipmaps = false; }
+        let grid = null;
+        if (depthTex) {
+          depthTex.minFilter = depthTex.magFilter = THREE.LinearFilter; depthTex.generateMipmaps = false;
+          grid = depthGrid(depthTex.image);
+        }
         await mesh.initialized;
         mesh.visible = false;
         scene.add(mesh);
-        return { mesh, meta, depthTex };
+        return { mesh, meta, depthTex, grid };
       })());
     }
     return cache.get(img);
   }
 
-  const FOCUS_EASE = 0.09, AMOUNT_EASE = 0.06, MAX_BLUR = 5;
-  const dof = { f: { x: 0.5, y: 0.5 }, tf: { x: 0.5, y: 0.5 }, amt: 0, tamt: 0 };
+  const FOCUS_EASE = 0.045, AMOUNT_EASE = 0.05, MAX_BLUR = 7;
+  const dof = { d: 0.5, td: 0.5, amt: 0, tamt: 0 };
   const rt = new THREE.WebGLRenderTarget(2, 2, { depthBuffer: true, type: THREE.HalfFloatType });
   const post = new THREE.ShaderMaterial({
     uniforms: {
       tColor: { value: rt.texture }, tDepth: { value: null },
-      uFocus: { value: new THREE.Vector2(0.5, 0.5) }, uScale: { value: new THREE.Vector2(1, 1) },
-      uTexel: { value: new THREE.Vector2(1, 1) }, uAmount: { value: 0 }, uMaxR: { value: MAX_BLUR }
+      uFocusD: { value: 0.5 }, uScale: { value: new THREE.Vector2(1, 1) },
+      uTexel: { value: new THREE.Vector2(1, 1) }, uAmount: { value: 0 }, uMaxR: { value: MAX_BLUR }, uDof: { value: 1 }
     },
     vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }',
     fragmentShader: [
-      'uniform sampler2D tColor, tDepth; uniform vec2 uFocus, uScale, uTexel; uniform float uAmount, uMaxR; varying vec2 vUv;',
+      'uniform sampler2D tColor, tDepth; uniform vec2 uScale, uTexel; uniform float uFocusD, uAmount, uMaxR, uDof; varying vec2 vUv;',
       'float depthAt(vec2 uv){ return texture2D(tDepth, (uv - 0.5) * uScale + 0.5).r; }',
       'void main(){',
-      '  float df = depthAt(uFocus), d = depthAt(vUv);',
-      '  float r = clamp(abs(d - df) * 2.6 - 0.04, 0.0, 1.0) * uMaxR * uAmount;',
+      '  float d = depthAt(vUv);',
+      '  float r = smoothstep(0.06, 0.36, abs(d - uFocusD) * uDof) * uMaxR * uAmount;',
       '  vec4 c = texture2D(tColor, vUv);',
       '  if (r > 0.35) {',
       '    vec4 acc = c; float wsum = 1.0;',
@@ -74,7 +95,6 @@ async function start() {
       '    c = acc / wsum;',
       '  }',
       '  gl_FragColor = vec4(c.rgb, 1.0);',
-      '  #include <colorspace_fragment>',
       '}'
     ].join('\n'),
     depthTest: false, depthWrite: false
@@ -83,6 +103,17 @@ async function start() {
   postScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), post));
   const postCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
+  // Spark encodes for the working colour space when drawing off-screen; drawing in sRGB keeps its
+  // blending identical to an on-screen render, so the post pass can pass pixels through untouched.
+  function renderToTarget() {
+    const cm = THREE.ColorManagement, ws = cm.workingColorSpace;
+    cm.workingColorSpace = THREE.SRGBColorSpace;
+    renderer.setRenderTarget(rt);
+    renderer.render(scene, camera);
+    renderer.setRenderTarget(null);
+    cm.workingColorSpace = ws;
+  }
+
   function fit() {
     const w = frame.clientWidth, h = frame.clientHeight;
     renderer.setSize(w, h, false);
@@ -90,7 +121,8 @@ async function start() {
     const pr = renderer.getPixelRatio();
     rt.setSize(Math.round(w * pr), Math.round(h * pr));
     post.uniforms.uTexel.value.set(1 / (w * pr), 1 / (h * pr));
-    post.uniforms.uMaxR.value = MAX_BLUR * pr;
+    post.uniforms.uMaxR.value = MAX_BLUR * pr * (current && current.meta.blur || 1);
+    post.uniforms.uDof.value = current && current.meta.dof || 1;
     if (current) {
       const ia = current.meta.image_size[0] / current.meta.image_size[1], fa = w / h;
       post.uniforms.uScale.value.set(ia > fa ? fa / ia : 1, ia > fa ? 1 : ia / fa);
@@ -116,18 +148,15 @@ async function start() {
     const focus = current.meta.focus || current.meta.bounds_z[1];
     camera.position.set(cam.x, cam.y, 0);
     camera.lookAt(0, 0, -focus);
-    dof.f.x += (dof.tf.x - dof.f.x) * FOCUS_EASE;
-    dof.f.y += (dof.tf.y - dof.f.y) * FOCUS_EASE;
+    dof.d += (dof.td - dof.d) * FOCUS_EASE;
     dof.amt += (dof.tamt - dof.amt) * AMOUNT_EASE;
     const animating = settle-- > 0 || Math.abs(aim.x - cam.x) > 1e-4 || Math.abs(aim.y - cam.y) > 1e-4 ||
-      Math.abs(dof.tf.x - dof.f.x) > 1e-4 || Math.abs(dof.tf.y - dof.f.y) > 1e-4 || Math.abs(dof.tamt - dof.amt) > 1e-3;
+      Math.abs(dof.td - dof.d) > 1e-3 || Math.abs(dof.tamt - dof.amt) > 1e-3;
     if (current.depthTex) {
-      renderer.setRenderTarget(rt);
-      renderer.render(scene, camera);
-      renderer.setRenderTarget(null);
+      renderToTarget();
       const U = post.uniforms;
       U.tDepth.value = current.depthTex;
-      U.uFocus.value.set(dof.f.x, dof.f.y);
+      U.uFocusD.value = dof.d;
       U.uAmount.value = dof.amt;
       renderer.render(postScene, postCam);
     } else {
@@ -166,8 +195,14 @@ async function start() {
     const r = frame.getBoundingClientRect();
     hover.x = ((e.clientX - r.left) / r.width - 0.5) * 2;
     hover.y = ((e.clientY - r.top) / r.height - 0.5) * 2;
-    dof.tf.x = (e.clientX - r.left) / r.width;
-    dof.tf.y = 1 - (e.clientY - r.top) / r.height;
+    if (current && current.grid) {
+      const sc = post.uniforms.uScale.value;
+      const u = ((e.clientX - r.left) / r.width - 0.5) * sc.x + 0.5;
+      const v = ((e.clientY - r.top) / r.height - 0.5) * sc.y + 0.5;
+      const want = sampleGrid(current.grid, u, v);
+      dof.td = want;
+      if (dof.tamt === 0 && dof.amt < 0.05) dof.d = want;
+    }
     dof.tamt = 1;
     target();
   });
