@@ -15,6 +15,8 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="css/theme.css">
   <link rel="stylesheet" href="css/styles.css">
+  <script src="js/theme-tuner.js"></script>
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.186.0/examples/jsm/","@sparkjsdev/spark":"https://cdn.jsdelivr.net/npm/@sparkjsdev/spark@2.2.0/dist/spark.module.js"}}</script>
   <script src="https://kit.fontawesome.com/ca7f2ffa51.js" crossorigin="anonymous" defer></script>
   <script src="js/scroll.js" defer></script>
   <script src="js/analytics.js" defer></script>
@@ -210,9 +212,9 @@
           </li>
         </ul>
         <a class="stage__frame" href="raise-drill.html" aria-label="View project">
-          <img class="is-active" src="images/projects/raise-drill/stage.jpg" data-depth="images/projects/raise-drill/stage-depth.png" alt="The RaisePro 48-T drilling underground" loading="lazy" decoding="async">
-          <img src="images/projects/electric-rigs/stage.jpg" data-depth="images/projects/electric-rigs/stage-depth.png" alt="Hybrid battery-electric workover rig on site" loading="lazy" decoding="async">
-          <img src="images/projects/surgical-mining/stage.jpg" data-depth="images/projects/surgical-mining/stage-depth.png" alt="Fibre-optic gyro module inside the steerable drilling tip" loading="lazy" decoding="async">
+          <img class="is-active" src="images/projects/raise-drill/stage.jpg" data-depth="images/projects/raise-drill/stage-depth.png" data-splat="images/projects/raise-drill/stage.spz" data-splat-meta="images/projects/raise-drill/stage-splat.json" alt="The RaisePro 48-T drilling underground" loading="lazy" decoding="async">
+          <img src="images/projects/electric-rigs/stage.jpg" data-depth="images/projects/electric-rigs/stage-depth.png" data-splat="images/projects/electric-rigs/stage.spz" data-splat-meta="images/projects/electric-rigs/stage-splat.json" alt="Hybrid battery-electric workover rig on site" loading="lazy" decoding="async">
+          <img src="images/projects/surgical-mining/stage.jpg" data-depth="images/projects/surgical-mining/stage-depth.png" data-splat="images/projects/surgical-mining/stage.spz" data-splat-meta="images/projects/surgical-mining/stage-splat.json" alt="Fibre-optic gyro module inside the steerable drilling tip" loading="lazy" decoding="async">
           <img src="images/projects/telematics/stage.jpg" data-depth="images/projects/telematics/stage-depth.png" alt="Fleet telemetry platform screens laid out as a flow: fleet, device dashboard, motion, uptime, map, metrics and faults" loading="lazy" decoding="async">
           <div class="stage__caption"><span data-stage-caption>RaisePro 48-T Automation</span><strong>View project &rarr;</strong></div>
         </a>
@@ -276,30 +278,30 @@
         <span class="section__index">04</span>
         <h2 class="section__title">Side projects</h2>
       </header>
-      <ul class="proj-grid">
-        <li><a class="proj-card" href="quantum.html">
-          <i class="fas fa-arrow-right proj-card__link" aria-hidden="true"></i>
-          <span class="proj-card__icon"><i class="fas fa-atom" aria-hidden="true"></i></span>
-          <span class="proj-card__domain">Quantum Computing</span>
-          <span class="proj-card__name">FidelityChain</span>
+      <ul class="srows">
+        <li><a class="srow" href="quantum.html" data-repo="FidelityChain" data-pattern="quantum">
+          <span class="srow__idx">01</span>
+          <span class="srow__main"><span class="srow__domain">Quantum Computing</span><span class="srow__repo">FidelityChain</span></span>
+          <span class="srow__meta"><span class="srow__lang"><b style="background:#3572A5"></b>Python</span><span class="srow__stars" data-stars><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"/></svg><span>3</span></span></span>
+          <i class="fas fa-arrow-right srow__go" aria-hidden="true"></i>
         </a></li>
-        <li><a class="proj-card" href="https://github.com/aaronmcleancs/ParticleBox" target="_blank" rel="noopener noreferrer">
-          <i class="fas fa-arrow-up-right-from-square proj-card__link" aria-hidden="true"></i>
-          <span class="proj-card__icon"><i class="fas fa-gauge-high" aria-hidden="true"></i></span>
-          <span class="proj-card__domain">Performance Optimization</span>
-          <span class="proj-card__name">ParticleBox</span>
+        <li><a class="srow" href="https://github.com/aaronmcleancs/ParticleBox" target="_blank" rel="noopener noreferrer" data-repo="ParticleBox" data-pattern="perf">
+          <span class="srow__idx">02</span>
+          <span class="srow__main"><span class="srow__domain">Performance Optimization</span><span class="srow__repo">ParticleBox</span></span>
+          <span class="srow__meta"><span class="srow__lang"><b style="background:#f34b7d"></b>C++</span><span class="srow__stars" data-stars><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"/></svg><span>9</span></span></span>
+          <i class="fas fa-arrow-up-right-from-square srow__go" aria-hidden="true"></i>
         </a></li>
-        <li><a class="proj-card" href="https://github.com/aaronmcleancs/CVV_15M_SARS-CoV-2" target="_blank" rel="noopener noreferrer">
-          <i class="fas fa-arrow-up-right-from-square proj-card__link" aria-hidden="true"></i>
-          <span class="proj-card__icon"><i class="fas fa-brain" aria-hidden="true"></i></span>
-          <span class="proj-card__domain">Neural Networks</span>
-          <span class="proj-card__name">X-ray Classifier</span>
+        <li><a class="srow" href="https://github.com/aaronmcleancs/CVV_15M_SARS-CoV-2" target="_blank" rel="noopener noreferrer" data-repo="CVV_15M_SARS-CoV-2" data-pattern="neural">
+          <span class="srow__idx">03</span>
+          <span class="srow__main"><span class="srow__domain">Neural Networks</span><span class="srow__repo">CVV_15M_SARS-CoV-2</span></span>
+          <span class="srow__meta"><span class="srow__lang"><b style="background:#3572A5"></b>Python</span><span class="srow__stars" data-stars><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"/></svg><span>6</span></span></span>
+          <i class="fas fa-arrow-up-right-from-square srow__go" aria-hidden="true"></i>
         </a></li>
-        <li><a class="proj-card" href="https://github.com/aaronmcleancs/RepBook-DemoServer" target="_blank" rel="noopener noreferrer">
-          <i class="fas fa-arrow-up-right-from-square proj-card__link" aria-hidden="true"></i>
-          <span class="proj-card__icon"><i class="fas fa-layer-group" aria-hidden="true"></i></span>
-          <span class="proj-card__domain">Full-Stack Development</span>
-          <span class="proj-card__name">RepBook</span>
+        <li><a class="srow" href="https://github.com/aaronmcleancs/RepBook-DemoServer" target="_blank" rel="noopener noreferrer" data-repo="RepBook-DemoServer" data-pattern="stack">
+          <span class="srow__idx">04</span>
+          <span class="srow__main"><span class="srow__domain">Full-Stack Development</span><span class="srow__repo">RepBook-DemoServer</span></span>
+          <span class="srow__meta"><span class="srow__lang"><b style="background:#F05138"></b>Swift</span><span class="srow__stars" data-stars><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"/></svg><span>14</span></span></span>
+          <i class="fas fa-arrow-up-right-from-square srow__go" aria-hidden="true"></i>
         </a></li>
       </ul>
     </div>
@@ -387,6 +389,9 @@
   <script src="js/liquid-metal-text.js"></script>
   <script src="js/footer-grid.js"></script>
   <script src="js/depth-parallax.js"></script>
+  <script src="js/repo-cards.js"></script>
+  <script src="js/srow-anim.js"></script>
+  <script type="module" src="js/splat-stage.js"></script>
 </body>
 
 </html>

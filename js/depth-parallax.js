@@ -1,6 +1,6 @@
 (function () {
   var frame = document.querySelector('.stage__frame');
-  if (!frame || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  if (!frame) return;
 
   var imgs = Array.prototype.slice.call(frame.querySelectorAll('img[data-depth]'));
   if (!imgs.length) return;
@@ -87,7 +87,7 @@
   }
 
   var current = null;
-  var mouse = { x: 0, y: 0 }, target = { x: 0, y: 0 };
+  var mouse = { x: 0, y: 0 }, target = { x: 0, y: 0 }, hover = { x: 0, y: 0 };
   var raf = null;
 
   function resize() {
@@ -130,16 +130,22 @@
     if (!raf) raf = requestAnimationFrame(tick);
   }
 
-  frame.addEventListener('pointermove', function (e) {
-    var r = frame.getBoundingClientRect();
-    target.x = ((e.clientX - r.left) / r.width - 0.5) * 2;
-    target.y = ((e.clientY - r.top) / r.height - 0.5) * 2;
+  function aim() {
+    target.x = hover.x;
+    target.y = hover.y;
     kick();
+  }
+  frame.addEventListener('pointermove', function (e) {
+    if (e.pointerType === 'touch') return;
+    var r = frame.getBoundingClientRect();
+    hover.x = ((e.clientX - r.left) / r.width - 0.5) * 2;
+    hover.y = ((e.clientY - r.top) / r.height - 0.5) * 2;
+    aim();
   });
   frame.addEventListener('pointerleave', function () {
-    target.x = 0;
-    target.y = 0;
-    kick();
+    hover.x = 0;
+    hover.y = 0;
+    aim();
   });
 
   var swapTimer = null;
@@ -153,7 +159,9 @@
       swapTimer = setTimeout(function () {
         if (!active.classList.contains('is-active')) return;
         current = p;
+        mouse.x = 0; mouse.y = 0;
         draw();
+        aim();
         canvas.classList.add('is-on');
       }, 650);
     }).catch(function () {});
@@ -163,6 +171,6 @@
   frame.querySelectorAll('img').forEach(function (img) {
     observer.observe(img, { attributes: true, attributeFilter: ['class'] });
   });
-  window.addEventListener('resize', function () { draw(); });
+  window.addEventListener('resize', function () { draw(); aim(); });
   activate();
 })();

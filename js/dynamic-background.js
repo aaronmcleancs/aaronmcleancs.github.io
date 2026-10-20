@@ -141,8 +141,8 @@ document.addEventListener('DOMContentLoaded', function () {
   const ctx = canvas.getContext('2d');
 
   function resizeCanvas() {
-    const w = heroSection.offsetWidth;
-    const h = heroSection.offsetHeight;
+    const w = canvas.offsetWidth;
+    const h = canvas.offsetHeight;
 
     if (w === canvas.width && h === canvas.height) return;
     canvas.width = w;
@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const pulseBrightness = 0.6;
 
   heroSection.addEventListener('mousemove', function (e) {
-    const rect = heroSection.getBoundingClientRect();
+    const rect = canvas.getBoundingClientRect();
     targetMouseX = e.clientX - rect.left;
     targetMouseY = e.clientY - rect.top;
     mouseActive = true;
@@ -315,10 +315,20 @@ document.addEventListener('DOMContentLoaded', function () {
     return lit;
   }
 
+  const midLayer = heroSection.querySelector('.xp-grid');
+  const midFactor = 0.06;
+  function placeMidLayer() {
+    if (!midLayer) return;
+    const r = heroSection.getBoundingClientRect();
+    const off = (window.innerHeight / 2 - (r.top + r.height / 2)) * midFactor;
+    midLayer.style.transform = 'translate3d(0,' + off.toFixed(2) + 'px,0)';
+  }
+
   function drawGrid() {
+    placeMidLayer();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    currentScrollOffset += (targetScrollOffset - currentScrollOffset) * transitionSpeed;
+    currentScrollOffset = targetScrollOffset;
 
     currentMouseX += (targetMouseX - currentMouseX) * transitionSpeed;
     currentMouseY += (targetMouseY - currentMouseY) * transitionSpeed;
@@ -344,11 +354,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const rowEnd = Math.ceil(endY / spacing);
 
     const fadeBand = canvas.height * 0.2;
+    const lead = Math.max(0, canvas.height - heroSection.offsetHeight);
+    const topFade = Math.max(fadeBand, lead * 1.15);
 
     const snakeNow = Date.now();
     if (snakeNow >= nextSnakeAt) {
       if (snakes.length < maxSnakes) {
-        const jMin = Math.ceil((fadeBand + currentScrollOffset) / spacing);
+        const jMin = Math.ceil((topFade + currentScrollOffset) / spacing);
         const jMax = Math.floor((canvas.height - fadeBand + currentScrollOffset) / spacing);
         spawnSnake(cols, jMin, jMax, snakeNow);
       }
@@ -373,7 +385,8 @@ document.addEventListener('DOMContentLoaded', function () {
         let dotRadius = baseDotRadius;
         let brightnessBoost = 0;
 
-        const edgeFade = Math.min(1, y / fadeBand, (canvas.height - y) / fadeBand);
+        const top = Math.min(1, Math.max(0, y / topFade));
+        const edgeFade = Math.min(top * top * (3 - 2 * top), (canvas.height - y) / fadeBand);
         if (edgeFade <= 0) continue;
 
         for (const pulse of pulses) {
@@ -456,7 +469,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!reduceGridMotion) time += waveSpeed;
   }
 
-  gridLoop = runWhileVisible(heroSection, drawGrid);
+  gridLoop = runWhileVisible(canvas, drawGrid);
 });
 
 document.addEventListener('DOMContentLoaded', function () {
