@@ -198,19 +198,17 @@ document.addEventListener('DOMContentLoaded', function () {
     targetMouseY = e.clientY - rect.top;
     mouseActive = true;
 
-    clearTimeout(mouseTimeout);
+    lastMouseMove = performance.now();
     mouseInfluenceTarget = 1;
-
-    mouseTimeout = setTimeout(() => {
-      mouseInfluenceTarget = 0;
-    }, 1000);
   });
 
   heroSection.addEventListener('mouseleave', function () {
     mouseInfluenceTarget = 0;
   });
 
-  let mouseTimeout;
+  // A still cursor keeps the glow; it only fades, very slowly, once the mouse has been idle a while.
+  const idleDelay = 1500, idleFade = 0.0035;
+  let lastMouseMove = 0;
   let mouseInfluenceTarget = 0;
 
   function updateScrollOffset() {
@@ -322,7 +320,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     currentMouseX += (targetMouseX - currentMouseX) * transitionSpeed;
     currentMouseY += (targetMouseY - currentMouseY) * transitionSpeed;
-    mouseInfluence += (mouseInfluenceTarget - mouseInfluence) * transitionSpeed;
+    if (mouseInfluenceTarget && performance.now() - lastMouseMove > idleDelay) mouseInfluence -= mouseInfluence * idleFade;
+    else mouseInfluence += (mouseInfluenceTarget - mouseInfluence) * transitionSpeed;
 
     const now = Date.now();
     for (let p = pulses.length - 1; p >= 0; p--) {
